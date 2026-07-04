@@ -1,4 +1,4 @@
-import { tabsToUnloadAllButActive, allTabsOf } from "./model.js";
+import { tabsToUnloadAllButActive } from "./model.js";
 
 export async function focusTab(tabId, windowId) {
     await browser.tabs.update(tabId, { active: true });

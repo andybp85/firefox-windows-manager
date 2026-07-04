@@ -119,6 +119,7 @@ function startRename(nameEl) {
         } else if (e.key === "Escape") {
             e.preventDefault();
             nameEl.removeEventListener("blur", commit);
+            nameEl.removeEventListener("keydown", onKey);
             nameEl.contentEditable = "false";
             rerender();
         }
