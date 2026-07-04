@@ -29,12 +29,12 @@ body {
     margin: 0;
     min-height: 100vh;
     padding: 1.25rem 1.5rem 2rem;
-    /* Deco sunburst field: faint accent rays fan from the top-right corner
-       across the whole page, softened toward the lower-left by a radial fade
+    /* Deco sunburst field: faint accent rays fan from the bottom-left corner
+       across the whole page, softened toward the upper-right by a radial fade
        to the base colour so content stays legible. */
     background:
-        radial-gradient(125% 125% at 100% 0, transparent 6%, var(--bg) 76%),
-        repeating-conic-gradient(from 0deg at 100% 0,
+        radial-gradient(125% 125% at 0 100%, transparent 6%, var(--bg) 76%),
+        repeating-conic-gradient(from 270deg at 0 100%,
             color-mix(in srgb, var(--accent) 15%, transparent) 0deg 2deg,
             transparent 2deg 6.5deg),
         var(--bg);
