@@ -112,3 +112,16 @@ export function tabsToUnloadAllButActive(model, scope) {
     }
     return ids;
 }
+
+export function insertIndexAmong(pointerY, rects) {
+    return rects.filter((r) => (r.top + r.bottom) / 2 < pointerY).length;
+}
+
+export function absoluteTabIndex(orderedIds, movedId, beforeId) {
+    const rest = orderedIds.filter((id) => id !== movedId);
+    if (beforeId == null) {
+        return rest.length;
+    }
+    const i = rest.indexOf(beforeId);
+    return i === -1 ? rest.length : i;
+}

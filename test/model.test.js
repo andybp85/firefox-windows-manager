@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { hostOf, buildModel, deriveCounts, allTabsOf, tabsToUnloadAllButActive } from "../src/model.js";
+import { hostOf, buildModel, deriveCounts, allTabsOf, tabsToUnloadAllButActive, insertIndexAmong, absoluteTabIndex } from "../src/model.js";
 
 const win = (id, extra = {}) => ({ id, focused: false, incognito: false, type: "normal", ...extra });
 const tab = (id, windowId, extra = {}) => ({
@@ -92,4 +92,25 @@ test("tabsToUnloadAllButActive scoped to one window ignores other windows", () =
         {},
     );
     assert.deepEqual(tabsToUnloadAllButActive(model, { windowId: 1 }), [11]);
+});
+
+test("insertIndexAmong counts tiles whose midpoint sits above the pointer", () => {
+    const rects = [
+        { top: 0, bottom: 20 },   // midpoint 10
+        { top: 20, bottom: 40 },  // midpoint 30
+        { top: 40, bottom: 60 },  // midpoint 50
+    ];
+    assert.equal(insertIndexAmong(5, rects), 0);    // above all midpoints
+    assert.equal(insertIndexAmong(25, rects), 1);   // between 1st and 2nd
+    assert.equal(insertIndexAmong(45, rects), 2);   // between 2nd and 3rd
+    assert.equal(insertIndexAmong(100, rects), 3);  // below all midpoints -> append
+    assert.equal(insertIndexAmong(10, []), 0);      // empty container
+});
+
+test("absoluteTabIndex targets the position before the reference, minus the moved tab", () => {
+    const ids = [1, 2, 3, 4];
+    assert.equal(absoluteTabIndex(ids, 2, 4), 2);    // rest [1,3,4]: before 4 -> 2
+    assert.equal(absoluteTabIndex(ids, 4, 2), 1);    // rest [1,2,3]: before 2 -> 1
+    assert.equal(absoluteTabIndex(ids, 2, null), 3); // append -> rest length 3
+    assert.equal(absoluteTabIndex([1, 2, 3], 1, 99), 2); // unknown ref -> append
 });
