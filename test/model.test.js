@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { hostOf, buildModel, deriveCounts } from "../src/model.js";
+import { hostOf, buildModel, deriveCounts, allTabsOf, tabsToUnloadAllButActive } from "../src/model.js";
 
 const win = (id, extra = {}) => ({ id, focused: false, incognito: false, type: "normal", ...extra });
 const tab = (id, windowId, extra = {}) => ({
@@ -56,4 +56,40 @@ test("deriveCounts totals windows, groups, and tabs", () => {
     );
     assert.deepEqual(deriveCounts(model.windows), { windows: 2, groups: 1, tabs: 3 });
     assert.deepEqual(model.counts, { windows: 2, groups: 1, tabs: 3 });
+});
+
+test("allTabsOf returns grouped tabs then ungrouped tabs", () => {
+    const model = buildModel(
+        [win(1)],
+        [tab(10, 1, { index: 0, groupId: 100 }), tab(11, 1, { index: 1 })],
+        [group(100, 1)],
+        {},
+    );
+    assert.deepEqual(allTabsOf(model.windows[0]).map((t) => t.id), [10, 11]);
+});
+
+test("tabsToUnloadAllButActive skips active and already-discarded tabs, scoped to all", () => {
+    const model = buildModel(
+        [win(1), win(2)],
+        [
+            tab(10, 1, { active: true }),
+            tab(11, 1, { discarded: true }),
+            tab(12, 1),
+            tab(20, 2, { active: true }),
+            tab(21, 2),
+        ],
+        [],
+        {},
+    );
+    assert.deepEqual(tabsToUnloadAllButActive(model, "all").sort((a, b) => a - b), [12, 21]);
+});
+
+test("tabsToUnloadAllButActive scoped to one window ignores other windows", () => {
+    const model = buildModel(
+        [win(1), win(2)],
+        [tab(10, 1, { active: true }), tab(11, 1), tab(20, 2), tab(21, 2)],
+        [],
+        {},
+    );
+    assert.deepEqual(tabsToUnloadAllButActive(model, { windowId: 1 }), [11]);
 });

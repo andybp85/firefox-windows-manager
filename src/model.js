@@ -93,3 +93,22 @@ export function buildModel(windows, tabs, groups, names = {}) {
 
     return { windows: modelWindows, counts: deriveCounts(modelWindows) };
 }
+
+export function allTabsOf(windowVM) {
+    return [...windowVM.groups.flatMap((g) => g.tabs), ...windowVM.ungrouped];
+}
+
+export function tabsToUnloadAllButActive(model, scope) {
+    const windows = scope === "all"
+        ? model.windows
+        : model.windows.filter((w) => w.id === scope.windowId);
+    const ids = [];
+    for (const w of windows) {
+        for (const t of allTabsOf(w)) {
+            if (!t.active && !t.discarded) {
+                ids.push(t.id);
+            }
+        }
+    }
+    return ids;
+}
