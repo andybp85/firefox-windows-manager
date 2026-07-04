@@ -78,7 +78,7 @@ function renderWindow(windowVM) {
     name.dataset.windowId = String(windowVM.id);
     name.tabIndex = 0;
     name.setAttribute("role", "textbox");
-    name.title = "Click to rename";
+    name.title = "Double-click to rename";
     header.append(
         name,
         el("span", "window-tabcount", `${windowVM.tabCount} tabs`),
