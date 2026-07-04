@@ -1,7 +1,8 @@
-/* Tab & Window Manager — "Grand Hotel": an Art-Deco lacquer-and-brass overview.
-   Theme-aware via light-dark(); Futura (native on macOS) carries the Deco voice.
-   Design tokens are grouped by role (fonts, brass, surfaces, text) rather than
-   alphabetized — a palette reads better as a system than as a sorted list. */
+/* Tab & Window Manager — Art-Deco overview keyed to Firefox's "Kit Mascot" theme:
+   deep aubergine grounds, vivid mascot-orange accent, lavender text. Theme-aware
+   via light-dark() (Kit is dark; the light variant is a purple-tinted complement).
+   Futura (native on macOS) carries the Deco voice. Design tokens are grouped by
+   role rather than alphabetized — a palette reads better as a system than sorted. */
 
 :root {
     color-scheme: light dark;
@@ -9,17 +10,17 @@
     --font-deco: "Futura", "Century Gothic", "Twentieth Century", "Avenir Next", system-ui, sans-serif;
     --font-body: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
 
-    --brass:        light-dark(#8f6f34, #c6a15b);
-    --brass-bright: light-dark(#b8934a, #e4c77e);
-    --bg:           light-dark(#efe7d3, #0f1b18);
-    --panel:        light-dark(#f7f1e1, #142420);
-    --tile:         light-dark(#fcf8ee, #1a2b26);
-    --ink:          light-dark(#22302a, #e9dfc6);
-    --muted:        light-dark(#6b6450, #93a69b);
-    --rule:         light-dark(#d8cba6, #2c3e38);
-    --danger:       light-dark(#7a2e2e, #a3423f);
+    --accent:        light-dark(#e8631c, #f47725);
+    --accent-bright: light-dark(#f47725, #ff9552);
+    --bg:            light-dark(#f2ecf7, #21033f);
+    --panel:         light-dark(#f9f4fd, #3e1267);
+    --tile:          light-dark(#fcfaff, #4e1f82);
+    --ink:           light-dark(#2a0b4a, #e4d7f5);
+    --muted:         light-dark(#6e5a8a, #916db9);
+    --rule:          light-dark(#ddd0ec, #5a3a85);
+    --danger:        light-dark(#b5342b, #c0392b);
 
-    scrollbar-color: var(--brass) transparent;
+    scrollbar-color: var(--accent) transparent;
     scrollbar-width: thin;
 }
 
@@ -38,9 +39,9 @@ button {
     text-transform: uppercase;
     letter-spacing: 0.12em;
     font-size: 0.64rem;
-    color: var(--brass);
+    color: var(--accent);
     background: transparent;
-    border: 1px solid color-mix(in srgb, var(--brass) 50%, transparent);
+    border: 1px solid color-mix(in srgb, var(--accent) 50%, transparent);
     border-radius: 2px;
     padding: 0.3rem 0.6rem;
     cursor: pointer;
@@ -48,13 +49,13 @@ button {
 }
 
 button:hover {
-    background: var(--brass);
+    background: var(--accent);
     color: var(--panel);
-    border-color: var(--brass);
+    border-color: var(--accent);
 }
 
 :focus-visible {
-    outline: 2px solid var(--brass);
+    outline: 2px solid var(--accent);
     outline-offset: 2px;
 }
 
@@ -79,7 +80,7 @@ button:hover {
     text-transform: uppercase;
     letter-spacing: 0.34em;
     font-size: clamp(1.05rem, 2.4vw, 1.6rem);
-    color: var(--brass);
+    color: var(--accent);
 }
 
 .counts {
@@ -111,14 +112,14 @@ button:hover {
     align-self: center;
 }
 
-/* Deco double-rule with a centered brass diamond. */
+/* Deco double-rule with a centered accent diamond. */
 .deco-rule {
     position: relative;
     height: 6px;
     margin-top: 0.85rem;
     background:
-        linear-gradient(var(--brass), var(--brass)) top / 100% 2px no-repeat,
-        linear-gradient(var(--brass), var(--brass)) bottom / 100% 1px no-repeat;
+        linear-gradient(var(--accent), var(--accent)) top / 100% 2px no-repeat,
+        linear-gradient(var(--accent), var(--accent)) bottom / 100% 1px no-repeat;
 }
 
 .deco-rule::after {
@@ -130,8 +131,8 @@ button:hover {
     height: 12px;
     transform: translate(-50%, -50%) rotate(45deg);
     background: var(--bg);
-    border: 1.5px solid var(--brass);
-    box-shadow: inset 0 0 0 1.5px var(--bg), inset 0 0 0 3px color-mix(in srgb, var(--brass) 55%, transparent);
+    border: 1.5px solid var(--accent);
+    box-shadow: inset 0 0 0 1.5px var(--bg), inset 0 0 0 3px color-mix(in srgb, var(--accent) 55%, transparent);
 }
 
 .overview.just-updated .count {
@@ -139,14 +140,14 @@ button:hover {
 }
 
 @keyframes pulse {
-    from { color: var(--brass-bright); }
+    from { color: var(--accent-bright); }
     to { color: var(--ink); }
 }
 
 .notice {
     margin: 0 0 1rem;
     padding: 0.55rem 0.8rem;
-    border: 1px solid var(--brass);
+    border: 1px solid var(--accent);
     border-radius: 2px;
     background: var(--panel);
     font-size: 0.85rem;
@@ -168,12 +169,12 @@ button:hover {
     background: var(--panel);
 }
 
-/* Focused window: brass double-keyline frame (replaces the old blue glow). */
+/* Focused window: accent double-keyline frame (replaces the old blue glow). */
 .window.focused {
-    border-color: var(--brass);
+    border-color: var(--accent);
     box-shadow:
         inset 0 0 0 3px var(--panel),
-        inset 0 0 0 4px color-mix(in srgb, var(--brass) 55%, transparent);
+        inset 0 0 0 4px color-mix(in srgb, var(--accent) 55%, transparent);
 }
 
 .window-header {
@@ -197,11 +198,11 @@ button:hover {
 }
 
 .window-name:hover {
-    color: var(--brass);
+    color: var(--accent);
 }
 
 .window-name[contenteditable="true"] {
-    outline: 2px solid var(--brass);
+    outline: 2px solid var(--accent);
     outline-offset: 1px;
 }
 
@@ -226,12 +227,12 @@ button:hover {
 
 .window-body.drop-target,
 .new-window-dropzone.drop-target {
-    outline: 2px solid var(--brass);
+    outline: 2px solid var(--accent);
     outline-offset: 2px;
-    background: color-mix(in srgb, var(--brass) 10%, transparent);
+    background: color-mix(in srgb, var(--accent) 10%, transparent);
 }
 
-/* --- Tab groups: keep the user's color as a left keyline, framed in brass --- */
+/* --- Tab groups: keep the user's color as a left keyline, framed in the panel --- */
 
 .group {
     padding: 0.35rem 0.45rem;
@@ -259,15 +260,15 @@ button:hover {
     color: var(--ink);
 }
 
-.group-blue { --group: #5b7cc6; }
-.group-cyan { --group: #4b9aa8; }
-.group-red { --group: #c0554f; }
-.group-yellow { --group: #c79b3d; }
-.group-green { --group: #5aa864; }
-.group-pink { --group: #c56b93; }
-.group-purple { --group: #8a6bc6; }
-.group-orange { --group: #cc8a4a; }
-.group-grey { --group: #868e96; }
+.group-blue { --group: #6f8fe0; }
+.group-cyan { --group: #4fb3c4; }
+.group-red { --group: #e0655e; }
+.group-yellow { --group: #e0b44a; }
+.group-green { --group: #63bd6f; }
+.group-pink { --group: #e07bab; }
+.group-purple { --group: #a882e6; }
+.group-orange { --group: #f0954f; }
+.group-grey { --group: #9a94ad; }
 
 .group-tabs {
     display: flex;
@@ -290,14 +291,14 @@ button:hover {
 }
 
 .tab:hover {
-    border-color: color-mix(in srgb, var(--brass) 45%, var(--rule));
+    border-color: color-mix(in srgb, var(--accent) 45%, var(--rule));
 }
 
-/* Active tab: warm brass keyline + left bar + faint tint (was a harsh blue box). */
+/* Active tab: warm accent keyline + left bar + faint tint (was a harsh blue box). */
 .tab.active {
-    border-color: color-mix(in srgb, var(--brass) 60%, var(--rule));
-    background: color-mix(in srgb, var(--brass) 9%, var(--tile));
-    box-shadow: inset 3px 0 0 var(--brass);
+    border-color: color-mix(in srgb, var(--accent) 60%, var(--rule));
+    background: color-mix(in srgb, var(--accent) 12%, var(--tile));
+    box-shadow: inset 3px 0 0 var(--accent);
     font-weight: 600;
 }
 
@@ -350,7 +351,7 @@ button:hover {
 .new-window-dropzone {
     margin-top: 1.25rem;
     padding: 1.1rem;
-    border: 1px solid var(--brass);
+    border: 1px solid var(--accent);
     border-radius: 3px;
     font-family: var(--font-deco);
     text-align: center;
@@ -359,8 +360,8 @@ button:hover {
     font-size: 0.66rem;
     color: var(--muted);
     background:
-        linear-gradient(var(--brass), var(--brass)) top / 100% 1px no-repeat,
-        linear-gradient(var(--brass), var(--brass)) bottom / 100% 1px no-repeat,
+        linear-gradient(var(--accent), var(--accent)) top / 100% 1px no-repeat,
+        linear-gradient(var(--accent), var(--accent)) bottom / 100% 1px no-repeat,
         var(--panel);
 }
 
@@ -373,15 +374,15 @@ button:hover {
     z-index: 10;
     transform: translateX(-50%);
     padding: 0.55rem 1.1rem;
-    border: 1px solid var(--brass);
+    border: 1px solid var(--accent);
     border-radius: 2px;
     background: var(--danger);
-    color: #f3ecd9;
+    color: #f7ecff;
     font-family: var(--font-deco);
     text-transform: uppercase;
     letter-spacing: 0.1em;
     font-size: 0.72rem;
-    box-shadow: 0 3px 12px rgba(0, 0, 0, 0.4);
+    box-shadow: 0 3px 12px rgba(0, 0, 0, 0.45);
 }
 
 @media (prefers-reduced-motion: reduce) {
