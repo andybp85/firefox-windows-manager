@@ -27,8 +27,17 @@
 
 body {
     margin: 0;
+    min-height: 100vh;
     padding: 1.25rem 1.5rem 2rem;
-    background: var(--bg);
+    /* Deco sunburst field: faint accent rays fan from the top-right corner
+       across the whole page, softened toward the lower-left by a radial fade
+       to the base colour so content stays legible. */
+    background:
+        radial-gradient(125% 125% at 100% 0, transparent 6%, var(--bg) 76%),
+        repeating-conic-gradient(from 0deg at 100% 0,
+            color-mix(in srgb, var(--accent) 15%, transparent) 0deg 2deg,
+            transparent 2deg 6.5deg),
+        var(--bg);
     color: var(--ink);
     font-family: var(--font-body);
 }
@@ -70,29 +79,7 @@ button:hover {
 /* --- Masthead: the signature --- */
 
 .masthead {
-    position: relative;
-    z-index: 0; /* stacking context so the sunburst sits behind the bar/rule */
     margin-bottom: 1.5rem;
-}
-
-/* Deco sunburst: faint rays fanning from the top-left corner behind the
-   wordmark — the era's signature motif. A repeating-conic-gradient draws the
-   rays; a radial mask fades them out so it reads as a ghosted flourish rather
-   than a loud burst. Purely decorative, so it never intercepts clicks. */
-.masthead::before {
-    content: "";
-    position: absolute;
-    z-index: -1;
-    top: -1.75rem;
-    left: -1.75rem;
-    width: 15rem;
-    height: 15rem;
-    pointer-events: none;
-    background: repeating-conic-gradient(from 0deg at 0 0,
-        color-mix(in srgb, var(--accent) 24%, transparent) 0deg 2.6deg,
-        transparent 2.6deg 9deg);
-    -webkit-mask: radial-gradient(circle at 0 0, #000, transparent 66%);
-    mask: radial-gradient(circle at 0 0, #000, transparent 66%);
 }
 
 .masthead-bar {

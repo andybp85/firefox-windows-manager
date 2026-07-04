@@ -141,7 +141,16 @@ attachDnd(app, {
     onDropGroup: (groupId, windowId) => run(moveGroupToWindow(groupId, windowId)),
     onDropTabNewWindow: (tabId) => run(moveTabToNewWindow(tabId)),
     onDropGroupNewWindow: (groupId) => run(moveGroupToNewWindow(groupId)),
-    onReorderTab: (args) => run(reorderTab(args)),
-    onReorderWindow: ({ orderedIds, windowId, beforeWindowId }) =>
-        run(reorderWindow(orderedIds, windowId, beforeWindowId)),
+    // Reorders re-render explicitly after committing: a window reorder only
+    // writes a session value (no tabs/windows event fires, like rename), and a
+    // within-group tab move can be coalesced, so the event-driven rerender is
+    // not guaranteed. An extra rerender is idempotent when an event does fire.
+    onReorderTab: async (args) => {
+        await run(reorderTab(args));
+        rerender();
+    },
+    onReorderWindow: async ({ orderedIds, windowId, beforeWindowId }) => {
+        await run(reorderWindow(orderedIds, windowId, beforeWindowId));
+        rerender();
+    },
 });
