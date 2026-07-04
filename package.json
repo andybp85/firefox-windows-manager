@@ -5,6 +5,7 @@
     "type": "module",
     "private": true,
     "scripts": {
-        "test": "node --test"
+        "test": "node --test",
+        "package": "rm -f tab-window-manager.xpi && zip -r -X tab-window-manager.xpi manifest.json background.js dashboard.html dashboard.css icons src -x '.*' '*/.*'"
     }
 }
