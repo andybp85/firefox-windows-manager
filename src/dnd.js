@@ -5,11 +5,13 @@ import { insertIndexAmong } from "./model.js";
 const MIME = {
     group: "application/x-fwm-group",
     tab: "application/x-fwm-tab",
+    window: "application/x-fwm-window",
 };
 
 function kindOf(dataTransfer) {
     if (dataTransfer.types.includes(MIME.tab)) return "tab";
     if (dataTransfer.types.includes(MIME.group)) return "group";
+    if (dataTransfer.types.includes(MIME.window)) return "window";
     return null;
 }
 
@@ -50,6 +52,21 @@ function resolveTabDrop(container, clientY) {
     return { windowId: Number(win.dataset.windowId), groupId: container.groupId, beforeId, orderedIds };
 }
 
+// Resolve a window drop to { orderedIds, beforeWindowId }. Drop before the
+// target window, or after it (beforeWindowId = the next window, or null) when
+// the pointer is past the target's vertical midpoint.
+function resolveWindowDrop(grid, targetWindow, clientY) {
+    const ids = [...grid.querySelectorAll(".window")].map((w) => Number(w.dataset.windowId));
+    const targetId = Number(targetWindow.dataset.windowId);
+    const rect = targetWindow.getBoundingClientRect();
+    let beforeWindowId = targetId;
+    if (clientY > rect.top + rect.height / 2) {
+        const i = ids.indexOf(targetId);
+        beforeWindowId = i + 1 < ids.length ? ids[i + 1] : null;
+    }
+    return { orderedIds: ids, beforeWindowId };
+}
+
 export function attachDnd(container, handlers) {
     let indicator = null;
 
@@ -58,8 +75,8 @@ export function attachDnd(container, handlers) {
         indicator = null;
     };
     const clearHighlights = () => {
-        for (const el of container.querySelectorAll(".drop-target")) {
-            el.classList.remove("drop-target");
+        for (const el of container.querySelectorAll(".drop-target, .window-drop-target")) {
+            el.classList.remove("drop-target", "window-drop-target");
         }
     };
     const placeIndicator = (el, clientY) => {
@@ -77,6 +94,12 @@ export function attachDnd(container, handlers) {
         target.closest(".window-body") || target.closest(".new-window-dropzone");
 
     container.addEventListener("dragstart", (event) => {
+        const handle = event.target.closest(".window-drag-handle");
+        if (handle) {
+            event.dataTransfer.setData(MIME.window, handle.closest(".window").dataset.windowId);
+            event.dataTransfer.effectAllowed = "move";
+            return;
+        }
         const tab = event.target.closest(".tab");
         if (tab) {
             event.dataTransfer.setData(MIME.tab, tab.dataset.tabId);
@@ -93,6 +116,17 @@ export function attachDnd(container, handlers) {
     container.addEventListener("dragover", (event) => {
         const kind = kindOf(event.dataTransfer);
         if (!kind) return;
+
+        if (kind === "window") {
+            const target = event.target.closest(".window");
+            if (!target) return;
+            event.preventDefault();
+            event.dataTransfer.dropEffect = "move";
+            clearHighlights();
+            target.classList.add("window-drop-target");
+            return;
+        }
+
         const zone = dropZone(event.target);
         if (!zone) return;
         event.preventDefault();
@@ -117,6 +151,20 @@ export function attachDnd(container, handlers) {
     container.addEventListener("drop", (event) => {
         const kind = kindOf(event.dataTransfer);
         clearIndicator();
+
+        if (kind === "window") {
+            const target = event.target.closest(".window");
+            clearHighlights();
+            if (!target) return;
+            event.preventDefault();
+            const id = Number(event.dataTransfer.getData(MIME.window));
+            const targetId = Number(target.dataset.windowId);
+            if (Number.isNaN(id) || id === targetId) return;
+            const { orderedIds, beforeWindowId } = resolveWindowDrop(target.closest(".windows-grid"), target, event.clientY);
+            handlers.onReorderWindow({ orderedIds, windowId: id, beforeWindowId });
+            return;
+        }
+
         const zone = dropZone(event.target);
         clearHighlights();
         if (!kind || !zone) return;

@@ -188,6 +188,12 @@ button:hover {
         inset 0 0 0 4px color-mix(in srgb, var(--accent) 55%, transparent);
 }
 
+/* Insertion target while dragging a window panel to reorder it. */
+.window.window-drop-target {
+    outline: 2px dashed var(--accent);
+    outline-offset: 3px;
+}
+
 .window-header {
     display: flex;
     align-items: baseline;
@@ -215,6 +221,23 @@ button:hover {
 .window-name[contenteditable="true"] {
     outline: 2px solid var(--accent);
     outline-offset: 1px;
+}
+
+/* Drag handle for reordering window panels. */
+.window-drag-handle {
+    color: var(--muted);
+    cursor: grab;
+    font-size: 0.95rem;
+    line-height: 1;
+    user-select: none;
+}
+
+.window-drag-handle:hover {
+    color: var(--accent);
+}
+
+.window-drag-handle:active {
+    cursor: grabbing;
 }
 
 .window-tabcount {
