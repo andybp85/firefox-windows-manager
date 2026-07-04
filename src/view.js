@@ -94,7 +94,7 @@ function renderWindow(windowVM) {
         iconButton("unload-all-window", "⏏", "Unload all but active", { windowId: windowVM.id }),
         iconButton("close-window", "✕", "Close window", { windowId: windowVM.id }),
     );
-    const grip = el("span", "window-drag-handle", "⠿"); // ⠿
+    const grip = el("span", "window-drag-handle", "⠿");
     grip.draggable = true;
     grip.setAttribute("aria-label", "Drag to reorder window");
     grip.title = "Drag to reorder";
