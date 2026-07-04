@@ -22,7 +22,6 @@ body {
     flex-wrap: wrap;
 }
 
-.counts .btn-unload-all,
 .counts button {
     margin-left: auto;
     font-weight: 500;

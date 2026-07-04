@@ -42,8 +42,9 @@ export function attachDnd(container, handlers) {
         zone.classList.remove("drop-target");
 
         const kind = event.dataTransfer.getData("application/x-kind");
-        const id = Number(event.dataTransfer.getData("application/x-id"));
-        if (!kind || !id) {
+        const rawId = event.dataTransfer.getData("application/x-id");
+        const id = Number(rawId);
+        if (!kind || rawId === "" || Number.isNaN(id)) {
             return;
         }
 

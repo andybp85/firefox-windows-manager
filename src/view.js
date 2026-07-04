@@ -123,7 +123,6 @@ export function render(model, options = {}) {
     root.append(grid);
 
     root.append(el("div", "new-window-dropzone", "Drop here to open in a new window"));
-    root.querySelector(".new-window-dropzone").dataset.action = "drop-new-window";
 
     return root;
 }

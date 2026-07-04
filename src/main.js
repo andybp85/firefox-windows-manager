@@ -33,7 +33,10 @@ async function main() {
     subscribe(debounce(rerender, 150));
 }
 
-main();
+main().catch((err) => {
+    console.error(err);
+    showToast(`Failed to load overview: ${err?.message ?? err}`);
+});
 
 function showToast(message) {
     const existing = document.querySelector(".toast");

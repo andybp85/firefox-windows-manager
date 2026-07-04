@@ -43,7 +43,7 @@ at `about:addons` → gear icon → **Manage Extension Shortcuts**.
 - `tabGroups` — read and move tab groups.
 - `sessions` — store per-window names that survive restarts.
 
-No host permissions, no network access, no data leaves the browser.
+No host permissions, no `fetch`/XHR, and no data leaves the browser. (Tab tiles do load favicons directly from each site's own URL.)
 
 ## Development
 
