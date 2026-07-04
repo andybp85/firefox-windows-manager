@@ -18,6 +18,16 @@ function button(action, label, dataset = {}) {
     return b;
 }
 
+// Icon-only button: the glyph carries meaning visually, `label` carries it to
+// assistive tech and as a tooltip.
+function iconButton(action, glyph, label, dataset = {}) {
+    const b = button(action, glyph, dataset);
+    b.classList.add("icon-btn");
+    b.setAttribute("aria-label", label);
+    b.title = label;
+    return b;
+}
+
 function renderTab(tab) {
     const article = el("article", "tab");
     article.classList.toggle("active", tab.active);
@@ -37,7 +47,7 @@ function renderTab(tab) {
     const controls = el("div", "tab-controls");
     controls.append(
         button("focus-tab", "Go", { tabId: tab.id }),
-        button("unload-tab", "Unload", { tabId: tab.id }),
+        iconButton("unload-tab", "⏏", "Unload", { tabId: tab.id }),
         button("close-tab", "✕", { tabId: tab.id }),
     );
 
@@ -82,7 +92,7 @@ function renderWindow(windowVM) {
     header.append(
         name,
         el("span", "window-tabcount", `${windowVM.tabCount} tabs`),
-        button("unload-all-window", "Unload", { windowId: windowVM.id }),
+        iconButton("unload-all-window", "⏏", "Unload all but active", { windowId: windowVM.id }),
     );
 
     const body = el("div", "window-body");
@@ -113,7 +123,7 @@ export function render(model, options = {}) {
         el("span", "count-label", "Groups"),
         el("span", "count count-tabs", `${model.counts.tabs}`),
         el("span", "count-label", "Tabs"),
-        button("unload-all-global", "Unload", {}),
+        iconButton("unload-all-global", "⏏", "Unload all but active, every window", {}),
     );
     bar.append(counts);
     masthead.append(bar, el("div", "deco-rule"));
