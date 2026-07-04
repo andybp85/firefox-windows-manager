@@ -9,8 +9,7 @@
 A Firefox extension that provides a single, toggleable **full-page overview** for
 managing every open window, tab group, and tab at a glance — an "exploded"
 Mission-Control-style layout. From the overview the user can see counts, name
-windows, close/move tabs and groups, unload tabs, and save-and-close groups for
-later restore.
+windows, close/move tabs and groups, and unload tabs.
 
 ## Users & Success Criteria
 
@@ -18,7 +17,6 @@ later restore.
   how much is open and where.
 - Reorganizing is direct: drag a tab or group to another window; rename a window;
   close or unload with one click.
-- Saved groups survive being closed and can be reopened later.
 - The overview reflects reality live — opening/closing tabs elsewhere updates it.
 
 ## Scope
@@ -30,15 +28,21 @@ later restore.
   ungrouped tabs in a default area; tabs as favicon + title + host tiles.
 - Editable, persistent window names.
 - Per-tab: focus, close, unload (discard).
-- Per-group: close, move, **save & close** (persist then close).
+- Per-group: close, move.
 - Window-level and global **"Unload all but active"**.
 - Drag & drop tabs and groups between windows; drop on empty area = new window.
-- Saved-groups area with restore.
 - Live updates from tab/window/group change events.
 
 ### Out of scope (YAGNI)
+- **Plugin-managed save & close of groups.** Firefox has native save-and-close,
+  but the `tabGroups` API can neither see native saved groups nor trigger native
+  save — so a plugin version would be a separate, parallel store invisible to
+  native. Deferred; the "saved sets" idea belongs to the exploratory curated-lists
+  bean (`firefox-windows-manager-1vx8`), built as one deliberate cross-cutting
+  store rather than duplicating a native feature. Users save groups via Firefox's
+  own gesture.
 - Cross-device sync, cloud storage.
-- Session/workspace management beyond saved groups.
+- Session/workspace management.
 - Bookmarks integration, history, search across tabs (could be a follow-up).
 - Per-tab live screenshots/thumbnails (not reliably possible via the APIs;
   decided against — tiles use favicon + title instead).
@@ -53,7 +57,10 @@ later restore.
   dispatch updates that call browser APIs; API change events refresh state and
   re-render.
 - **Requires Firefox 139+** for the `tabGroups` API.
-- **Permissions:** `tabs`, `tabGroups`, `sessions`, `storage`.
+- **Permissions:** `tabs`, `tabGroups`, `sessions`. (No `storage` — window names
+  live in the `sessions` per-window store; there is no other persistence in v1.)
+- **Test runner:** Node's built-in `node:test` for the pure `model.js` units;
+  zero runtime dependencies.
 - **Tiles:** favicon + title + host (no screenshots). "Exploded" feel comes from
   spatial layout, not captures.
 
@@ -74,21 +81,19 @@ Three cooperating pieces:
   - `main.js` — bootstraps: builds initial state, subscribes to events, renders.
   - `view.js` — pure render: `(state) → DOM`. No API calls.
   - `actions.js` — the imperative edge: calls browser APIs in response to user
-    intent (close, move, discard, rename, save-group, restore).
+    intent (close, move, discard, rename).
   - `dnd.js` — drag & drop wiring (drag sources, drop targets, drop resolution).
 
 ### 3. Domain / state module (`model.js`)
 - **Pure functions** — the testable core, no DOM, no live API:
-  - `buildModel(windows, tabs, groups, names, savedGroups)` → normalized view
-    model (windows → groups → tabs, plus ungrouped; derived counts).
+  - `buildModel(windows, tabs, groups, names)` → normalized view model
+    (windows → groups → tabs, plus ungrouped; derived counts).
   - `deriveCounts(model)` → `{ windows, groups, tabs }`.
   - `tabsToUnloadAllButActive(model, scope)` → tab ids to discard (skips each
     window's active tab; `scope` = one window or all).
-  - `groupSnapshot(group, tabs)` → serializable saved-group record
-    (`{ id, name, color, tabs: [{url, title}], savedAt }`).
 - Live data acquisition and event subscription live in `data.js` (thin wrapper
-  over `browser.windows/tabs/tabGroups/sessions/storage`), kept separate so
-  `model.js` stays pure.
+  over `browser.windows/tabs/tabGroups/sessions`), kept separate so `model.js`
+  stays pure.
 
 ## Data Flow
 
@@ -117,7 +122,9 @@ subtle "updated" pulse when the model refreshes.
 
 ### Tab groups
 - Rendered as titled, color-tinted sub-sections (color from `tabGroups`).
-- Actions: close group, move group (drag), **save & close**.
+- Actions: close group, move group (drag). (Native Firefox save-and-close remains
+  available to the user through Firefox's own UI; the plugin does not reimplement
+  it — see Out of scope.)
 
 ### Tabs (tiles)
 - Favicon, title, host; active tab highlighted; discarded tab dimmed.
@@ -129,16 +136,6 @@ subtle "updated" pulse when the model refreshes.
   window's active tab. (Firefox refuses to discard a window's active tab, so those
   remain loaded by design.)
 
-### Save & close group
-- Snapshot the group (`name`, `color`, ordered `tabs[{url,title}]`, `savedAt`) into
-  `storage.local` under a `savedGroups` list, then close the group's tabs.
-- Saved groups appear in a **Saved** area of the dashboard.
-
-### Restore saved group
-- Reopen a saved group's tabs (into its window or a new window) and re-create the
-  group with its name/color, then remove it from `savedGroups` (or keep — see Open
-  Questions).
-
 ### Move between windows (drag & drop)
 - Drag a tab tile or a group header onto another window panel → `tabs.move` (and
   group association) into that window.
@@ -149,23 +146,21 @@ subtle "updated" pulse when the model refreshes.
 - API calls in `actions.js` are wrapped; failures surface a non-blocking toast and
   are logged. State is not optimistically mutated, so a failed action simply leaves
   the last-known-good model rendered (the next event refresh reconciles).
-- Restore validates saved URLs are still openable; privileged/blank entries are
-  skipped with a note.
 - Missing/absent `tabGroups` (older Firefox) → dashboard still renders windows/tabs
   and shows a "tab groups need Firefox 139+" notice instead of failing.
 
 ## Testing
 
 - **Unit (pure):** `model.js` — `buildModel` normalization, `deriveCounts`,
-  `tabsToUnloadAllButActive` (including active-tab exclusion and scope),
-  `groupSnapshot` serialization. Runnable in a plain JS test runner, no browser.
+  `tabsToUnloadAllButActive` (including active-tab exclusion and scope). Run with
+  `node:test`, no browser.
 - **Manual/integration:** load unpacked via `about:debugging`, drive real flows —
-  toggle, rename+restart persistence, close/move/unload, save & close, restore,
-  live update when tabs change externally.
+  toggle, rename+restart persistence, close/move/unload, live update when tabs
+  change externally.
 
-## Open Questions (resolve during planning)
+## Resolved Decisions
 
-1. Restore behavior: remove the saved group after restore, or keep it as a
-   reusable template? (Leaning: remove on restore; add explicit "keep" later.)
-2. Test runner choice (Node's built-in `node:test` vs. none) — decide in the plan;
-   keep zero runtime deps regardless.
+- **Save & close:** deferred to native Firefox; not reimplemented (see Out of
+  scope). Rationale: the `tabGroups` API can neither read native saved groups nor
+  trigger native save.
+- **Test runner:** Node's built-in `node:test`, zero runtime deps.
