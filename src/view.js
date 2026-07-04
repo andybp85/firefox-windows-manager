@@ -89,11 +89,15 @@ function renderWindow(windowVM) {
     name.tabIndex = 0;
     name.setAttribute("role", "textbox");
     name.title = "Double-click to rename";
+    const actions = el("div", "window-actions");
+    actions.append(
+        iconButton("unload-all-window", "⏏", "Unload all but active", { windowId: windowVM.id }),
+        iconButton("close-window", "✕", "Close window", { windowId: windowVM.id }),
+    );
     header.append(
         name,
         el("span", "window-tabcount", `${windowVM.tabCount} tabs`),
-        iconButton("unload-all-window", "⏏", "Unload all but active", { windowId: windowVM.id }),
-        iconButton("close-window", "✕", "Close window", { windowId: windowVM.id }),
+        actions,
     );
 
     const body = el("div", "window-body");

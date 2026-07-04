@@ -225,9 +225,11 @@ button:hover {
     color: var(--muted);
 }
 
-/* Only the first header action pushes right; the flex gap keeps the eject and
-   close-window buttons grouped together at the right edge. */
-.window-header button:first-of-type {
+/* The action cluster is pushed to the right edge; its own gap (not the
+   header's) sets the spacing between the eject and close-window buttons. */
+.window-actions {
+    display: flex;
+    gap: 0.625rem; /* ~10px */
     margin-left: auto;
 }
 
