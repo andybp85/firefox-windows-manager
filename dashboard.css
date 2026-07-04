@@ -1,9 +1,215 @@
 :root {
     color-scheme: light dark;
     font-family: system-ui, -apple-system, sans-serif;
+    --tile-bg: color-mix(in srgb, canvas 88%, canvastext 12%);
+    --border: color-mix(in srgb, canvas 70%, canvastext 30%);
 }
 
 body {
     margin: 0;
     padding: 1rem;
+    background: canvas;
+    color: canvastext;
+}
+
+.counts {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    flex-wrap: wrap;
+}
+
+.counts .btn-unload-all,
+.counts button {
+    margin-left: auto;
+    font-weight: 500;
+}
+
+.overview.just-updated .counts {
+    animation: pulse 0.4s ease-out;
+}
+
+@keyframes pulse {
+    from { opacity: 0.4; }
+    to { opacity: 1; }
+}
+
+.notice {
+    padding: 0.5rem 0.75rem;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    background: var(--tile-bg);
+}
+
+.windows-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 1rem;
+    align-items: start;
+}
+
+.window {
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 0.75rem;
+    background: color-mix(in srgb, canvas 95%, canvastext 5%);
+}
+
+.window.focused {
+    border-color: #4c6ef5;
+    box-shadow: 0 0 0 2px color-mix(in srgb, #4c6ef5 40%, transparent);
+}
+
+.window-header {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.window-name {
+    font-weight: 600;
+    cursor: text;
+    padding: 0.1rem 0.3rem;
+    border-radius: 4px;
+}
+
+.window-name:hover {
+    background: var(--tile-bg);
+}
+
+.window-name[contenteditable="true"] {
+    outline: 2px solid #4c6ef5;
+    cursor: text;
+}
+
+.window-tabcount {
+    color: color-mix(in srgb, canvastext 60%, canvas 40%);
+    font-size: 0.85rem;
+}
+
+.window-body {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    min-height: 2rem;
+}
+
+.window-body.drop-target,
+.new-window-dropzone.drop-target {
+    outline: 2px dashed #4c6ef5;
+    outline-offset: 2px;
+}
+
+.group {
+    border-left: 4px solid var(--border);
+    border-radius: 6px;
+    padding: 0.3rem 0.4rem;
+    background: var(--tile-bg);
+}
+
+.group-header {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.85rem;
+    font-weight: 600;
+    margin-bottom: 0.3rem;
+}
+
+.group-blue { border-left-color: #4c6ef5; }
+.group-cyan { border-left-color: #15aabf; }
+.group-red { border-left-color: #fa5252; }
+.group-yellow { border-left-color: #fab005; }
+.group-green { border-left-color: #40c057; }
+.group-pink { border-left-color: #e64980; }
+.group-purple { border-left-color: #7048e8; }
+.group-orange { border-left-color: #fd7e14; }
+.group-grey { border-left-color: #868e96; }
+
+.group-tabs {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+}
+
+.tab {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.35rem 0.5rem;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    background: canvas;
+    cursor: grab;
+}
+
+.tab.active {
+    border-color: #4c6ef5;
+    font-weight: 600;
+}
+
+.tab.discarded {
+    opacity: 0.55;
+}
+
+.tab-favicon {
+    width: 16px;
+    height: 16px;
+    flex: none;
+}
+
+.tab-meta {
+    min-width: 0;
+    flex: 1;
+}
+
+.tab-title {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.tab-host {
+    font-size: 0.75rem;
+    color: color-mix(in srgb, canvastext 55%, canvas 45%);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.tab-controls {
+    display: flex;
+    gap: 0.2rem;
+    flex: none;
+}
+
+.tab-controls button {
+    font-size: 0.75rem;
+    padding: 0.1rem 0.35rem;
+}
+
+.new-window-dropzone {
+    margin-top: 1rem;
+    padding: 1rem;
+    text-align: center;
+    border: 2px dashed var(--border);
+    border-radius: 10px;
+    color: color-mix(in srgb, canvastext 55%, canvas 45%);
+}
+
+.toast {
+    position: fixed;
+    bottom: 1rem;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #fa5252;
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    z-index: 10;
 }
