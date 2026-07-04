@@ -1,0 +1,33 @@
+{
+    "manifest_version": 3,
+    "name": "Tab & Window Manager",
+    "version": "1.0.0",
+    "description": "A toggleable full-page overview to manage Firefox windows, tab groups, and tabs.",
+    "browser_specific_settings": {
+        "gecko": {
+            "id": "tab-window-manager@firefox-windows-manager",
+            "strict_min_version": "139.0"
+        }
+    },
+    "permissions": ["tabs", "tabGroups", "sessions"],
+    "background": {
+        "scripts": ["background.js"]
+    },
+    "action": {
+        "default_title": "Open Tab & Window Overview",
+        "default_icon": "icons/icon.svg"
+    },
+    "icons": {
+        "48": "icons/icon.svg",
+        "96": "icons/icon.svg"
+    },
+    "commands": {
+        "toggle-overview": {
+            "suggested_key": {
+                "default": "Ctrl+Shift+E",
+                "mac": "Command+Shift+E"
+            },
+            "description": "Toggle the Tab & Window overview"
+        }
+    }
+}
