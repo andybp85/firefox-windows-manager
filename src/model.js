@@ -125,3 +125,19 @@ export function absoluteTabIndex(orderedIds, movedId, beforeId) {
     const i = rest.indexOf(beforeId);
     return i === -1 ? rest.length : i;
 }
+
+export function sortWindowsByOrder(modelWindows, orders) {
+    return modelWindows
+        .map((w) => ({ w, order: typeof orders[w.id] === "number" ? orders[w.id] : Infinity }))
+        .sort((a, b) => a.order - b.order || a.w.id - b.w.id)
+        .map((keyed) => keyed.w);
+}
+
+export function reorderWindowSequence(orderedIds, movedId, beforeId) {
+    const rest = orderedIds.filter((id) => id !== movedId);
+    if (beforeId == null || !rest.includes(beforeId)) {
+        return [...rest, movedId];
+    }
+    const i = rest.indexOf(beforeId);
+    return [...rest.slice(0, i), movedId, ...rest.slice(i)];
+}
