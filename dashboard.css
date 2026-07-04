@@ -15,6 +15,7 @@
     --bg:            light-dark(#f2ecf7, #21033f);
     --panel:         light-dark(#f9f4fd, #3e1267);
     --tile:          light-dark(#fcfaff, #4e1f82);
+    --active:        light-dark(#fbe9d6, #320f5a);
     --ink:           light-dark(#2a0b4a, #e4d7f5);
     --muted:         light-dark(#6e5a8a, #916db9);
     --rule:          light-dark(#ddd0ec, #5a3a85);
@@ -304,10 +305,11 @@ button:hover {
     border-color: color-mix(in srgb, var(--accent) 45%, var(--rule));
 }
 
-/* Active tab: warm accent keyline + left bar + faint tint (was a harsh blue box). */
+/* Active tab: accent keyline + left bar over a darkened ground so the near-white
+   title stays legible (was a lightened tint that washed the text out). */
 .tab.active {
     border-color: color-mix(in srgb, var(--accent) 60%, var(--rule));
-    background: color-mix(in srgb, var(--accent) 12%, var(--tile));
+    background: var(--active);
     box-shadow: inset 3px 0 0 var(--accent);
     font-weight: 600;
 }
