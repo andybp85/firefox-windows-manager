@@ -70,7 +70,29 @@ button:hover {
 /* --- Masthead: the signature --- */
 
 .masthead {
+    position: relative;
+    z-index: 0; /* stacking context so the sunburst sits behind the bar/rule */
     margin-bottom: 1.5rem;
+}
+
+/* Deco sunburst: faint rays fanning from the top-left corner behind the
+   wordmark — the era's signature motif. A repeating-conic-gradient draws the
+   rays; a radial mask fades them out so it reads as a ghosted flourish rather
+   than a loud burst. Purely decorative, so it never intercepts clicks. */
+.masthead::before {
+    content: "";
+    position: absolute;
+    z-index: -1;
+    top: -1.75rem;
+    left: -1.75rem;
+    width: 15rem;
+    height: 15rem;
+    pointer-events: none;
+    background: repeating-conic-gradient(from 0deg at 0 0,
+        color-mix(in srgb, var(--accent) 24%, transparent) 0deg 2.6deg,
+        transparent 2.6deg 9deg);
+    -webkit-mask: radial-gradient(circle at 0 0, #000, transparent 66%);
+    mask: radial-gradient(circle at 0 0, #000, transparent 66%);
 }
 
 .masthead-bar {
@@ -195,12 +217,25 @@ button:hover {
 }
 
 .window-header {
+    position: relative;
     display: flex;
     align-items: baseline;
     gap: 0.5rem;
     padding-bottom: 0.5rem;
     margin-bottom: 0.6rem;
     border-bottom: 1px solid var(--rule);
+}
+
+/* Deco "keystone": a short accent segment laid over the left of the header
+   rule, giving each panel a quiet geometric signature. */
+.window-header::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: -1px;
+    width: 2.25rem;
+    height: 2px;
+    background: var(--accent);
 }
 
 .window-name {
@@ -296,6 +331,18 @@ button:hover {
     letter-spacing: 0.14em;
     font-size: 0.66rem;
     color: var(--ink);
+}
+
+/* Small deco lozenge in the group's own color, echoing the left keyline. */
+.group-title::before {
+    content: "";
+    display: inline-block;
+    width: 0.42rem;
+    height: 0.42rem;
+    margin-right: 0.45rem;
+    transform: rotate(45deg);
+    background: var(--group, var(--muted));
+    vertical-align: middle;
 }
 
 .group-blue { --group: #6f8fe0; }
@@ -403,6 +450,7 @@ button:hover {
 /* --- New-window drop zone: a Deco double-ruled plate --- */
 
 .new-window-dropzone {
+    position: relative;
     margin-top: 1.25rem;
     padding: 1.1rem;
     border: 1px solid var(--accent);
@@ -417,6 +465,31 @@ button:hover {
         linear-gradient(var(--accent), var(--accent)) top / 100% 1px no-repeat,
         linear-gradient(var(--accent), var(--accent)) bottom / 100% 1px no-repeat,
         var(--panel);
+}
+
+/* Deco corner brackets on two opposing corners — an asymmetric-balanced frame
+   that marks the plate as a place to act. */
+.new-window-dropzone::before,
+.new-window-dropzone::after {
+    content: "";
+    position: absolute;
+    width: 14px;
+    height: 14px;
+    border: 2px solid var(--accent);
+}
+
+.new-window-dropzone::before {
+    top: 6px;
+    left: 6px;
+    border-right: 0;
+    border-bottom: 0;
+}
+
+.new-window-dropzone::after {
+    right: 6px;
+    bottom: 6px;
+    border-top: 0;
+    border-left: 0;
 }
 
 /* --- Toast --- */
