@@ -2,7 +2,7 @@ import { fetchState, subscribe, hasTabGroups } from "./data.js";
 import { render } from "./view.js";
 import { attachDnd } from "./dnd.js";
 import {
-    focusTab, closeTab, unloadTab, unloadAllButActive, closeGroup, renameWindow,
+    focusTab, closeTab, unloadTab, unloadAllButActive, closeGroup, closeWindow, renameWindow,
     moveTabToWindow, moveTabToNewWindow, moveGroupToWindow, moveGroupToNewWindow,
 } from "./actions.js";
 
@@ -83,6 +83,9 @@ app.addEventListener("click", (event) => {
             break;
         case "unload-all-window":
             run(unloadAllButActive(state.model, { windowId: num(windowId) }));
+            break;
+        case "close-window":
+            run(closeWindow(num(windowId)));
             break;
         case "unload-all-global":
             run(unloadAllButActive(state.model, "all"));

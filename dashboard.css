@@ -225,7 +225,9 @@ button:hover {
     color: var(--muted);
 }
 
-.window-header button {
+/* Only the first header action pushes right; the flex gap keeps the eject and
+   close-window buttons grouped together at the right edge. */
+.window-header button:first-of-type {
     margin-left: auto;
 }
 
