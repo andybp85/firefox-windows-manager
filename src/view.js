@@ -18,6 +18,16 @@ function button(action, label, dataset = {}) {
     return b;
 }
 
+// Icon-only button: the glyph carries meaning visually, `label` carries it to
+// assistive tech and as a tooltip.
+function iconButton(action, glyph, label, dataset = {}) {
+    const b = button(action, glyph, dataset);
+    b.classList.add("icon-btn");
+    b.setAttribute("aria-label", label);
+    b.title = label;
+    return b;
+}
+
 function renderTab(tab) {
     const article = el("article", "tab");
     article.classList.toggle("active", tab.active);
@@ -25,6 +35,7 @@ function renderTab(tab) {
     article.dataset.tabId = String(tab.id);
     article.dataset.windowId = String(tab.windowId);
     article.draggable = true;
+    article.title = "Double-click to open";
 
     const favicon = el("img", "tab-favicon");
     favicon.src = tab.favIconUrl || "icons/icon.svg";
@@ -36,8 +47,7 @@ function renderTab(tab) {
 
     const controls = el("div", "tab-controls");
     controls.append(
-        button("focus-tab", "Go", { tabId: tab.id }),
-        button("unload-tab", "Unload", { tabId: tab.id }),
+        iconButton("unload-tab", "⏏", "Unload", { tabId: tab.id }),
         button("close-tab", "✕", { tabId: tab.id }),
     );
 
@@ -79,10 +89,15 @@ function renderWindow(windowVM) {
     name.tabIndex = 0;
     name.setAttribute("role", "textbox");
     name.title = "Double-click to rename";
+    const actions = el("div", "window-actions");
+    actions.append(
+        iconButton("unload-all-window", "⏏", "Unload all but active", { windowId: windowVM.id }),
+        iconButton("close-window", "✕", "Close window", { windowId: windowVM.id }),
+    );
     header.append(
         name,
         el("span", "window-tabcount", `${windowVM.tabCount} tabs`),
-        button("unload-all-window", "Unload all but active", { windowId: windowVM.id }),
+        actions,
     );
 
     const body = el("div", "window-body");
@@ -101,16 +116,23 @@ export function render(model, options = {}) {
     const supported = options.tabGroupsSupported !== false;
     const root = el("div", "overview");
 
-    const header = el("header", "counts");
-    header.append(
-        el("span", "count-windows", `${model.counts.windows} windows`),
-        el("span", "count-sep", "·"),
-        el("span", "count-groups", `${model.counts.groups} groups`),
-        el("span", "count-sep", "·"),
-        el("span", "count-tabs", `${model.counts.tabs} tabs`),
-        button("unload-all-global", "Unload all but active (everywhere)", {}),
+    const masthead = el("header", "masthead");
+    const bar = el("div", "masthead-bar");
+    bar.append(el("h1", "wordmark", "Tab & Window Overview"));
+
+    const counts = el("div", "counts");
+    counts.append(
+        el("span", "count count-windows", `${model.counts.windows}`),
+        el("span", "count-label", "Windows"),
+        el("span", "count count-groups", `${model.counts.groups}`),
+        el("span", "count-label", "Groups"),
+        el("span", "count count-tabs", `${model.counts.tabs}`),
+        el("span", "count-label", "Tabs"),
+        iconButton("unload-all-global", "⏏", "Unload all but active, every window", {}),
     );
-    root.append(header);
+    bar.append(counts);
+    masthead.append(bar, el("div", "deco-rule"));
+    root.append(masthead);
 
     if (!supported) {
         root.append(el("p", "notice", "Tab groups need Firefox 139+ — showing windows and tabs only."));

@@ -2,7 +2,7 @@ import { fetchState, subscribe, hasTabGroups } from "./data.js";
 import { render } from "./view.js";
 import { attachDnd } from "./dnd.js";
 import {
-    focusTab, closeTab, unloadTab, unloadAllButActive, closeGroup, renameWindow,
+    focusTab, closeTab, unloadTab, unloadAllButActive, closeGroup, closeWindow, renameWindow,
     moveTabToWindow, moveTabToNewWindow, moveGroupToWindow, moveGroupToNewWindow,
 } from "./actions.js";
 
@@ -67,11 +67,6 @@ app.addEventListener("click", (event) => {
     const { action, tabId, windowId, groupId } = trigger.dataset;
     const num = (v) => Number(v);
     switch (action) {
-        case "focus-tab": {
-            const tile = trigger.closest(".tab");
-            run(focusTab(num(tabId), num(tile.dataset.windowId)));
-            break;
-        }
         case "close-tab":
             run(closeTab(num(tabId)));
             break;
@@ -84,6 +79,9 @@ app.addEventListener("click", (event) => {
         case "unload-all-window":
             run(unloadAllButActive(state.model, { windowId: num(windowId) }));
             break;
+        case "close-window":
+            run(closeWindow(num(windowId)));
+            break;
         case "unload-all-global":
             run(unloadAllButActive(state.model, "all"));
             break;
@@ -94,10 +92,15 @@ app.addEventListener("click", (event) => {
 
 app.addEventListener("dblclick", (event) => {
     const name = event.target.closest(".window-name");
-    if (!name) {
+    if (name) {
+        startRename(name);
         return;
     }
-    startRename(name);
+    // Double-click the tile to focus the tab; ignore dblclicks on its buttons.
+    const tile = event.target.closest(".tab");
+    if (tile && !event.target.closest("button")) {
+        run(focusTab(Number(tile.dataset.tabId), Number(tile.dataset.windowId)));
+    }
 });
 
 function startRename(nameEl) {

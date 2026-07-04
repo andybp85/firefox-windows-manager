@@ -1,158 +1,329 @@
+/* Tab & Window Manager — Art-Deco overview keyed to Firefox's "Kit Mascot" theme:
+   deep aubergine grounds, vivid mascot-orange accent, lavender text. Theme-aware
+   via light-dark() (Kit is dark; the light variant is a purple-tinted complement).
+   Futura (native on macOS) carries the Deco voice. Design tokens are grouped by
+   role rather than alphabetized — a palette reads better as a system than sorted. */
+
 :root {
     color-scheme: light dark;
-    font-family: system-ui, -apple-system, sans-serif;
-    --tile-bg: color-mix(in srgb, canvas 88%, canvastext 12%);
-    --border: color-mix(in srgb, canvas 70%, canvastext 30%);
+
+    --font-deco: "Futura", "Century Gothic", "Twentieth Century", "Avenir Next", system-ui, sans-serif;
+    --font-body: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+
+    --accent:        light-dark(#e8631c, #f47725);
+    --accent-bright: light-dark(#f47725, #ff9552);
+    --bg:            light-dark(#f2ecf7, #21033f);
+    --panel:         light-dark(#f9f4fd, #3e1267);
+    --tile:          light-dark(#fcfaff, #4e1f82);
+    --active:        light-dark(#fbe9d6, #320f5a);
+    --ink:           light-dark(#2a0b4a, #e4d7f5);
+    --muted:         light-dark(#6e5a8a, #916db9);
+    --rule:          light-dark(#ddd0ec, #5a3a85);
+    --danger:        light-dark(#b5342b, #c0392b);
+
+    scrollbar-color: var(--accent) transparent;
+    scrollbar-width: thin;
 }
 
 body {
     margin: 0;
-    padding: 1rem;
-    background: canvas;
-    color: canvastext;
+    padding: 1.25rem 1.5rem 2rem;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--font-body);
+}
+
+/* --- Shared controls: Deco ghost buttons --- */
+
+button {
+    font-family: var(--font-deco);
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    font-size: 0.64rem;
+    color: var(--accent);
+    background: transparent;
+    border: 1px solid color-mix(in srgb, var(--accent) 50%, transparent);
+    border-radius: 2px;
+    padding: 0.3rem 0.6rem;
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s, border-color 0.15s;
+}
+
+button:hover {
+    background: var(--accent);
+    color: var(--panel);
+    border-color: var(--accent);
+}
+
+/* Icon-only buttons (eject = unload): glyph a touch larger, square-ish padding. */
+.icon-btn {
+    padding: 0.22rem 0.5rem;
+    font-size: 0.9rem;
+    line-height: 1;
+}
+
+:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+}
+
+/* --- Masthead: the signature --- */
+
+.masthead {
+    margin-bottom: 1.5rem;
+}
+
+.masthead-bar {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 1rem 1.5rem;
+    flex-wrap: wrap;
+}
+
+.wordmark {
+    margin: 0;
+    font-family: var(--font-deco);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.34em;
+    font-size: clamp(1.05rem, 2.4vw, 1.6rem);
+    color: var(--accent);
 }
 
 .counts {
     display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    font-size: 1.1rem;
-    font-weight: 600;
-    margin-bottom: 1rem;
+    align-items: baseline;
+    gap: 0.35rem 0.5rem;
     flex-wrap: wrap;
 }
 
-.counts button {
-    margin-left: auto;
-    font-weight: 500;
+.count {
+    font-family: var(--font-deco);
+    font-weight: 600;
+    font-size: 1.5rem;
+    font-variant-numeric: tabular-nums;
+    color: var(--ink);
 }
 
-.overview.just-updated .counts {
-    animation: pulse 0.4s ease-out;
+.count-label {
+    margin-right: 0.75rem;
+    font-family: var(--font-deco);
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    font-size: 0.6rem;
+    color: var(--muted);
+}
+
+.counts button {
+    margin-left: 0.5rem;
+    align-self: center;
+}
+
+/* Deco double-rule with a centered accent diamond. */
+.deco-rule {
+    position: relative;
+    height: 6px;
+    margin-top: 0.85rem;
+    background:
+        linear-gradient(var(--accent), var(--accent)) top / 100% 2px no-repeat,
+        linear-gradient(var(--accent), var(--accent)) bottom / 100% 1px no-repeat;
+}
+
+.deco-rule::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 12px;
+    height: 12px;
+    transform: translate(-50%, -50%) rotate(45deg);
+    background: var(--bg);
+    border: 1.5px solid var(--accent);
+    box-shadow: inset 0 0 0 1.5px var(--bg), inset 0 0 0 3px color-mix(in srgb, var(--accent) 55%, transparent);
+}
+
+.overview.just-updated .count {
+    animation: pulse 0.45s ease-out;
 }
 
 @keyframes pulse {
-    from { opacity: 0.4; }
-    to { opacity: 1; }
+    from { color: var(--accent-bright); }
+    to { color: var(--ink); }
 }
 
 .notice {
-    padding: 0.5rem 0.75rem;
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    background: var(--tile-bg);
+    margin: 0 0 1rem;
+    padding: 0.55rem 0.8rem;
+    border: 1px solid var(--accent);
+    border-radius: 2px;
+    background: var(--panel);
+    font-size: 0.85rem;
 }
 
+/* --- Window panels --- */
+
+/* Multi-column gives masonry-style vertical packing natively — no JS lib, and
+   native CSS masonry is not yet unflagged. Panels flow into balanced columns. */
 .windows-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-    gap: 1rem;
-    align-items: start;
+    columns: 340px;
+    column-gap: 1.25rem;
 }
 
 .window {
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 0.75rem;
-    background: color-mix(in srgb, canvas 95%, canvastext 5%);
+    /* margin (not grid gap) separates stacked panels within a column */
+    margin-bottom: 1.25rem;
+    padding: 0.85rem;
+    border: 1px solid var(--rule);
+    border-radius: 3px;
+    background: var(--panel);
+    break-inside: avoid;
 }
 
+/* Focused window: accent double-keyline frame (replaces the old blue glow). */
 .window.focused {
-    border-color: #4c6ef5;
-    box-shadow: 0 0 0 2px color-mix(in srgb, #4c6ef5 40%, transparent);
+    border-color: var(--accent);
+    box-shadow:
+        inset 0 0 0 3px var(--panel),
+        inset 0 0 0 4px color-mix(in srgb, var(--accent) 55%, transparent);
 }
 
 .window-header {
     display: flex;
-    align-items: center;
+    align-items: baseline;
     gap: 0.5rem;
-    margin-bottom: 0.5rem;
+    padding-bottom: 0.5rem;
+    margin-bottom: 0.6rem;
+    border-bottom: 1px solid var(--rule);
 }
 
 .window-name {
-    font-weight: 600;
+    padding: 0.1rem 0.25rem;
+    font-family: var(--font-deco);
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    font-size: 0.82rem;
+    color: var(--ink);
+    border-radius: 2px;
     cursor: text;
-    padding: 0.1rem 0.3rem;
-    border-radius: 4px;
 }
 
 .window-name:hover {
-    background: var(--tile-bg);
+    color: var(--accent);
 }
 
 .window-name[contenteditable="true"] {
-    outline: 2px solid #4c6ef5;
-    cursor: text;
+    outline: 2px solid var(--accent);
+    outline-offset: 1px;
 }
 
 .window-tabcount {
-    color: color-mix(in srgb, canvastext 60%, canvas 40%);
-    font-size: 0.85rem;
+    font-family: var(--font-deco);
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+    font-size: 0.58rem;
+    color: var(--muted);
+}
+
+/* The action cluster is pushed to the right edge; its own gap (not the
+   header's) sets the spacing between the eject and close-window buttons. */
+.window-actions {
+    display: flex;
+    gap: 0.625rem; /* ~10px */
+    margin-left: auto;
 }
 
 .window-body {
     display: flex;
     flex-direction: column;
-    gap: 0.4rem;
+    gap: 0.45rem;
     min-height: 2rem;
 }
 
 .window-body.drop-target,
 .new-window-dropzone.drop-target {
-    outline: 2px dashed #4c6ef5;
+    outline: 2px solid var(--accent);
     outline-offset: 2px;
+    background: color-mix(in srgb, var(--accent) 10%, transparent);
 }
 
+/* --- Tab groups: keep the user's color as a left keyline, framed in the panel --- */
+
 .group {
-    border-left: 4px solid var(--border);
-    border-radius: 6px;
-    padding: 0.3rem 0.4rem;
-    background: var(--tile-bg);
+    padding: 0.35rem 0.45rem;
+    border: 1px solid var(--rule);
+    border-left: 3px solid var(--group, var(--muted));
+    border-radius: 2px;
+    background: color-mix(in srgb, var(--tile) 60%, var(--panel));
 }
 
 .group-header {
     display: flex;
     align-items: center;
     gap: 0.4rem;
-    font-size: 0.85rem;
-    font-weight: 600;
-    margin-bottom: 0.3rem;
+    padding-bottom: 0.3rem;
+    margin-bottom: 0.35rem;
+    border-bottom: 1px solid var(--rule);
 }
 
-.group-blue { border-left-color: #4c6ef5; }
-.group-cyan { border-left-color: #15aabf; }
-.group-red { border-left-color: #fa5252; }
-.group-yellow { border-left-color: #fab005; }
-.group-green { border-left-color: #40c057; }
-.group-pink { border-left-color: #e64980; }
-.group-purple { border-left-color: #7048e8; }
-.group-orange { border-left-color: #fd7e14; }
-.group-grey { border-left-color: #868e96; }
+.group-title {
+    flex: 1;
+    font-family: var(--font-deco);
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    font-size: 0.66rem;
+    color: var(--ink);
+}
+
+.group-blue { --group: #6f8fe0; }
+.group-cyan { --group: #4fb3c4; }
+.group-red { --group: #e0655e; }
+.group-yellow { --group: #e0b44a; }
+.group-green { --group: #63bd6f; }
+.group-pink { --group: #e07bab; }
+.group-purple { --group: #a882e6; }
+.group-orange { --group: #f0954f; }
+.group-grey { --group: #9a94ad; }
 
 .group-tabs {
     display: flex;
     flex-direction: column;
-    gap: 0.3rem;
+    gap: 0.35rem;
 }
+
+/* --- Tab tiles --- */
 
 .tab {
     display: flex;
     align-items: center;
-    gap: 0.5rem;
-    padding: 0.35rem 0.5rem;
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    background: canvas;
+    gap: 0.55rem;
+    padding: 0.4rem 0.55rem;
+    border: 1px solid var(--rule);
+    border-radius: 2px;
+    background: var(--tile);
     cursor: grab;
+    transition: border-color 0.12s, background 0.12s;
 }
 
+.tab:hover {
+    border-color: color-mix(in srgb, var(--accent) 45%, var(--rule));
+}
+
+/* Active tab: accent keyline + left bar over a darkened ground so the near-white
+   title stays legible (was a lightened tint that washed the text out). */
 .tab.active {
-    border-color: #4c6ef5;
+    border-color: color-mix(in srgb, var(--accent) 60%, var(--rule));
+    background: var(--active);
+    box-shadow: inset 3px 0 0 var(--accent);
     font-weight: 600;
 }
 
 .tab.discarded {
     opacity: 0.55;
+}
+
+.tab.discarded .tab-host {
+    font-style: italic;
 }
 
 .tab-favicon {
@@ -167,17 +338,18 @@ body {
 }
 
 .tab-title {
-    white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: 0.82rem;
 }
 
 .tab-host {
-    font-size: 0.75rem;
-    color: color-mix(in srgb, canvastext 55%, canvas 45%);
-    white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: 0.72rem;
+    color: var(--muted);
 }
 
 .tab-controls {
@@ -187,28 +359,57 @@ body {
 }
 
 .tab-controls button {
-    font-size: 0.75rem;
-    padding: 0.1rem 0.35rem;
+    padding: 0.12rem 0.4rem;
+    font-size: 0.58rem;
 }
 
-.new-window-dropzone {
-    margin-top: 1rem;
-    padding: 1rem;
-    text-align: center;
-    border: 2px dashed var(--border);
-    border-radius: 10px;
-    color: color-mix(in srgb, canvastext 55%, canvas 45%);
+.tab-controls .icon-btn {
+    padding: 0.1rem 0.4rem;
+    font-size: 0.78rem;
 }
+
+/* --- New-window drop zone: a Deco double-ruled plate --- */
+
+.new-window-dropzone {
+    margin-top: 1.25rem;
+    padding: 1.1rem;
+    border: 1px solid var(--accent);
+    border-radius: 3px;
+    font-family: var(--font-deco);
+    text-align: center;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    font-size: 0.66rem;
+    color: var(--muted);
+    background:
+        linear-gradient(var(--accent), var(--accent)) top / 100% 1px no-repeat,
+        linear-gradient(var(--accent), var(--accent)) bottom / 100% 1px no-repeat,
+        var(--panel);
+}
+
+/* --- Toast --- */
 
 .toast {
     position: fixed;
-    bottom: 1rem;
     left: 50%;
-    transform: translateX(-50%);
-    background: #fa5252;
-    color: white;
-    padding: 0.5rem 1rem;
-    border-radius: 6px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    bottom: 1.25rem;
     z-index: 10;
+    transform: translateX(-50%);
+    padding: 0.55rem 1.1rem;
+    border: 1px solid var(--accent);
+    border-radius: 2px;
+    background: var(--danger);
+    color: #f7ecff;
+    font-family: var(--font-deco);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    font-size: 0.72rem;
+    box-shadow: 0 3px 12px rgba(0, 0, 0, 0.45);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation: none !important;
+        transition: none !important;
+    }
 }

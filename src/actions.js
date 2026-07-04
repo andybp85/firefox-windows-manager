@@ -34,6 +34,10 @@ export async function closeGroup(model, groupId) {
     }
 }
 
+export async function closeWindow(windowId) {
+    await browser.windows.remove(windowId);
+}
+
 export async function renameWindow(windowId, name) {
     const trimmed = name.trim();
     if (trimmed) {
