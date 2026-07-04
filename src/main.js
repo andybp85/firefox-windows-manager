@@ -67,11 +67,6 @@ app.addEventListener("click", (event) => {
     const { action, tabId, windowId, groupId } = trigger.dataset;
     const num = (v) => Number(v);
     switch (action) {
-        case "focus-tab": {
-            const tile = trigger.closest(".tab");
-            run(focusTab(num(tabId), num(tile.dataset.windowId)));
-            break;
-        }
         case "close-tab":
             run(closeTab(num(tabId)));
             break;
@@ -97,10 +92,15 @@ app.addEventListener("click", (event) => {
 
 app.addEventListener("dblclick", (event) => {
     const name = event.target.closest(".window-name");
-    if (!name) {
+    if (name) {
+        startRename(name);
         return;
     }
-    startRename(name);
+    // Double-click the tile to focus the tab; ignore dblclicks on its buttons.
+    const tile = event.target.closest(".tab");
+    if (tile && !event.target.closest("button")) {
+        run(focusTab(Number(tile.dataset.tabId), Number(tile.dataset.windowId)));
+    }
 });
 
 function startRename(nameEl) {

@@ -35,6 +35,7 @@ function renderTab(tab) {
     article.dataset.tabId = String(tab.id);
     article.dataset.windowId = String(tab.windowId);
     article.draggable = true;
+    article.title = "Double-click to open";
 
     const favicon = el("img", "tab-favicon");
     favicon.src = tab.favIconUrl || "icons/icon.svg";
@@ -46,7 +47,6 @@ function renderTab(tab) {
 
     const controls = el("div", "tab-controls");
     controls.append(
-        button("focus-tab", "Go", { tabId: tab.id }),
         iconButton("unload-tab", "⏏", "Unload", { tabId: tab.id }),
         button("close-tab", "✕", { tabId: tab.id }),
     );
