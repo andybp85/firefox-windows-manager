@@ -13,13 +13,19 @@ export async function fetchState() {
     const groups = hasTabGroups() ? await browser.tabGroups.query({}) : [];
 
     const names = {};
+    const orders = {};
     await Promise.all(
         windows.map(async (w) => {
-            names[w.id] = (await browser.sessions.getWindowValue(w.id, "name")) || null;
+            const [name, order] = await Promise.all([
+                browser.sessions.getWindowValue(w.id, "name"),
+                browser.sessions.getWindowValue(w.id, "order"),
+            ]);
+            names[w.id] = name || null;
+            orders[w.id] = typeof order === "number" ? order : undefined;
         }),
     );
 
-    return buildModel(windows, tabs, groups, names);
+    return buildModel(windows, tabs, groups, names, orders);
 }
 
 export function subscribe(onChange) {

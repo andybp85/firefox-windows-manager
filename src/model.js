@@ -30,7 +30,7 @@ function toTile(t) {
     };
 }
 
-export function buildModel(windows, tabs, groups, names = {}) {
+export function buildModel(windows, tabs, groups, names = {}, orders = {}) {
     const groupsByWindow = new Map();
     for (const g of groups) {
         if (!groupsByWindow.has(g.windowId)) {
@@ -91,7 +91,8 @@ export function buildModel(windows, tabs, groups, names = {}) {
         };
     });
 
-    return { windows: modelWindows, counts: deriveCounts(modelWindows) };
+    const ordered = sortWindowsByOrder(modelWindows, orders);
+    return { windows: ordered, counts: deriveCounts(ordered) };
 }
 
 export function allTabsOf(windowVM) {

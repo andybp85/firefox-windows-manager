@@ -129,3 +129,10 @@ test("reorderWindowSequence moves a window before another or to the end", () => 
     assert.deepEqual(reorderWindowSequence([10, 20, 30], 20, 10), [20, 10, 30]);
     assert.deepEqual(reorderWindowSequence([10, 20, 30], 30, 99), [10, 20, 30]); // unknown ref -> end
 });
+
+test("buildModel sorts windows by stored order", () => {
+    const windows = [win(1), win(2), win(3)];
+    const tabs = [tab(10, 1), tab(20, 2), tab(30, 3)];
+    const model = buildModel(windows, tabs, [], {}, { 1: 2, 2: 0, 3: 1 });
+    assert.deepEqual(model.windows.map((w) => w.id), [2, 3, 1]);
+});
