@@ -1,0 +1,10 @@
+{
+    "name": "firefox-windows-manager",
+    "version": "1.0.0",
+    "description": "Toggleable full-page overview to manage Firefox windows, tab groups, and tabs.",
+    "type": "module",
+    "private": true,
+    "scripts": {
+        "test": "node --test"
+    }
+}
