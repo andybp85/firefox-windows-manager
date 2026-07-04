@@ -326,6 +326,15 @@ button:hover {
     font-style: italic;
 }
 
+/* Insertion line shown between tiles while dragging a tab to reorder it. */
+.drop-indicator {
+    height: 2px;
+    margin: 1px 0;
+    background: var(--accent);
+    border-radius: 1px;
+    pointer-events: none; /* never intercept drag events targeting the tiles */
+}
+
 .tab-favicon {
     width: 16px;
     height: 16px;
