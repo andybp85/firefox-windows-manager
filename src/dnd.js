@@ -1,68 +1,207 @@
+import { insertIndexAmong } from "./model.js";
+
+// Drag "kind" is carried in the MIME type: during dragover only the set of
+// types is readable, not their values, so the kind must live in the type.
+const MIME = {
+    group: "application/x-fwm-group",
+    tab: "application/x-fwm-tab",
+    window: "application/x-fwm-window",
+};
+
+function kindOf(dataTransfer) {
+    if (dataTransfer.types.includes(MIME.tab)) return "tab";
+    if (dataTransfer.types.includes(MIME.group)) return "group";
+    if (dataTransfer.types.includes(MIME.window)) return "window";
+    return null;
+}
+
+// The group-tabs box (drop = join that group) or the loose window-body area
+// (drop = ungroup). Null when the pointer is over neither.
+function dropContainer(target) {
+    const groupTabs = target.closest(".group-tabs");
+    if (groupTabs) {
+        return { el: groupTabs, groupId: Number(groupTabs.closest(".group").dataset.groupId) };
+    }
+    const body = target.closest(".window-body");
+    if (body) return { el: body, groupId: null };
+    return null;
+}
+
+function tilesOf(el) {
+    return [...el.querySelectorAll(":scope > .tab")];
+}
+
+// Resolve a tab drop to { windowId, groupId, beforeId, orderedIds }. beforeId
+// is the window-wide tab id to insert before, or null for the window's end.
+function resolveTabDrop(container, clientY) {
+    const win = container.el.closest(".window");
+    const allTiles = [...win.querySelectorAll(".tab")];
+    const orderedIds = allTiles.map((t) => Number(t.dataset.tabId));
+
+    const tiles = tilesOf(container.el);
+    const k = insertIndexAmong(clientY, tiles.map((t) => t.getBoundingClientRect()));
+
+    let beforeId = null;
+    if (k < tiles.length) {
+        beforeId = Number(tiles[k].dataset.tabId);
+    } else if (tiles.length > 0) {
+        const next = allTiles[allTiles.indexOf(tiles[tiles.length - 1]) + 1];
+        beforeId = next ? Number(next.dataset.tabId) : null;
+    }
+
+    return { windowId: Number(win.dataset.windowId), groupId: container.groupId, beforeId, orderedIds };
+}
+
+// Resolve a window drop to { orderedIds, beforeWindowId }. Drop before the
+// target window, or after it (beforeWindowId = the next window, or null) when
+// the pointer is past the target's vertical midpoint.
+function resolveWindowDrop(grid, targetWindow, clientY) {
+    const ids = [...grid.querySelectorAll(".window")].map((w) => Number(w.dataset.windowId));
+    const targetId = Number(targetWindow.dataset.windowId);
+    const rect = targetWindow.getBoundingClientRect();
+    let beforeWindowId = targetId;
+    if (clientY > rect.top + rect.height / 2) {
+        const i = ids.indexOf(targetId);
+        beforeWindowId = i + 1 < ids.length ? ids[i + 1] : null;
+    }
+    return { orderedIds: ids, beforeWindowId };
+}
+
 export function attachDnd(container, handlers) {
-    container.addEventListener("dragstart", (event) => {
-        const group = event.target.closest(".group");
-        const tab = event.target.closest(".tab");
-        // A tab inside a group must win over the group for tab drags.
-        if (tab) {
-            event.dataTransfer.setData("application/x-kind", "tab");
-            event.dataTransfer.setData("application/x-id", tab.dataset.tabId);
-            event.dataTransfer.effectAllowed = "move";
-        } else if (group) {
-            event.dataTransfer.setData("application/x-kind", "group");
-            event.dataTransfer.setData("application/x-id", group.dataset.groupId);
-            event.dataTransfer.effectAllowed = "move";
+    let indicator = null;
+
+    const clearIndicator = () => {
+        indicator?.remove();
+        indicator = null;
+    };
+    const clearHighlights = () => {
+        for (const el of container.querySelectorAll(".drop-target, .window-drop-target")) {
+            el.classList.remove("drop-target", "window-drop-target");
         }
-    });
+    };
+    const placeIndicator = (el, clientY) => {
+        if (!indicator) {
+            indicator = document.createElement("div");
+            indicator.className = "drop-indicator";
+        }
+        const tiles = tilesOf(el);
+        const k = insertIndexAmong(clientY, tiles.map((t) => t.getBoundingClientRect()));
+        if (k < tiles.length) el.insertBefore(indicator, tiles[k]);
+        else el.appendChild(indicator);
+    };
 
     const dropZone = (target) =>
         target.closest(".window-body") || target.closest(".new-window-dropzone");
 
+    container.addEventListener("dragstart", (event) => {
+        const handle = event.target.closest(".window-drag-handle");
+        if (handle) {
+            event.dataTransfer.setData(MIME.window, handle.closest(".window").dataset.windowId);
+            event.dataTransfer.effectAllowed = "move";
+            return;
+        }
+        const tab = event.target.closest(".tab");
+        if (tab) {
+            event.dataTransfer.setData(MIME.tab, tab.dataset.tabId);
+            event.dataTransfer.effectAllowed = "move";
+            return;
+        }
+        const group = event.target.closest(".group");
+        if (group) {
+            event.dataTransfer.setData(MIME.group, group.dataset.groupId);
+            event.dataTransfer.effectAllowed = "move";
+        }
+    });
+
     container.addEventListener("dragover", (event) => {
-        const zone = dropZone(event.target);
-        if (zone) {
+        const kind = kindOf(event.dataTransfer);
+        if (!kind) return;
+
+        if (kind === "window") {
+            const target = event.target.closest(".window");
+            if (!target) return;
             event.preventDefault();
             event.dataTransfer.dropEffect = "move";
-            zone.classList.add("drop-target");
+            clearHighlights();
+            target.classList.add("window-drop-target");
+            return;
+        }
+
+        const zone = dropZone(event.target);
+        if (!zone) return;
+        event.preventDefault();
+        event.dataTransfer.dropEffect = "move";
+        zone.classList.add("drop-target");
+        if (kind === "tab") {
+            const c = dropContainer(event.target);
+            if (c) placeIndicator(c.el, event.clientY);
         }
     });
 
     container.addEventListener("dragleave", (event) => {
         const zone = dropZone(event.target);
-        if (zone) {
-            zone.classList.remove("drop-target");
-        }
+        if (zone) zone.classList.remove("drop-target");
+    });
+
+    container.addEventListener("dragend", () => {
+        clearIndicator();
+        clearHighlights();
     });
 
     container.addEventListener("drop", (event) => {
+        const kind = kindOf(event.dataTransfer);
+        clearIndicator();
+
+        if (kind === "window") {
+            const target = event.target.closest(".window");
+            clearHighlights();
+            if (!target) return;
+            event.preventDefault();
+            const id = Number(event.dataTransfer.getData(MIME.window));
+            const targetId = Number(target.dataset.windowId);
+            if (Number.isNaN(id) || id === targetId) return;
+            const { orderedIds, beforeWindowId } = resolveWindowDrop(target.closest(".windows-grid"), target, event.clientY);
+            handlers.onReorderWindow({ orderedIds, windowId: id, beforeWindowId });
+            return;
+        }
+
         const zone = dropZone(event.target);
-        if (!zone) {
-            return;
-        }
+        clearHighlights();
+        if (!kind || !zone) return;
         event.preventDefault();
-        zone.classList.remove("drop-target");
 
-        const kind = event.dataTransfer.getData("application/x-kind");
-        const rawId = event.dataTransfer.getData("application/x-id");
+        const rawId = event.dataTransfer.getData(kind === "tab" ? MIME.tab : MIME.group);
         const id = Number(rawId);
-        if (!kind || rawId === "" || Number.isNaN(id)) {
-            return;
-        }
+        if (rawId === "" || Number.isNaN(id)) return;
 
-        const isNewWindow = zone.classList.contains("new-window-dropzone");
-        if (isNewWindow) {
-            if (kind === "tab") {
-                handlers.onDropTabNewWindow(id);
-            } else {
-                handlers.onDropGroupNewWindow(id);
-            }
+        if (zone.classList.contains("new-window-dropzone")) {
+            if (kind === "tab") handlers.onDropTabNewWindow(id);
+            else handlers.onDropGroupNewWindow(id);
             return;
         }
 
         const windowId = Number(zone.closest(".window").dataset.windowId);
-        if (kind === "tab") {
-            handlers.onDropTab(id, windowId);
-        } else {
+        if (kind === "group") {
             handlers.onDropGroup(id, windowId);
+            return;
+        }
+
+        // kind === "tab": reorder within the same window, else cross-window append.
+        const draggedTile = document.querySelector(`.tab[data-tab-id="${id}"]`);
+        const fromWindowId = draggedTile ? Number(draggedTile.dataset.windowId) : NaN;
+        const c = dropContainer(event.target);
+        if (c && fromWindowId === windowId) {
+            const drop = resolveTabDrop(c, event.clientY);
+            const fromGroup = draggedTile.closest(".group");
+            handlers.onReorderTab({
+                orderedIds: drop.orderedIds,
+                tabId: id,
+                fromGroupId: fromGroup ? Number(fromGroup.dataset.groupId) : null,
+                toGroupId: drop.groupId,
+                beforeId: drop.beforeId,
+            });
+        } else {
+            handlers.onDropTab(id, windowId);
         }
     });
 }

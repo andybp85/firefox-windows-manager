@@ -3,7 +3,7 @@ import { render } from "./view.js";
 import { attachDnd } from "./dnd.js";
 import {
     focusTab, closeTab, unloadTab, unloadAllButActive, closeGroup, closeWindow, renameWindow,
-    moveTabToWindow, moveTabToNewWindow, moveGroupToWindow, moveGroupToNewWindow,
+    moveTabToWindow, moveTabToNewWindow, moveGroupToWindow, moveGroupToNewWindow, reorderTab, reorderWindow,
 } from "./actions.js";
 
 export const state = { model: null };
@@ -141,4 +141,7 @@ attachDnd(app, {
     onDropGroup: (groupId, windowId) => run(moveGroupToWindow(groupId, windowId)),
     onDropTabNewWindow: (tabId) => run(moveTabToNewWindow(tabId)),
     onDropGroupNewWindow: (groupId) => run(moveGroupToNewWindow(groupId)),
+    onReorderTab: (args) => run(reorderTab(args)),
+    onReorderWindow: ({ orderedIds, windowId, beforeWindowId }) =>
+        run(reorderWindow(orderedIds, windowId, beforeWindowId)),
 });

@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { hostOf, buildModel, deriveCounts, allTabsOf, tabsToUnloadAllButActive } from "../src/model.js";
+import { hostOf, buildModel, deriveCounts, allTabsOf, tabsToUnloadAllButActive, insertIndexAmong, absoluteTabIndex, sortWindowsByOrder, reorderWindowSequence } from "../src/model.js";
 
 const win = (id, extra = {}) => ({ id, focused: false, incognito: false, type: "normal", ...extra });
 const tab = (id, windowId, extra = {}) => ({
@@ -92,4 +92,47 @@ test("tabsToUnloadAllButActive scoped to one window ignores other windows", () =
         {},
     );
     assert.deepEqual(tabsToUnloadAllButActive(model, { windowId: 1 }), [11]);
+});
+
+test("insertIndexAmong counts tiles whose midpoint sits above the pointer", () => {
+    const rects = [
+        { top: 0, bottom: 20 },   // midpoint 10
+        { top: 20, bottom: 40 },  // midpoint 30
+        { top: 40, bottom: 60 },  // midpoint 50
+    ];
+    assert.equal(insertIndexAmong(5, rects), 0);    // above all midpoints
+    assert.equal(insertIndexAmong(25, rects), 1);   // between 1st and 2nd
+    assert.equal(insertIndexAmong(45, rects), 2);   // between 2nd and 3rd
+    assert.equal(insertIndexAmong(100, rects), 3);  // below all midpoints -> append
+    assert.equal(insertIndexAmong(10, []), 0);      // empty container
+});
+
+test("absoluteTabIndex targets the position before the reference, minus the moved tab", () => {
+    const ids = [1, 2, 3, 4];
+    assert.equal(absoluteTabIndex(ids, 2, 4), 2);    // rest [1,3,4]: before 4 -> 2
+    assert.equal(absoluteTabIndex(ids, 4, 2), 1);    // rest [1,2,3]: before 2 -> 1
+    assert.equal(absoluteTabIndex(ids, 2, null), 3); // append -> rest length 3
+    assert.equal(absoluteTabIndex([1, 2, 3], 1, 99), 2); // unknown ref -> append
+});
+
+test("sortWindowsByOrder orders by stored order, unordered windows last by id", () => {
+    const mk = (id) => ({ id, name: null, groups: [], ungrouped: [], tabCount: 0 });
+    const ws = [mk(10), mk(20), mk(30)];
+    assert.deepEqual(sortWindowsByOrder(ws, { 10: 2, 20: 0, 30: 1 }).map((w) => w.id), [20, 30, 10]);
+    assert.deepEqual(sortWindowsByOrder(ws, {}).map((w) => w.id), [10, 20, 30]);
+    assert.deepEqual(sortWindowsByOrder(ws, { 30: 0 }).map((w) => w.id), [30, 10, 20]);
+});
+
+test("reorderWindowSequence moves a window before another or to the end", () => {
+    assert.deepEqual(reorderWindowSequence([10, 20, 30], 10, 30), [20, 10, 30]);
+    assert.deepEqual(reorderWindowSequence([10, 20, 30], 30, null), [10, 20, 30]);
+    assert.deepEqual(reorderWindowSequence([10, 20, 30], 20, 10), [20, 10, 30]);
+    assert.deepEqual(reorderWindowSequence([10, 20, 30], 30, 99), [10, 20, 30]); // unknown ref -> end
+});
+
+test("buildModel sorts windows by stored order", () => {
+    const windows = [win(1), win(2), win(3)];
+    const tabs = [tab(10, 1), tab(20, 2), tab(30, 3)];
+    const model = buildModel(windows, tabs, [], {}, { 1: 2, 2: 0, 3: 1 });
+    assert.deepEqual(model.windows.map((w) => w.id), [2, 3, 1]);
 });

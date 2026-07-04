@@ -1,4 +1,4 @@
-import { tabsToUnloadAllButActive } from "./model.js";
+import { absoluteTabIndex, reorderWindowSequence, tabsToUnloadAllButActive } from "./model.js";
 
 export async function focusTab(tabId, windowId) {
     await browser.tabs.update(tabId, { active: true });
@@ -32,6 +32,25 @@ export async function closeGroup(model, groupId) {
     if (ids.length > 0) {
         await browser.tabs.remove(ids);
     }
+}
+
+export async function reorderTab({ orderedIds, tabId, fromGroupId, toGroupId, beforeId }) {
+    if (toGroupId !== fromGroupId) {
+        if (toGroupId == null) {
+            await browser.tabs.ungroup([tabId]);
+        } else {
+            await browser.tabs.group({ groupId: toGroupId, tabIds: [tabId] });
+        }
+    }
+    const index = absoluteTabIndex(orderedIds, tabId, beforeId);
+    await browser.tabs.move(tabId, { index });
+}
+
+export async function reorderWindow(orderedIds, windowId, beforeWindowId) {
+    const sequence = reorderWindowSequence(orderedIds, windowId, beforeWindowId);
+    await Promise.all(
+        sequence.map((id, i) => browser.sessions.setWindowValue(id, "order", i)),
+    );
 }
 
 export async function closeWindow(windowId) {

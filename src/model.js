@@ -30,7 +30,7 @@ function toTile(t) {
     };
 }
 
-export function buildModel(windows, tabs, groups, names = {}) {
+export function buildModel(windows, tabs, groups, names = {}, orders = {}) {
     const groupsByWindow = new Map();
     for (const g of groups) {
         if (!groupsByWindow.has(g.windowId)) {
@@ -91,7 +91,8 @@ export function buildModel(windows, tabs, groups, names = {}) {
         };
     });
 
-    return { windows: modelWindows, counts: deriveCounts(modelWindows) };
+    const ordered = sortWindowsByOrder(modelWindows, orders);
+    return { windows: ordered, counts: deriveCounts(ordered) };
 }
 
 export function allTabsOf(windowVM) {
@@ -111,4 +112,33 @@ export function tabsToUnloadAllButActive(model, scope) {
         }
     }
     return ids;
+}
+
+export function insertIndexAmong(pointerY, rects) {
+    return rects.filter((r) => (r.top + r.bottom) / 2 < pointerY).length;
+}
+
+export function absoluteTabIndex(orderedIds, movedId, beforeId) {
+    const rest = orderedIds.filter((id) => id !== movedId);
+    if (beforeId == null) {
+        return rest.length;
+    }
+    const i = rest.indexOf(beforeId);
+    return i === -1 ? rest.length : i;
+}
+
+export function sortWindowsByOrder(modelWindows, orders) {
+    return modelWindows
+        .map((w) => ({ w, order: typeof orders[w.id] === "number" ? orders[w.id] : Infinity }))
+        .sort((a, b) => a.order - b.order || a.w.id - b.w.id)
+        .map((keyed) => keyed.w);
+}
+
+export function reorderWindowSequence(orderedIds, movedId, beforeId) {
+    const rest = orderedIds.filter((id) => id !== movedId);
+    if (beforeId == null || !rest.includes(beforeId)) {
+        return [...rest, movedId];
+    }
+    const i = rest.indexOf(beforeId);
+    return [...rest.slice(0, i), movedId, ...rest.slice(i)];
 }
