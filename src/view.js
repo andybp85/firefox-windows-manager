@@ -101,16 +101,23 @@ export function render(model, options = {}) {
     const supported = options.tabGroupsSupported !== false;
     const root = el("div", "overview");
 
-    const header = el("header", "counts");
-    header.append(
-        el("span", "count-windows", `${model.counts.windows} windows`),
-        el("span", "count-sep", "·"),
-        el("span", "count-groups", `${model.counts.groups} groups`),
-        el("span", "count-sep", "·"),
-        el("span", "count-tabs", `${model.counts.tabs} tabs`),
-        button("unload-all-global", "Unload all but active (everywhere)", {}),
+    const masthead = el("header", "masthead");
+    const bar = el("div", "masthead-bar");
+    bar.append(el("h1", "wordmark", "Tab & Window Overview"));
+
+    const counts = el("div", "counts");
+    counts.append(
+        el("span", "count count-windows", `${model.counts.windows}`),
+        el("span", "count-label", "Windows"),
+        el("span", "count count-groups", `${model.counts.groups}`),
+        el("span", "count-label", "Groups"),
+        el("span", "count count-tabs", `${model.counts.tabs}`),
+        el("span", "count-label", "Tabs"),
+        button("unload-all-global", "Unload all but active", {}),
     );
-    root.append(header);
+    bar.append(counts);
+    masthead.append(bar, el("div", "deco-rule"));
+    root.append(masthead);
 
     if (!supported) {
         root.append(el("p", "notice", "Tab groups need Firefox 139+ — showing windows and tabs only."));
