@@ -1,7 +1,9 @@
 import { fetchState, subscribe, hasTabGroups } from "./data.js";
 import { render } from "./view.js";
+import { attachDnd } from "./dnd.js";
 import {
     focusTab, closeTab, unloadTab, unloadAllButActive, closeGroup, renameWindow,
+    moveTabToWindow, moveTabToNewWindow, moveGroupToWindow, moveGroupToNewWindow,
 } from "./actions.js";
 
 export const state = { model: null };
@@ -127,3 +129,10 @@ function startRename(nameEl) {
     nameEl.addEventListener("blur", commit);
     nameEl.addEventListener("keydown", onKey);
 }
+
+attachDnd(app, {
+    onDropTab: (tabId, windowId) => run(moveTabToWindow(tabId, windowId)),
+    onDropGroup: (groupId, windowId) => run(moveGroupToWindow(groupId, windowId)),
+    onDropTabNewWindow: (tabId) => run(moveTabToNewWindow(tabId)),
+    onDropGroupNewWindow: (groupId) => run(moveGroupToNewWindow(groupId)),
+});

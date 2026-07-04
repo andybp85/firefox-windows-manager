@@ -42,3 +42,22 @@ export async function renameWindow(windowId, name) {
         await browser.sessions.removeWindowValue(windowId, "name");
     }
 }
+
+export async function moveTabToWindow(tabId, windowId) {
+    await browser.tabs.move(tabId, { windowId, index: -1 });
+}
+
+export async function moveTabToNewWindow(tabId) {
+    await browser.windows.create({ tabId });
+}
+
+export async function moveGroupToWindow(groupId, windowId) {
+    await browser.tabGroups.move(groupId, { windowId, index: -1 });
+}
+
+export async function moveGroupToNewWindow(groupId) {
+    const win = await browser.windows.create();
+    const blankTabId = win.tabs[0].id;
+    await browser.tabGroups.move(groupId, { windowId: win.id, index: -1 });
+    await browser.tabs.remove(blankTabId);
+}
