@@ -155,18 +155,21 @@ button:hover {
 
 /* --- Window panels --- */
 
+/* Multi-column gives masonry-style vertical packing natively — no JS lib, and
+   native CSS masonry is not yet unflagged. Panels flow into balanced columns. */
 .windows-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-    gap: 1.25rem;
-    align-items: start;
+    columns: 340px;
+    column-gap: 1.25rem;
 }
 
 .window {
+    /* margin (not grid gap) separates stacked panels within a column */
+    margin-bottom: 1.25rem;
     padding: 0.85rem;
     border: 1px solid var(--rule);
     border-radius: 3px;
     background: var(--panel);
+    break-inside: avoid;
 }
 
 /* Focused window: accent double-keyline frame (replaces the old blue glow). */
@@ -325,6 +328,7 @@ button:hover {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+    font-size: 0.82rem;
 }
 
 .tab-host {

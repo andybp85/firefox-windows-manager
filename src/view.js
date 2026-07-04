@@ -82,7 +82,7 @@ function renderWindow(windowVM) {
     header.append(
         name,
         el("span", "window-tabcount", `${windowVM.tabCount} tabs`),
-        button("unload-all-window", "Unload all but active", { windowId: windowVM.id }),
+        button("unload-all-window", "Unload", { windowId: windowVM.id }),
     );
 
     const body = el("div", "window-body");
@@ -113,7 +113,7 @@ export function render(model, options = {}) {
         el("span", "count-label", "Groups"),
         el("span", "count count-tabs", `${model.counts.tabs}`),
         el("span", "count-label", "Tabs"),
-        button("unload-all-global", "Unload all but active", {}),
+        button("unload-all-global", "Unload", {}),
     );
     bar.append(counts);
     masthead.append(bar, el("div", "deco-rule"));
