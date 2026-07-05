@@ -6,8 +6,8 @@ Firefox's "Kit" palette.
 
 ## Features
 
-- One toggle (toolbar button or `Ctrl+Shift+Space` / `Cmd+Shift+Space`) opens a single overview tab;
-  re-toggling focuses it.
+- The toolbar button toggles a single overview tab: click to open, click again to close it (or to
+  bring it forward if it's open in the background).
 - Header counts: windows · groups · tabs.
 - One panel per window; tab groups shown as colored sub-sections; tabs as favicon + title + host
   tiles.
@@ -70,9 +70,9 @@ already set in `manifest.json`, which signing requires.
 
 ## Keyboard shortcut
 
-Default `Ctrl+Shift+Space` (`Cmd+Shift+Space` on macOS). If it doesn't fire, another extension or
-a browser default may already own the combo — check and rebind at `about:addons` → gear icon →
-**Manage Extension Shortcuts**.
+None by default — the earlier combos collided with browser and OS shortcuts, so the command was
+dropped for now. Toggle the overview with the toolbar button. (A shortcut can be reintroduced later
+by adding a `commands` entry to `manifest.json`.)
 
 ## Permissions
 

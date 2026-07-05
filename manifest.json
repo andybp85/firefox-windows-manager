@@ -20,14 +20,5 @@
     "icons": {
         "48": "icons/icon.svg",
         "96": "icons/icon.svg"
-    },
-    "commands": {
-        "toggle-overview": {
-            "suggested_key": {
-                "default": "Ctrl+Shift+Space",
-                "mac": "Command+Shift+Space"
-            },
-            "description": "Toggle the Tab & Window overview"
-        }
     }
 }
