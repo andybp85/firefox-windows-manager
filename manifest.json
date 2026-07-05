@@ -24,8 +24,8 @@
     "commands": {
         "toggle-overview": {
             "suggested_key": {
-                "default": "Ctrl+Shift+E",
-                "mac": "Command+Shift+E"
+                "default": "Ctrl+Shift+Space",
+                "mac": "Command+Shift+Space"
             },
             "description": "Toggle the Tab & Window overview"
         }

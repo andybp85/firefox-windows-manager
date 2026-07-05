@@ -1,6 +1,9 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
-    <rect x="6" y="6" width="24" height="24" rx="4" fill="#4c6ef5"/>
-    <rect x="34" y="6" width="24" height="24" rx="4" fill="#7048e8"/>
-    <rect x="6" y="34" width="24" height="24" rx="4" fill="#7048e8"/>
-    <rect x="34" y="34" width="24" height="24" rx="4" fill="#4c6ef5"/>
+    <rect x="2" y="2" width="60" height="60" rx="13" fill="#3e1267"/>
+    <!-- stacked double-chevron frieze (pointing down), echoing the dashboard's Grand Salon chevron register -->
+    <g fill="none" stroke="#f47725" stroke-width="6" stroke-linejoin="miter" stroke-linecap="butt">
+        <polyline points="14,38 32,50 50,38"/>
+        <polyline points="14,22 32,34 50,22"/>
+    </g>
+    <polyline points="14,12 32,20 50,12" fill="none" stroke="#e8631c" stroke-width="5" stroke-linejoin="miter"/>
 </svg>
