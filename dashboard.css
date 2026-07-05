@@ -1,8 +1,11 @@
-/* Tab & Window Manager — Art-Deco overview keyed to Firefox's "Kit Mascot" theme:
-   deep aubergine grounds, vivid mascot-orange accent, lavender text. Theme-aware
-   via light-dark() (Kit is dark; the light variant is a purple-tinted complement).
-   Futura (native on macOS) carries the Deco voice. Design tokens are grouped by
-   role rather than alphabetized — a palette reads better as a system than sorted. */
+/* Tab & Window Manager — Art-Deco "Grand Salon" overview keyed to Firefox's
+   "Kit Mascot" theme: deep aubergine grounds, vivid mascot-orange accent,
+   lavender text. Theme-aware via light-dark() (Kit is dark; the light variant
+   is a purple-tinted complement). Futura (native on macOS) carries the Deco
+   voice. Intensity comes from ornament density — an engraved trellis ground,
+   corner brackets, lozenge chains — never from new colors. Design tokens are
+   grouped by role rather than alphabetized — a palette reads better as a
+   system than sorted. */
 
 :root {
     color-scheme: light dark;
@@ -21,6 +24,20 @@
     --rule:          light-dark(#ddd0ec, #5a3a85);
     --danger:        light-dark(#b5342b, #c0392b);
 
+    /* Trellis inks: the accent hexes repeated raw because the two schemes need
+       different alphas, and light-dark() can wrap a color but not a bare
+       color-mix percentage. The light ground shows lines much harder, so it
+       gets roughly half the strength. */
+    --lattice-bold: light-dark(
+        color-mix(in srgb, #e8631c 8%, transparent),
+        color-mix(in srgb, #f47725 14%, transparent));
+    --lattice-mid: light-dark(
+        color-mix(in srgb, #e8631c 5%, transparent),
+        color-mix(in srgb, #f47725 10%, transparent));
+    --lattice-fine: light-dark(
+        color-mix(in srgb, #e8631c 3.5%, transparent),
+        color-mix(in srgb, #f47725 6%, transparent));
+
     scrollbar-color: var(--accent) transparent;
     scrollbar-width: thin;
 }
@@ -29,20 +46,54 @@ body {
     margin: 0;
     min-height: 100vh;
     padding: 1.25rem 1.5rem 2rem;
-    /* Deco sunburst field: faint accent rays fan from the bottom-left corner
-       across the whole page, softened toward the upper-right by a radial fade
-       to the base colour so content stays legible. */
+    position: relative; /* anchors the chevron overlay (::before) */
+    /* Deco trellis ground, fully symmetric and centered: bold double-ruled
+       diamonds (96px period), a fine diamond mesh at a quarter of that, and
+       faint vertical pinstripes echoing ribbed Deco wall panels. */
     background:
-        radial-gradient(125% 125% at 0 100%, transparent 6%, var(--bg) 76%),
-        repeating-conic-gradient(from 270deg at 0 100%,
-            color-mix(in srgb, var(--accent) 15%, transparent) 0deg 2deg,
-            transparent 2deg 6.5deg),
+        repeating-linear-gradient(45deg,
+            var(--lattice-bold) 0 1.5px,
+            transparent 1.5px 6px,
+            var(--lattice-mid) 6px 7px,
+            transparent 7px 96px),
+        repeating-linear-gradient(-45deg,
+            var(--lattice-bold) 0 1.5px,
+            transparent 1.5px 6px,
+            var(--lattice-mid) 6px 7px,
+            transparent 7px 96px),
+        repeating-linear-gradient(45deg,
+            var(--lattice-fine) 0 1px,
+            transparent 1px 24px),
+        repeating-linear-gradient(-45deg,
+            var(--lattice-fine) 0 1px,
+            transparent 1px 24px),
+        repeating-linear-gradient(90deg,
+            var(--lattice-fine) 0 1px,
+            transparent 1px 48px),
         var(--bg);
+    background-position: center top;
     color: var(--ink);
     font-family: var(--font-body);
 }
 
-/* --- Shared controls: Deco ghost buttons --- */
+/* Chevron register: a double-stroke zigzag frieze on the same 96px rhythm as
+   the diamonds, so the registers interlock. Gradients can't draw thin zigzag
+   lines, so it's an SVG tile — applied as a mask over a plain fill so the ink
+   can stay a scheme-aware light-dark() color (a raw SVG url can't react to
+   the color scheme). Sits behind content, above the trellis. */
+body::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    background: light-dark(
+        color-mix(in srgb, #e8631c 6%, transparent),
+        color-mix(in srgb, #f47725 11%, transparent));
+    mask: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='96' viewBox='0 0 24 96'><path d='M0 6 L12 18 L24 6' fill='none' stroke='black' stroke-width='2'/><path d='M0 12 L12 24 L24 12' fill='none' stroke='black' stroke-opacity='0.66' stroke-width='1'/></svg>") center top / 24px 96px;
+}
+
+/* --- Shared controls: engraved Deco buttons — double rule top and bottom --- */
 
 button {
     font-family: var(--font-deco);
@@ -50,7 +101,9 @@ button {
     letter-spacing: 0.12em;
     font-size: 0.64rem;
     color: var(--accent);
-    background: transparent;
+    background:
+        linear-gradient(var(--accent), var(--accent)) top / calc(100% - 8px) 1px no-repeat,
+        linear-gradient(var(--accent), var(--accent)) bottom / calc(100% - 8px) 1px no-repeat;
     border: 1px solid color-mix(in srgb, var(--accent) 50%, transparent);
     border-radius: 2px;
     padding: 0.3rem 0.6rem;
@@ -90,21 +143,51 @@ button:hover {
     flex-wrap: wrap;
 }
 
+/* Wordmark: wide tracking, engraved inline via layered shadows, flanked by
+   diamond finials. */
 .wordmark {
     margin: 0;
     font-family: var(--font-deco);
     font-weight: 600;
     text-transform: uppercase;
-    letter-spacing: 0.34em;
+    letter-spacing: 0.45em;
     font-size: clamp(1.05rem, 2.4vw, 1.6rem);
     color: var(--accent);
+    text-shadow:
+        0 1px 0 color-mix(in srgb, var(--accent-bright) 60%, transparent),
+        0 -1px 0 color-mix(in srgb, var(--ink) 40%, transparent);
 }
 
+.wordmark::before,
+.wordmark::after {
+    content: "◆";
+    font-size: 0.5em;
+    vertical-align: 0.35em;
+    color: var(--accent-bright);
+    text-shadow: none;
+}
+
+.wordmark::before {
+    margin-right: 0.9em;
+}
+
+.wordmark::after {
+    margin-left: 0.55em; /* wordmark tracking already pads the last glyph */
+}
+
+/* Counts sit in a notched cartouche plaque. */
 .counts {
     display: flex;
     align-items: baseline;
     gap: 0.35rem 0.5rem;
     flex-wrap: wrap;
+    padding: 0.45rem 1.4rem;
+    border: 1px solid var(--accent);
+    outline: 1px solid color-mix(in srgb, var(--accent) 45%, transparent);
+    outline-offset: 3px;
+    background: color-mix(in srgb, var(--panel) 70%, transparent);
+    clip-path: polygon(10px 0, calc(100% - 10px) 0, 100% 50%,
+        calc(100% - 10px) 100%, 10px 100%, 0 50%);
 }
 
 .count {
@@ -112,7 +195,7 @@ button:hover {
     font-weight: 600;
     font-size: 1.5rem;
     font-variant-numeric: tabular-nums;
-    color: var(--ink);
+    color: var(--accent-bright);
 }
 
 .count-label {
@@ -129,14 +212,16 @@ button:hover {
     align-self: center;
 }
 
-/* Deco double-rule with a centered accent diamond. */
+/* Deco rule: lozenge chain between double hairlines, triple medallion. */
 .deco-rule {
     position: relative;
-    height: 6px;
+    height: 11px;
     margin-top: 0.85rem;
     background:
-        linear-gradient(var(--accent), var(--accent)) top / 100% 2px no-repeat,
-        linear-gradient(var(--accent), var(--accent)) bottom / 100% 1px no-repeat;
+        linear-gradient(var(--accent), var(--accent)) top / 100% 1px no-repeat,
+        linear-gradient(var(--accent), var(--accent)) bottom / 100% 1px no-repeat,
+        linear-gradient(45deg, transparent 42%, color-mix(in srgb, var(--accent) 75%, transparent) 42% 58%, transparent 58%) center / 9px 9px,
+        linear-gradient(-45deg, transparent 42%, color-mix(in srgb, var(--accent) 75%, transparent) 42% 58%, transparent 58%) center / 9px 9px;
 }
 
 .deco-rule::after {
@@ -149,16 +234,21 @@ button:hover {
     transform: translate(-50%, -50%) rotate(45deg);
     background: var(--bg);
     border: 1.5px solid var(--accent);
-    box-shadow: inset 0 0 0 1.5px var(--bg), inset 0 0 0 3px color-mix(in srgb, var(--accent) 55%, transparent);
+    box-shadow:
+        inset 0 0 0 1.5px var(--bg),
+        inset 0 0 0 3px color-mix(in srgb, var(--accent) 55%, transparent),
+        14px 0 0 -4px var(--accent),
+        -14px 0 0 -4px var(--accent);
 }
 
 .overview.just-updated .count {
     animation: pulse 0.45s ease-out;
 }
 
+/* Counts rest at accent-bright, so the pulse dips to ink and settles back. */
 @keyframes pulse {
-    from { color: var(--accent-bright); }
-    to { color: var(--ink); }
+    from { color: var(--ink); }
+    to { color: var(--accent-bright); }
 }
 
 .notice {
@@ -179,22 +269,43 @@ button:hover {
     column-gap: 1.25rem;
 }
 
+/* Panels: double frame (border + inset ring) plus four engraved corner
+   brackets on the ::before overlay. */
 .window {
+    position: relative;
     /* margin (not grid gap) separates stacked panels within a column */
     margin-bottom: 1.25rem;
-    padding: 0.85rem;
-    border: 1px solid var(--rule);
+    padding: 1.05rem;
+    border: 1px solid color-mix(in srgb, var(--accent) 45%, var(--rule));
     border-radius: 3px;
     background: var(--panel);
+    box-shadow: inset 0 0 0 3px color-mix(in srgb, var(--accent) 18%, transparent);
     break-inside: avoid;
 }
 
-/* Focused window: accent double-keyline frame (replaces the old blue glow). */
+.window::before {
+    content: "";
+    position: absolute;
+    inset: 5px;
+    pointer-events: none;
+    background:
+        linear-gradient(var(--accent), var(--accent)) top left / 14px 2px,
+        linear-gradient(var(--accent), var(--accent)) top left / 2px 14px,
+        linear-gradient(var(--accent), var(--accent)) top right / 14px 2px,
+        linear-gradient(var(--accent), var(--accent)) top right / 2px 14px,
+        linear-gradient(var(--accent), var(--accent)) bottom left / 14px 2px,
+        linear-gradient(var(--accent), var(--accent)) bottom left / 2px 14px,
+        linear-gradient(var(--accent), var(--accent)) bottom right / 14px 2px,
+        linear-gradient(var(--accent), var(--accent)) bottom right / 2px 14px;
+    background-repeat: no-repeat;
+}
+
+/* Focused window: full-accent frame, brighter ring, soft glow. */
 .window.focused {
     border-color: var(--accent);
     box-shadow:
-        inset 0 0 0 3px var(--panel),
-        inset 0 0 0 4px color-mix(in srgb, var(--accent) 55%, transparent);
+        inset 0 0 0 3px color-mix(in srgb, var(--accent) 45%, transparent),
+        0 0 16px color-mix(in srgb, var(--accent) 25%, transparent);
 }
 
 /* Insertion target while dragging a window panel to reorder it. */
@@ -208,28 +319,29 @@ button:hover {
     display: flex;
     align-items: baseline;
     gap: 0.5rem;
-    padding-bottom: 0.5rem;
-    margin-bottom: 0.6rem;
-    border-bottom: 1px solid var(--rule);
+    padding-bottom: 0.65rem;
+    margin-bottom: 0.75rem;
 }
 
-/* Deco "keystone": a short accent segment laid over the left of the header
-   rule, giving each panel a quiet geometric signature. */
+/* Header underline: a full-width lozenge chain on a center hairline. */
 .window-header::after {
     content: "";
     position: absolute;
     left: 0;
-    bottom: -1px;
-    width: 2.25rem;
-    height: 2px;
-    background: var(--accent);
+    right: 0;
+    bottom: 0;
+    height: 7px;
+    background:
+        linear-gradient(var(--accent), var(--accent)) center / 100% 1px no-repeat,
+        linear-gradient(45deg, transparent 44%, var(--accent) 44% 56%, transparent 56%) center / 7px 7px,
+        linear-gradient(-45deg, transparent 44%, var(--accent) 44% 56%, transparent 56%) center / 7px 7px;
 }
 
 .window-name {
     padding: 0.1rem 0.25rem;
     font-family: var(--font-deco);
     text-transform: uppercase;
-    letter-spacing: 0.14em;
+    letter-spacing: 0.2em;
     font-size: 0.82rem;
     color: var(--ink);
     border-radius: 2px;
@@ -292,14 +404,15 @@ button:hover {
     background: color-mix(in srgb, var(--accent) 10%, transparent);
 }
 
-/* --- Tab groups: keep the user's color as a left keyline, framed in the panel --- */
+/* --- Tab groups: keep the user's color as a left keyline, double-ruled --- */
 
 .group {
-    padding: 0.35rem 0.45rem;
-    border: 1px solid var(--rule);
+    padding: 0.45rem 0.55rem;
+    border: 1px solid color-mix(in srgb, var(--group, var(--muted)) 50%, var(--rule));
     border-left: 3px solid var(--group, var(--muted));
     border-radius: 2px;
     background: color-mix(in srgb, var(--tile) 60%, var(--panel));
+    box-shadow: inset 0 0 0 2px color-mix(in srgb, var(--group, var(--muted)) 14%, transparent);
 }
 
 .group-header {
@@ -308,7 +421,7 @@ button:hover {
     gap: 0.4rem;
     padding-bottom: 0.3rem;
     margin-bottom: 0.35rem;
-    border-bottom: 1px solid var(--rule);
+    border-bottom: 3px double var(--rule);
 }
 
 .group-title {
@@ -320,7 +433,7 @@ button:hover {
     color: var(--ink);
 }
 
-/* Small deco lozenge in the group's own color, echoing the left keyline. */
+/* Deco lozenge in the group's own color, with an echo ring. */
 .group-title::before {
     content: "";
     display: inline-block;
@@ -329,6 +442,7 @@ button:hover {
     margin-right: 0.45rem;
     transform: rotate(45deg);
     background: var(--group, var(--muted));
+    box-shadow: 0 0 0 2px color-mix(in srgb, var(--group, var(--muted)) 45%, transparent);
     vertical-align: middle;
 }
 
@@ -358,6 +472,7 @@ button:hover {
     border: 1px solid var(--rule);
     border-radius: 2px;
     background: var(--tile);
+    box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--rule) 55%, transparent);
     cursor: grab;
     transition: border-color 0.12s, background 0.12s;
 }
@@ -371,7 +486,9 @@ button:hover {
 .tab.active {
     border-color: color-mix(in srgb, var(--accent) 60%, var(--rule));
     background: var(--active);
-    box-shadow: inset 3px 0 0 var(--accent);
+    box-shadow:
+        inset 3px 0 0 var(--accent),
+        inset 0 0 0 1px color-mix(in srgb, var(--accent) 40%, transparent);
     font-weight: 600;
 }
 
@@ -445,38 +562,32 @@ button:hover {
     font-family: var(--font-deco);
     text-align: center;
     text-transform: uppercase;
-    letter-spacing: 0.2em;
+    letter-spacing: 0.3em;
     font-size: 0.66rem;
-    color: var(--muted);
+    color: var(--accent);
     background:
         linear-gradient(var(--accent), var(--accent)) top / 100% 1px no-repeat,
         linear-gradient(var(--accent), var(--accent)) bottom / 100% 1px no-repeat,
         var(--panel);
+    box-shadow: inset 0 0 0 4px color-mix(in srgb, var(--accent) 20%, transparent);
 }
 
-/* Deco corner brackets on two opposing corners — an asymmetric-balanced frame
-   that marks the plate as a place to act. */
-.new-window-dropzone::before,
-.new-window-dropzone::after {
+/* Engraved brackets on all four corners mark the plate as a place to act. */
+.new-window-dropzone::before {
     content: "";
     position: absolute;
-    width: 14px;
-    height: 14px;
-    border: 2px solid var(--accent);
-}
-
-.new-window-dropzone::before {
-    top: 6px;
-    left: 6px;
-    border-right: 0;
-    border-bottom: 0;
-}
-
-.new-window-dropzone::after {
-    right: 6px;
-    bottom: 6px;
-    border-top: 0;
-    border-left: 0;
+    inset: 6px;
+    pointer-events: none;
+    background:
+        linear-gradient(var(--accent), var(--accent)) top left / 14px 2px,
+        linear-gradient(var(--accent), var(--accent)) top left / 2px 14px,
+        linear-gradient(var(--accent), var(--accent)) top right / 14px 2px,
+        linear-gradient(var(--accent), var(--accent)) top right / 2px 14px,
+        linear-gradient(var(--accent), var(--accent)) bottom left / 14px 2px,
+        linear-gradient(var(--accent), var(--accent)) bottom left / 2px 14px,
+        linear-gradient(var(--accent), var(--accent)) bottom right / 14px 2px,
+        linear-gradient(var(--accent), var(--accent)) bottom right / 2px 14px;
+    background-repeat: no-repeat;
 }
 
 /* --- Toast --- */

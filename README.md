@@ -95,7 +95,7 @@ automatically. Change both values of a token to reskin both modes.
 
 | Token             | Role                                                        |
 | ----------------- | ----------------------------------------------------------- |
-| `--accent`        | Primary accent — buttons, rules, the sunburst, active bars. |
+| `--accent`        | Primary accent — buttons, rules, ornament, active bars.     |
 | `--accent-bright` | Brighter accent, used for the count-update pulse.           |
 | `--bg`            | Page background base.                                        |
 | `--panel`         | Window-panel background.                                    |
@@ -114,12 +114,18 @@ downloads. Swap either to change the personality.
 
 ### The signature accents
 
-- **Sunburst field** — the faint rays are a `repeating-conic-gradient` on `body`, anchored to a
-  corner (`at 0 100%` = bottom-left) and softened by a `radial-gradient` fade to `--bg`. Move the
-  anchor, or tune the `color-mix(... var(--accent) 15% ...)` alpha and the ray spacing
-  (`0deg 2deg, transparent 2deg 6.5deg`) to make it bolder or fainter.
-- **Group lozenge / header keystone / dropzone brackets** — small pseudo-element accents on
-  `.group-title`, `.window-header`, and `.new-window-dropzone`. Delete a rule to drop that accent.
+- **Trellis ground** — the page background is a symmetric Deco wall covering: double-ruled
+  diamonds (96px period), a fine diamond mesh, and vertical pinstripes, all gradient layers on
+  `body`. Line strength lives in the `--lattice-*` tokens (each a `light-dark()` pair — light mode
+  runs about half the alpha of dark). A chevron frieze on the same 96px rhythm is drawn by
+  `body::before`: an inline-SVG zigzag used as a `mask` over a plain fill, so its ink can also be
+  a `light-dark()` color. Tune the fill's alpha to strengthen or fade it, or delete the rule to
+  drop the register.
+- **Panel corner brackets / lozenge chains / cartouche** — pseudo-element accents: corner
+  brackets on `.window::before` and `.new-window-dropzone::before`, lozenge-chain rules on
+  `.window-header::after` and `.deco-rule`, the notched counts plaque on `.counts` (a
+  `clip-path` polygon), and the group lozenge on `.group-title::before`. Delete a rule to drop
+  that accent.
 - **Group colors** — the `.group-blue { --group: … }` set maps Firefox's tab-group colors to hex.
 
 ## Development
