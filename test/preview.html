@@ -4,13 +4,13 @@
     <meta charset="utf-8">
     <meta name="color-scheme" content="light dark">
     <title>preview</title>
-    <link rel="stylesheet" href="dashboard.css">
+    <link rel="stylesheet" href="../dashboard.css">
 </head>
 <body>
     <main id="app"></main>
     <script type="module">
-        import { render } from "./src/view.js";
-        const tab = (id, title, host, extra = {}) => ({ id, windowId: 1, title, host, active: false, discarded: false, favIconUrl: "icons/icon.svg", ...extra });
+        import { render } from "../src/view.js";
+        const tab = (id, title, host, extra = {}) => ({ id, windowId: 1, title, host, active: false, discarded: false, favIconUrl: "../icons/icon.svg", ...extra });
         const model = {
             counts: { windows: 4, tabs: 57, groups: 6 },
             windows: [
