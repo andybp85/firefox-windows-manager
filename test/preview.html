@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="color-scheme" content="light dark">
+    <title>preview</title>
+    <link rel="stylesheet" href="dashboard.css">
+</head>
+<body>
+    <main id="app"></main>
+    <script type="module">
+        import { render } from "./src/view.js";
+        const tab = (id, title, host, extra = {}) => ({ id, windowId: 1, title, host, active: false, discarded: false, favIconUrl: "icons/icon.svg", ...extra });
+        const model = {
+            counts: { windows: 4, tabs: 57, groups: 6 },
+            windows: [
+                { id: 1, name: "Research — NGCMS '26Q3", focused: true, tabCount: 14,
+                  groups: [
+                    { id: 11, windowId: 1, color: "blue", title: "Sprint docs", tabs: [
+                        tab(1, "Architecture RFC — window session model", "docs.internal"),
+                        tab(2, "MDN — tabGroups API", "developer.mozilla.org") ] },
+                    { id: 12, windowId: 1, color: "yellow", title: "Jira", tabs: [
+                        tab(3, "NGCMS '26Q3 S2 — Sprint Board", "jira.internal", { active: true }) ] } ],
+                  ungrouped: [ tab(4, "Hacker News — Show HN thread", "news.ycombinator.com", { discarded: true }) ] },
+                { id: 2, name: "Personal", focused: false, tabCount: 9,
+                  groups: [
+                    { id: 21, windowId: 2, color: "pink", title: "Wedding", tabs: [
+                        tab(5, "andysamwedding.com — RSVP list", "andysamwedding.com") ] },
+                    { id: 22, windowId: 2, color: "green", title: "Recipes", tabs: [
+                        tab(6, "Prepare your tastebuds — Guatemalan insanity peppers", "epicurious.com") ] } ],
+                  ungrouped: [ tab(7, "YouTube — space coyote scene", "youtube.com") ] },
+            ],
+        };
+        document.getElementById("app").append(render(model));
+    </script>
+</body>
+</html>

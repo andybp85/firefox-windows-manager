@@ -1,135 +1,93 @@
-/* Tab & Window Manager — Art-Deco "Grand Salon" overview keyed to Firefox's
-   "Kit Mascot" theme: deep aubergine grounds, vivid mascot-orange accent,
-   lavender text. Theme-aware via light-dark() (Kit is dark; the light variant
-   is a purple-tinted complement). Futura (native on macOS) carries the Deco
-   voice. Intensity comes from ornament density — an engraved trellis ground,
-   corner brackets, lozenge chains — never from new colors. Design tokens are
-   grouped by role rather than alphabetized — a palette reads better as a
-   system than sorted. */
+/* Tab & Window Manager — "Insanity Pepper" dusk-desert overview keyed to the
+   Kit Developer Edition theme (github.com/andybp85/kit-theme): flat cel
+   surfaces in the Dev-Edition indigo band, melting drip skirts, one rationed
+   hot accent. Dark is the canonical world (a night desert); light is a
+   daybreak complement, not an inversion. Rounded display type carries the
+   cartoon voice. Ornament comes from silhouette — drip edges, a wobble-ring
+   sun — never from added colors. Tokens are grouped by role. */
 
 :root {
     color-scheme: light dark;
 
-    --font-deco: "Futura", "Century Gothic", "Twentieth Century", "Avenir Next", system-ui, sans-serif;
-    --font-body: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    --font-display: "Arial Rounded MT Bold", "Avenir Next", "Trebuchet MS", sans-serif;
+    --font-body: "Avenir Next", "Avenir", system-ui, -apple-system, sans-serif;
 
-    --accent:        light-dark(#e8631c, #f47725);
-    --accent-bright: light-dark(#f47725, #ff9552);
-    --bg:            light-dark(#f2ecf7, #21033f);
-    --panel:         light-dark(#f9f4fd, #3e1267);
-    --tile:          light-dark(#fcfaff, #4e1f82);
-    --active:        light-dark(#fbe9d6, #320f5a);
-    --ink:           light-dark(#2a0b4a, #e4d7f5);
-    --muted:         light-dark(#6e5a8a, #916db9);
-    --rule:          light-dark(#ddd0ec, #5a3a85);
-    --danger:        light-dark(#b5342b, #c0392b);
+    --accent:  light-dark(#e8631c, #f47725);
+    --sun:     light-dark(#d99a00, #ffc300);
+    --on-hot:  #14071e; /* text on an accent-filled surface, both schemes */
 
-    /* Trellis inks: the accent hexes repeated raw because the two schemes need
-       different alphas, and light-dark() can wrap a color but not a bare
-       color-mix percentage. The light ground shows lines much harder, so it
-       gets roughly half the strength. */
-    --lattice-bold: light-dark(
-        color-mix(in srgb, #e8631c 8%, transparent),
-        color-mix(in srgb, #f47725 14%, transparent));
-    --lattice-mid: light-dark(
-        color-mix(in srgb, #e8631c 5%, transparent),
-        color-mix(in srgb, #f47725 10%, transparent));
-    --lattice-fine: light-dark(
-        color-mix(in srgb, #e8631c 3.5%, transparent),
-        color-mix(in srgb, #f47725 6%, transparent));
+    --bg:      light-dark(#dce2f9, #0a0e4a);
+    --bg-deep: light-dark(#cdd5f4, #1d2364); /* sky gradient floor */
+    --panel:   light-dark(#c9d0f0, #2a3390); /* window mesas */
+    --tile:    light-dark(#e6eafb, #1a2170); /* tab tiles, plaques */
+    --raised:  light-dark(#aab2e6, #3b4494); /* buttons, drag chrome */
+    --ink:     light-dark(#1a2170, #d9ddf6);
+    --muted:   light-dark(#5a63a8, #8a92cf);
+    --cloud:   light-dark(#8790cc, #6b74be); /* rules, dropzone dashes */
+    --danger:  light-dark(#b5342b, #e8574c);
 
     scrollbar-color: var(--accent) transparent;
     scrollbar-width: thin;
+}
+
+/* Melt skirt: the wallpaper's dripping-horizon edge as a repeating mask tile
+   (solid lip, gentle wave, one teardrop). A mask over a plain fill keeps the
+   drip color scheme-aware — a raw SVG url can't react to light-dark(). */
+:root {
+    --drip-mask: url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='180'%20height='22'%20viewBox='0%200%20180%2022'%3E%3Cpath%20d='M0%200%20H180%20V5%20Q150%209%20120%205%20Q100%202%2078%205%20C70%207%2066%2012%2066%2015%20A6%206%200%201%201%2054%2015%20C54%2012%2050%207%2042%205%20Q20%202%200%205%20Z'%20fill='black'/%3E%3C/svg%3E");
 }
 
 body {
     margin: 0;
     min-height: 100vh;
     padding: 1.25rem 1.5rem 2rem;
-    position: relative; /* anchors the chevron overlay (::before) */
-    /* Deco trellis ground, fully symmetric and centered: bold double-ruled
-       diamonds (96px period), a fine diamond mesh at a quarter of that, and
-       faint vertical pinstripes echoing ribbed Deco wall panels. */
+    /* Dusk sky: sparkle stars along the top edge (dark scheme only — daybreak
+       has no stars), over a deepening vertical band gradient. */
     background:
-        repeating-linear-gradient(45deg,
-            var(--lattice-bold) 0 1.5px,
-            transparent 1.5px 6px,
-            var(--lattice-mid) 6px 7px,
-            transparent 7px 96px),
-        repeating-linear-gradient(-45deg,
-            var(--lattice-bold) 0 1.5px,
-            transparent 1.5px 6px,
-            var(--lattice-mid) 6px 7px,
-            transparent 7px 96px),
-        repeating-linear-gradient(45deg,
-            var(--lattice-fine) 0 1px,
-            transparent 1px 24px),
-        repeating-linear-gradient(-45deg,
-            var(--lattice-fine) 0 1px,
-            transparent 1px 24px),
-        repeating-linear-gradient(90deg,
-            var(--lattice-fine) 0 1px,
-            transparent 1px 48px),
-        var(--bg);
-    background-position: center top;
+        radial-gradient(1.5px 1.5px at 6% 12px, light-dark(transparent, #ffffff59) 50%, transparent 51%),
+        radial-gradient(2px 2px at 30% 8px, light-dark(transparent, #ffffff40) 50%, transparent 51%),
+        radial-gradient(1.5px 1.5px at 52% 16px, light-dark(transparent, #ffffff4d) 50%, transparent 51%),
+        radial-gradient(2px 2px at 77% 10px, light-dark(transparent, #ffffff36) 50%, transparent 51%),
+        radial-gradient(1.5px 1.5px at 94% 18px, light-dark(transparent, #ffffff33) 50%, transparent 51%),
+        linear-gradient(180deg, var(--bg) 0%, var(--bg) 30%, var(--bg-deep) 100%);
+    background-attachment: fixed;
     color: var(--ink);
     font-family: var(--font-body);
 }
 
-/* Chevron register: a double-stroke zigzag frieze on the same 96px rhythm as
-   the diamonds, so the registers interlock. Gradients can't draw thin zigzag
-   lines, so it's an SVG tile — applied as a mask over a plain fill so the ink
-   can stay a scheme-aware light-dark() color (a raw SVG url can't react to
-   the color scheme). Sits behind content, above the trellis. */
-body::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    z-index: -1;
-    pointer-events: none;
-    background: light-dark(
-        color-mix(in srgb, #e8631c 6%, transparent),
-        color-mix(in srgb, #f47725 11%, transparent));
-    mask: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='96' viewBox='0 0 24 96'><path d='M0 6 L12 18 L24 6' fill='none' stroke='black' stroke-width='2'/><path d='M0 12 L12 24 L24 12' fill='none' stroke='black' stroke-opacity='0.66' stroke-width='1'/></svg>") center top / 24px 96px;
-}
-
-/* --- Shared controls: engraved Deco buttons — double rule top and bottom --- */
+/* --- Shared controls: flat cel pills; hot only under the pointer --- */
 
 button {
-    font-family: var(--font-deco);
-    text-transform: uppercase;
-    letter-spacing: 0.12em;
-    font-size: 0.64rem;
-    color: var(--accent);
-    background:
-        linear-gradient(var(--accent), var(--accent)) top / calc(100% - 8px) 1px no-repeat,
-        linear-gradient(var(--accent), var(--accent)) bottom / calc(100% - 8px) 1px no-repeat;
-    border: 1px solid color-mix(in srgb, var(--accent) 50%, transparent);
-    border-radius: 2px;
-    padding: 0.3rem 0.6rem;
+    font-family: var(--font-display);
+    font-size: 0.68rem;
+    letter-spacing: 0.05em;
+    color: var(--ink);
+    background: var(--raised);
+    border: none;
+    border-radius: 999px;
+    padding: 0.34rem 0.8rem;
     cursor: pointer;
-    transition: background 0.15s, color 0.15s, border-color 0.15s;
+    transition: background 0.15s, color 0.15s;
 }
 
 button:hover {
     background: var(--accent);
-    color: var(--panel);
-    border-color: var(--accent);
+    color: var(--on-hot);
 }
 
 /* Icon-only buttons (eject = unload): glyph a touch larger, square-ish padding. */
 .icon-btn {
-    padding: 0.22rem 0.5rem;
+    padding: 0.22rem 0.55rem;
     font-size: 0.9rem;
     line-height: 1;
 }
 
 :focus-visible {
-    outline: 2px solid var(--accent);
+    outline: 2px solid var(--sun);
     outline-offset: 2px;
 }
 
-/* --- Masthead: the signature --- */
+/* --- Masthead: the sky register --- */
 
 .masthead {
     margin-bottom: 1.5rem;
@@ -137,72 +95,59 @@ button:hover {
 
 .masthead-bar {
     display: flex;
-    align-items: flex-end;
+    align-items: center;
     justify-content: space-between;
     gap: 1rem 1.5rem;
     flex-wrap: wrap;
 }
 
-/* Wordmark: wide tracking, engraved inline via layered shadows, flanked by
-   diamond finials. */
+/* Wordmark: chunky rounded display, led by the trip sun — wobbled concentric
+   rings around the one always-hot core. Fixed colors read on both grounds. */
 .wordmark {
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
     margin: 0;
-    font-family: var(--font-deco);
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.45em;
-    font-size: clamp(1.05rem, 2.4vw, 1.6rem);
-    color: var(--accent);
-    text-shadow:
-        0 1px 0 color-mix(in srgb, var(--accent-bright) 60%, transparent),
-        0 -1px 0 color-mix(in srgb, var(--ink) 40%, transparent);
-}
-
-.wordmark::before,
-.wordmark::after {
-    content: "◆";
-    font-size: 0.5em;
-    vertical-align: 0.35em;
-    color: var(--accent-bright);
-    text-shadow: none;
+    font-family: var(--font-display);
+    font-weight: 700;
+    letter-spacing: 0.015em;
+    font-size: clamp(1.15rem, 2.6vw, 1.7rem);
+    color: var(--ink);
+    text-wrap: balance;
 }
 
 .wordmark::before {
-    margin-right: 0.9em;
+    content: "";
+    flex: none;
+    width: 2.4em;
+    height: 2.4em;
+    background: url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20120%20120'%3E%3Cg%20fill='%234A55A8'%3E%3Cpath%20d='M60%202%20L68%2038%20L52%2038%20Z'/%3E%3Cpath%20d='M118%2060%20L82%2068%20L82%2052%20Z'/%3E%3Cpath%20d='M60%20118%20L52%2082%20L68%2082%20Z'/%3E%3Cpath%20d='M2%2060%20L38%2052%20L38%2068%20Z'/%3E%3Cpath%20d='M101%2019%20L79%2049%20L68%2038%20Z'/%3E%3Cpath%20d='M101%20101%20L71%2079%20L82%2068%20Z'/%3E%3Cpath%20d='M19%20101%20L41%2071%20L52%2082%20Z'/%3E%3Cpath%20d='M19%2019%20L49%2041%20L38%2052%20Z'/%3E%3C/g%3E%3Ccircle%20cx='60'%20cy='60'%20r='42'%20fill='%232E3A8C'/%3E%3Ccircle%20cx='60'%20cy='60'%20r='33'%20fill='%234A55A8'/%3E%3Ccircle%20cx='60'%20cy='60'%20r='25'%20fill='%236D77C4'/%3E%3Ccircle%20cx='60'%20cy='60'%20r='18'%20fill='%239AA2DF'/%3E%3Ccircle%20cx='60'%20cy='60'%20r='12'%20fill='%23FFC300'/%3E%3Ccircle%20cx='60'%20cy='60'%20r='7'%20fill='%23FF8A1E'/%3E%3C/svg%3E") center / contain no-repeat;
 }
 
-.wordmark::after {
-    margin-left: 0.55em; /* wordmark tracking already pads the last glyph */
-}
-
-/* Counts sit in a notched cartouche plaque. */
+/* Counts: a stat plaque — big rounded numerals over small caps labels. */
 .counts {
     display: flex;
     align-items: baseline;
-    gap: 0.35rem 0.5rem;
+    gap: 0.35rem 0.55rem;
     flex-wrap: wrap;
-    padding: 0.45rem 1.4rem;
-    border: 1px solid var(--accent);
-    outline: 1px solid color-mix(in srgb, var(--accent) 45%, transparent);
-    outline-offset: 3px;
-    background: color-mix(in srgb, var(--panel) 70%, transparent);
-    clip-path: polygon(10px 0, calc(100% - 10px) 0, 100% 50%,
-        calc(100% - 10px) 100%, 10px 100%, 0 50%);
+    padding: 0.5rem 1.1rem;
+    border-radius: 14px;
+    background: var(--tile);
 }
 
 .count {
-    font-family: var(--font-deco);
-    font-weight: 600;
+    font-family: var(--font-display);
+    font-weight: 700;
     font-size: 1.5rem;
     font-variant-numeric: tabular-nums;
-    color: var(--accent-bright);
+    color: var(--ink);
 }
 
 .count-label {
     margin-right: 0.75rem;
-    font-family: var(--font-deco);
+    font-family: var(--font-display);
     text-transform: uppercase;
-    letter-spacing: 0.2em;
+    letter-spacing: 0.14em;
     font-size: 0.6rem;
     color: var(--muted);
 }
@@ -212,55 +157,38 @@ button:hover {
     align-self: center;
 }
 
-/* Deco rule: lozenge chain between double hairlines, triple medallion. */
+/* Horizon rule: a quiet hairline that melts — the drip tile, hung from the
+   line, in the same cloud ink. */
 .deco-rule {
-    position: relative;
-    height: 11px;
-    margin-top: 0.85rem;
-    background:
-        linear-gradient(var(--accent), var(--accent)) top / 100% 1px no-repeat,
-        linear-gradient(var(--accent), var(--accent)) bottom / 100% 1px no-repeat,
-        linear-gradient(45deg, transparent 42%, color-mix(in srgb, var(--accent) 75%, transparent) 42% 58%, transparent 58%) center / 9px 9px,
-        linear-gradient(-45deg, transparent 42%, color-mix(in srgb, var(--accent) 75%, transparent) 42% 58%, transparent 58%) center / 9px 9px;
-}
-
-.deco-rule::after {
-    content: "";
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    width: 12px;
     height: 12px;
-    transform: translate(-50%, -50%) rotate(45deg);
-    background: var(--bg);
-    border: 1.5px solid var(--accent);
-    box-shadow:
-        inset 0 0 0 1.5px var(--bg),
-        inset 0 0 0 3px color-mix(in srgb, var(--accent) 55%, transparent),
-        14px 0 0 -4px var(--accent),
-        -14px 0 0 -4px var(--accent);
+    margin-top: 0.85rem;
+    background: var(--cloud);
+    mask:
+        linear-gradient(black, black) top / 100% 1.5px no-repeat,
+        var(--drip-mask) top left / 180px 22px repeat-x;
+    opacity: 0.55;
 }
 
 .overview.just-updated .count {
     animation: pulse 0.45s ease-out;
 }
 
-/* Counts rest at accent-bright, so the pulse dips to ink and settles back. */
+/* Counts rest at ink; the pulse flares to the hot core and settles back. */
 @keyframes pulse {
-    from { color: var(--ink); }
-    to { color: var(--accent-bright); }
+    from { color: var(--accent); }
+    to { color: var(--ink); }
 }
 
 .notice {
     margin: 0 0 1rem;
-    padding: 0.55rem 0.8rem;
-    border: 1px solid var(--accent);
-    border-radius: 2px;
-    background: var(--panel);
+    padding: 0.55rem 0.9rem;
+    border-radius: 10px;
+    background: var(--tile);
+    border-left: 4px solid var(--sun);
     font-size: 0.85rem;
 }
 
-/* --- Window panels --- */
+/* --- Window panels: melting mesas --- */
 
 /* Multi-column gives masonry-style vertical packing natively — no JS lib, and
    native CSS masonry is not yet unflagged. Panels flow into balanced columns. */
@@ -269,43 +197,33 @@ button:hover {
     column-gap: 1.25rem;
 }
 
-/* Panels: double frame (border + inset ring) plus four engraved corner
-   brackets on the ::before overlay. */
+/* Each panel is a flat mesa whose bottom edge drips off — the skirt is an
+   ::after strip masked by the drip tile, filled with the panel color. */
 .window {
     position: relative;
-    /* margin (not grid gap) separates stacked panels within a column */
-    margin-bottom: 1.25rem;
-    padding: 1.05rem;
-    border: 1px solid color-mix(in srgb, var(--accent) 45%, var(--rule));
-    border-radius: 3px;
+    /* margin (not grid gap) separates stacked panels; leaves room for the
+       22px skirt hanging below the box */
+    margin-bottom: calc(1.25rem + 20px);
+    padding: 1rem 1.05rem 0.75rem;
+    border-radius: 14px 14px 0 0;
     background: var(--panel);
-    box-shadow: inset 0 0 0 3px color-mix(in srgb, var(--accent) 18%, transparent);
     break-inside: avoid;
 }
 
-.window::before {
+.window::after {
     content: "";
     position: absolute;
-    inset: 5px;
-    pointer-events: none;
-    background:
-        linear-gradient(var(--accent), var(--accent)) top left / 14px 2px,
-        linear-gradient(var(--accent), var(--accent)) top left / 2px 14px,
-        linear-gradient(var(--accent), var(--accent)) top right / 14px 2px,
-        linear-gradient(var(--accent), var(--accent)) top right / 2px 14px,
-        linear-gradient(var(--accent), var(--accent)) bottom left / 14px 2px,
-        linear-gradient(var(--accent), var(--accent)) bottom left / 2px 14px,
-        linear-gradient(var(--accent), var(--accent)) bottom right / 14px 2px,
-        linear-gradient(var(--accent), var(--accent)) bottom right / 2px 14px;
-    background-repeat: no-repeat;
+    top: 100%;
+    left: 0;
+    right: 0;
+    height: 22px;
+    background: var(--panel);
+    mask: var(--drip-mask) top left / 180px 22px repeat-x;
 }
 
-/* Focused window: full-accent frame, brighter ring, soft glow. */
+/* Focused window: the hot keyline — part of the orange ration. */
 .window.focused {
-    border-color: var(--accent);
-    box-shadow:
-        inset 0 0 0 3px color-mix(in srgb, var(--accent) 45%, transparent),
-        0 0 16px color-mix(in srgb, var(--accent) 25%, transparent);
+    box-shadow: inset 0 0 0 2.5px var(--accent);
 }
 
 /* Insertion target while dragging a window panel to reorder it. */
@@ -315,36 +233,22 @@ button:hover {
 }
 
 .window-header {
-    position: relative;
     display: flex;
     align-items: baseline;
     gap: 0.5rem;
-    padding-bottom: 0.65rem;
-    margin-bottom: 0.75rem;
-}
-
-/* Header underline: a full-width lozenge chain on a center hairline. */
-.window-header::after {
-    content: "";
-    position: absolute;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    height: 7px;
-    background:
-        linear-gradient(var(--accent), var(--accent)) center / 100% 1px no-repeat,
-        linear-gradient(45deg, transparent 44%, var(--accent) 44% 56%, transparent 56%) center / 7px 7px,
-        linear-gradient(-45deg, transparent 44%, var(--accent) 44% 56%, transparent 56%) center / 7px 7px;
+    padding-bottom: 0.55rem;
+    margin-bottom: 0.7rem;
+    border-bottom: 1.5px solid color-mix(in srgb, var(--cloud) 45%, transparent);
 }
 
 .window-name {
     padding: 0.1rem 0.25rem;
-    font-family: var(--font-deco);
-    text-transform: uppercase;
-    letter-spacing: 0.2em;
-    font-size: 0.82rem;
+    font-family: var(--font-display);
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    font-size: 0.95rem;
     color: var(--ink);
-    border-radius: 2px;
+    border-radius: 6px;
     cursor: text;
 }
 
@@ -375,10 +279,8 @@ button:hover {
 }
 
 .window-tabcount {
-    font-family: var(--font-deco);
-    text-transform: uppercase;
-    letter-spacing: 0.16em;
-    font-size: 0.58rem;
+    font-size: 0.72rem;
+    font-variant-numeric: tabular-nums;
     color: var(--muted);
 }
 
@@ -401,18 +303,16 @@ button:hover {
 .new-window-dropzone.drop-target {
     outline: 2px solid var(--accent);
     outline-offset: 2px;
-    background: color-mix(in srgb, var(--accent) 10%, transparent);
+    background: color-mix(in srgb, var(--accent) 12%, transparent);
 }
 
-/* --- Tab groups: keep the user's color as a left keyline, double-ruled --- */
+/* --- Tab groups: the user's color stays data — chip dot + left keyline --- */
 
 .group {
     padding: 0.45rem 0.55rem;
-    border: 1px solid color-mix(in srgb, var(--group, var(--muted)) 50%, var(--rule));
     border-left: 3px solid var(--group, var(--muted));
-    border-radius: 2px;
-    background: color-mix(in srgb, var(--tile) 60%, var(--panel));
-    box-shadow: inset 0 0 0 2px color-mix(in srgb, var(--group, var(--muted)) 14%, transparent);
+    border-radius: 8px;
+    background: color-mix(in srgb, var(--group, var(--muted)) 9%, var(--tile));
 }
 
 .group-header {
@@ -421,28 +321,26 @@ button:hover {
     gap: 0.4rem;
     padding-bottom: 0.3rem;
     margin-bottom: 0.35rem;
-    border-bottom: 3px double var(--rule);
+    border-bottom: 1.5px solid color-mix(in srgb, var(--group, var(--cloud)) 35%, transparent);
 }
 
 .group-title {
     flex: 1;
-    font-family: var(--font-deco);
-    text-transform: uppercase;
-    letter-spacing: 0.14em;
-    font-size: 0.66rem;
+    font-family: var(--font-display);
+    letter-spacing: 0.04em;
+    font-size: 0.72rem;
     color: var(--ink);
 }
 
-/* Deco lozenge in the group's own color, with an echo ring. */
+/* Round cel dot in the group's own color. */
 .group-title::before {
     content: "";
     display: inline-block;
-    width: 0.42rem;
-    height: 0.42rem;
+    width: 0.5rem;
+    height: 0.5rem;
     margin-right: 0.45rem;
-    transform: rotate(45deg);
+    border-radius: 50%;
     background: var(--group, var(--muted));
-    box-shadow: 0 0 0 2px color-mix(in srgb, var(--group, var(--muted)) 45%, transparent);
     vertical-align: middle;
 }
 
@@ -469,27 +367,26 @@ button:hover {
     align-items: center;
     gap: 0.55rem;
     padding: 0.4rem 0.55rem;
-    border: 1px solid var(--rule);
-    border-radius: 2px;
+    border-radius: 8px;
     background: var(--tile);
-    box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--rule) 55%, transparent);
     cursor: grab;
-    transition: border-color 0.12s, background 0.12s;
+    transition: background 0.12s, box-shadow 0.12s;
 }
 
 .tab:hover {
-    border-color: color-mix(in srgb, var(--accent) 45%, var(--rule));
+    box-shadow: inset 0 0 0 1.5px color-mix(in srgb, var(--accent) 55%, transparent);
 }
 
-/* Active tab: accent keyline + left bar over a darkened ground so the near-white
-   title stays legible (was a lightened tint that washed the text out). */
+/* Active tab: the sun core itself — solid hot fill, night-dark text. The
+   biggest piece of the orange ration, so it reads across the whole grid. */
 .tab.active {
-    border-color: color-mix(in srgb, var(--accent) 60%, var(--rule));
-    background: var(--active);
-    box-shadow:
-        inset 3px 0 0 var(--accent),
-        inset 0 0 0 1px color-mix(in srgb, var(--accent) 40%, transparent);
+    background: var(--accent);
+    color: var(--on-hot);
     font-weight: 600;
+}
+
+.tab.active .tab-host {
+    color: color-mix(in srgb, var(--on-hot) 70%, transparent);
 }
 
 .tab.discarded {
@@ -551,43 +448,25 @@ button:hover {
     font-size: 0.78rem;
 }
 
-/* --- New-window drop zone: a Deco double-ruled plate --- */
+/* --- New-window drop zone: a mirage on the sand --- */
 
 .new-window-dropzone {
-    position: relative;
     margin-top: 1.25rem;
-    padding: 1.1rem;
-    border: 1px solid var(--accent);
-    border-radius: 3px;
-    font-family: var(--font-deco);
+    padding: 1.2rem 1rem;
+    border: 2px dashed var(--cloud);
+    border-radius: 16px;
+    font-family: var(--font-display);
     text-align: center;
-    text-transform: uppercase;
-    letter-spacing: 0.3em;
-    font-size: 0.66rem;
-    color: var(--accent);
-    background:
-        linear-gradient(var(--accent), var(--accent)) top / 100% 1px no-repeat,
-        linear-gradient(var(--accent), var(--accent)) bottom / 100% 1px no-repeat,
-        var(--panel);
-    box-shadow: inset 0 0 0 4px color-mix(in srgb, var(--accent) 20%, transparent);
+    letter-spacing: 0.04em;
+    font-size: 0.85rem;
+    color: var(--cloud);
+    background: color-mix(in srgb, var(--tile) 45%, transparent);
+    transition: border-color 0.15s, color 0.15s;
 }
 
-/* Engraved brackets on all four corners mark the plate as a place to act. */
-.new-window-dropzone::before {
-    content: "";
-    position: absolute;
-    inset: 6px;
-    pointer-events: none;
-    background:
-        linear-gradient(var(--accent), var(--accent)) top left / 14px 2px,
-        linear-gradient(var(--accent), var(--accent)) top left / 2px 14px,
-        linear-gradient(var(--accent), var(--accent)) top right / 14px 2px,
-        linear-gradient(var(--accent), var(--accent)) top right / 2px 14px,
-        linear-gradient(var(--accent), var(--accent)) bottom left / 14px 2px,
-        linear-gradient(var(--accent), var(--accent)) bottom left / 2px 14px,
-        linear-gradient(var(--accent), var(--accent)) bottom right / 14px 2px,
-        linear-gradient(var(--accent), var(--accent)) bottom right / 2px 14px;
-    background-repeat: no-repeat;
+.new-window-dropzone:hover {
+    border-color: var(--accent);
+    color: var(--accent);
 }
 
 /* --- Toast --- */
@@ -598,16 +477,14 @@ button:hover {
     bottom: 1.25rem;
     z-index: 10;
     transform: translateX(-50%);
-    padding: 0.55rem 1.1rem;
-    border: 1px solid var(--accent);
-    border-radius: 2px;
+    padding: 0.55rem 1.2rem;
+    border-radius: 999px;
     background: var(--danger);
-    color: #f7ecff;
-    font-family: var(--font-deco);
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    font-size: 0.72rem;
-    box-shadow: 0 3px 12px rgba(0, 0, 0, 0.45);
+    color: #fff4f0;
+    font-family: var(--font-display);
+    letter-spacing: 0.04em;
+    font-size: 0.78rem;
+    box-shadow: 0 3px 12px rgba(4, 6, 32, 0.5);
 }
 
 @media (prefers-reduced-motion: reduce) {
