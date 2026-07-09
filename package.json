@@ -6,6 +6,6 @@
     "private": true,
     "scripts": {
         "test": "node --test",
-        "package": "rm -f tab-window-manager.xpi && zip -r -X tab-window-manager.xpi manifest.json background.js dashboard.html dashboard.css icons src -x '.*' '*/.*'"
+        "package": "rm -f tab-window-manager.xpi && zip -r -X tab-window-manager.xpi manifest.json background.js dashboard.html dashboard.css dashboard-bg.svg icons src -x '.*' '*/.*'"
     }
 }

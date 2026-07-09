@@ -56,12 +56,12 @@ body {
 }
 
 /* Dark ground is the actual trip scene (kit-theme's wallpaper, mirrored, sun
-   and pyramid dropped so it stays quiet under the panels; Kit bottom-right).
-   A url() can't react to light-dark(), hence the media query; daybreak keeps
-   the plain gradient — the scene is a night piece. */
+   and pyramid dropped so it stays quiet under the panels; Kit bottom-left,
+   facing right). A url() can't react to light-dark(), hence the media query;
+   daybreak keeps the plain gradient — the scene is a night piece. */
 @media (prefers-color-scheme: dark) {
     body {
-        background: var(--bg) url("dashboard-bg.svg") no-repeat right bottom / cover;
+        background: var(--bg) url("dashboard-bg.svg") no-repeat left bottom / cover;
         background-attachment: fixed;
     }
 }
