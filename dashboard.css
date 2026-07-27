@@ -169,9 +169,11 @@ button:hover {
 }
 
 /* Horizon rule: a quiet hairline that melts — the drip tile, hung from the
-   line, in the same cloud ink. */
+   line, in the same cloud ink. Height matches the tile: the teardrop is a
+   circle centred at (60,15) with r=6, so it hangs to y=21 and anything
+   shorter than 22px slices the ball flat. */
 .deco-rule {
-    height: 12px;
+    height: 22px;
     margin-top: 0.85rem;
     background: var(--cloud);
     mask:
