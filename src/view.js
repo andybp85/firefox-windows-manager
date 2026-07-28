@@ -136,7 +136,7 @@ export function render(model, options = {}) {
         iconButton("unload-all-global", "⏏", "Unload all but active, every window", {}),
     );
     bar.append(counts);
-    masthead.append(bar, el("div", "deco-rule"));
+    masthead.append(bar);
     root.append(masthead);
 
     if (!supported) {

@@ -1,8 +1,8 @@
 # Tab & Window Manager (Firefox)
 
 A toggleable full-page overview for managing your Firefox windows, tab groups, and tabs — an
-"exploded" layout showing every window side by side, dressed in an Art-Deco theme keyed to
-Firefox's "Kit" palette.
+"exploded" layout showing every window side by side, dressed in the Kit Developer Edition look: a
+dusk desert in Firefox Developer Edition indigo, keyed to the "Kit" browser theme.
 
 ## Features
 
@@ -88,46 +88,74 @@ directly from each site's own URL.)
 The whole look lives in `dashboard.css` and is driven by CSS custom properties in the `:root`
 block — retheme by editing those, no JavaScript changes needed.
 
+The design is the **Kit Developer Edition** look: a night desert seen on a strong dose of insanity
+pepper (Simpsons S8E9), painted in the dark interior indigos of the Firefox Developer Edition logo
+with one rationed orange accent. Dark is the canonical scheme; light is a daybreak complement, not
+an inversion. The same tokens drive the [kit-developer-edition](https://github.com/andybp85/kit-theme)
+browser theme and wallpaper, so the dashboard, the browser chrome, and the new-tab page read as one
+piece rather than three products.
+
 ### Palette
 
-Every color is a [`light-dark()`](https://developer.mozilla.org/docs/Web/CSS/color_value/light-dark)
+Every surface and ink color is a [`light-dark()`](https://developer.mozilla.org/docs/Web/CSS/color_value/light-dark)
 pair: `light-dark(<light-mode value>, <dark-mode value>)`. The page follows the OS/browser theme
 automatically. Change both values of a token to reskin both modes.
 
-| Token             | Role                                                        |
-| ----------------- | ----------------------------------------------------------- |
-| `--accent`        | Primary accent — buttons, rules, ornament, active bars.     |
-| `--accent-bright` | Brighter accent, used for the count-update pulse.           |
-| `--bg`            | Page background base.                                        |
-| `--panel`         | Window-panel background.                                    |
-| `--tile`          | Tab-tile background.                                         |
-| `--active`        | Active tab's (darkened) background, for legible title text. |
-| `--ink`           | Primary text.                                               |
-| `--muted`         | Secondary text (hosts, labels, tab counts).                 |
-| `--rule`          | Hairline borders and dividers.                              |
-| `--danger`        | Error toast background.                                      |
+| Token        | Role                                                                  |
+| ------------ | --------------------------------------------------------------------- |
+| `--accent`   | The rationed hot accent — focused-window keyline, count-update pulse. |
+| `--sun`      | Focus outlines, notice borders, the wordmark sun's core.              |
+| `--on-hot`   | Text on an accent- or sun-filled surface. Fixed, not a pair.          |
+| `--bg`       | Page ground — the night sky and desert floor.                         |
+| `--bg-deep`  | Floor of the sky gradient.                                            |
+| `--panel`    | Window mesas.                                                         |
+| `--tile`     | Tab tiles and the counts plaque.                                      |
+| `--raised`   | Buttons and drag chrome.                                              |
+| `--ink`      | Primary text.                                                         |
+| `--muted`    | Secondary text (hosts, labels, tab counts).                           |
+| `--cloud`    | Dropzone dashes and hairlines. Never text — see below.                |
+| `--danger`   | Error toast background.                                               |
+
+Surfaces form a ladder — `--bg` → `--bg-deep` → `--tile` → `--panel` → `--raised`, each a step
+lighter in dark mode. Depth comes from stepping up that ladder, never from a shadow or a gradient.
+
+**Not every pair is legible.** In the light scheme `--accent` sits at 2.6:1 and `--sun` at 1.9:1
+against the page, so both are fill and keyline colors there and never text — hot-colored text
+should be an accent-filled surface with `--on-hot` on it instead. `--cloud` fails AA everywhere by
+design; it is for hairlines and dashed borders, where the shape does the communicating. If you
+reskin, re-check the pairs rather than assuming the new values inherit the old ratios.
 
 ### Type
 
-`--font-deco` is the display face (Futura and friends — the uppercase, letter-spaced Deco voice);
-`--font-body` is the reading face. Both fall back through system fonts, so there are no web-font
-downloads. Swap either to change the personality.
+`--font-display` is the display face — chunky and rounded, carrying the cartoon voice. It leads the
+wordmark, buttons, headings, numerals, and the uppercase small-caps labels. `--font-body` is the
+reading face, so paragraphs stay comfortable. Both fall back through system fonts, so there are no
+web-font downloads. Swap either to change the personality.
 
 ### The signature accents
 
-- **Trellis ground** — the page background is a symmetric Deco wall covering: double-ruled
-  diamonds (96px period), a fine diamond mesh, and vertical pinstripes, all gradient layers on
-  `body`. Line strength lives in the `--lattice-*` tokens (each a `light-dark()` pair — light mode
-  runs about half the alpha of dark). A chevron frieze on the same 96px rhythm is drawn by
-  `body::before`: an inline-SVG zigzag used as a `mask` over a plain fill, so its ink can also be
-  a `light-dark()` color. Tune the fill's alpha to strengthen or fade it, or delete the rule to
-  drop the register.
-- **Panel corner brackets / lozenge chains / cartouche** — pseudo-element accents: corner
-  brackets on `.window::before` and `.new-window-dropzone::before`, lozenge-chain rules on
-  `.window-header::after` and `.deco-rule`, the notched counts plaque on `.counts` (a
-  `clip-path` polygon), and the group lozenge on `.group-title::before`. Delete a rule to drop
-  that accent.
-- **Group colors** — the `.group-blue { --group: … }` set maps Firefox's tab-group colors to hex.
+- **Dusk sky** — the page background is a vertical `--bg` → `--bg-deep` band with a handful of
+  sparkle stars along the top edge. The stars are dark-scheme only: their color is `transparent` in
+  light rather than being switched off by a separate rule. `background-attachment: fixed` holds the
+  horizon still while content scrolls past it, which is what makes it read as a landscape.
+- **The trip scene** — in dark mode the wallpaper itself (`dashboard-bg.svg`, generated by `trip.py`
+  in the kit-developer-edition repo) sits behind the panels: scenery mirrored, sun and pyramid
+  dropped so it stays quiet under UI. A `url()` cannot react to `light-dark()`, so it lives in a
+  `prefers-color-scheme` query; daybreak keeps the plain gradient, since the scene is a night piece.
+- **Melting mesas** — each window panel is a flat slab whose bottom edge drips off. `.window::after`
+  is a strip filled with the panel color and masked by `--drip-mask`, a repeating 180×22 tile.
+  Masking a plain fill instead of using a colored SVG is what keeps the drip scheme-aware. Keep the
+  strip at 22px: the teardrop is a circle at (60,15) with r=6, so it hangs to y=21 and a shorter box
+  slices the ball flat.
+- **Wobble-ring sun** — the wordmark badge on `.wordmark::before`: concentric off-round rings
+  stepping from deep indigo out to a hot core, with eight uneven rays. Its colors are fixed rather
+  than tokenized, because the stack has to read on both the night ground and the daybreak ground.
+- **Group colors** — the `.group-blue { --group: … }` set maps Firefox's tab-group colors to hex,
+  and `.group-title::before` draws the swatch.
+
+Ornament here comes from silhouette — drip edges, a wobble-ring sun — never from added color. If a
+surface needs interest, give it an edge before reaching for a fifth hue. Delete any one rule above
+to drop that accent; nothing else depends on it.
 
 ## Development
 
