@@ -183,6 +183,14 @@ test("assignColumns is deterministic for mixed assigned and unassigned windows",
     assert.deepEqual(a, b)
 })
 
+test("buildModel passes through col and order session values, undefined when absent", () => {
+    const model = buildModel([win(1), win(2)], [tab(10, 1), tab(20, 2)], [], {}, { 1: 0 }, { 1: 2 })
+    assert.equal(model.windows[0].col, 2)
+    assert.equal(model.windows[0].order, 0)
+    assert.equal(model.windows[1].col, undefined)
+    assert.equal(model.windows[1].order, undefined)
+})
+
 test("buildModel sorts windows by stored order", () => {
     const windows = [win(1), win(2), win(3)]
     const tabs = [tab(10, 1), tab(20, 2), tab(30, 3)]

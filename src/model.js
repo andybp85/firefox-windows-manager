@@ -30,7 +30,7 @@ function toTile(t) {
     }
 }
 
-export function buildModel(windows, tabs, groups, names = {}, orders = {}) {
+export function buildModel(windows, tabs, groups, names = {}, orders = {}, cols = {}) {
     const groupsByWindow = new Map()
     for (const g of groups) {
         if (!groupsByWindow.has(g.windowId)) groupsByWindow.set(g.windowId, [])
@@ -75,11 +75,13 @@ export function buildModel(windows, tabs, groups, names = {}, orders = {}) {
             .sort((a, b) => orderOf(a.tabs[0].id) - orderOf(b.tabs[0].id))
 
         return {
+            col: cols[w.id],
             focused: !!w.focused,
             groups: groupModels,
             id: w.id,
             incognito: !!w.incognito,
             name: names[w.id] || undefined,
+            order: orders[w.id],
             tabCount: wTabs.length,
             ungrouped,
         }

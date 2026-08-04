@@ -185,7 +185,7 @@ git commit -m "Add moveWindowAmongColumns: pure column-drop math"
   `col: cols[w.id]` and `order: orders[w.id]` (both `number | undefined`), keys alphabetized in the literal.
 - Consumes (data.js): `browser.sessions.getWindowValue(w.id, "col")`.
 
-- [ ] **Step 1: Write the failing test** (append)
+- [x] **Step 1: Write the failing test** (append)
 
 ```js
 test("buildModel passes through col and order session values, undefined when absent", () => {
@@ -197,10 +197,10 @@ test("buildModel passes through col and order session values, undefined when abs
 })
 ```
 
-- [ ] **Step 2: Run tests to verify it fails** — `npm test`, FAIL: `col` is `undefined`… actually FAIL on
+- [x] **Step 2: Run tests to verify it fails** — `npm test`, FAIL: `col` is `undefined`… actually FAIL on
   `model.windows[0].col` being `undefined` instead of `2`.
 
-- [ ] **Step 3: Implement.** In `src/model.js`, change the signature line to
+- [x] **Step 3: Implement.** In `src/model.js`, change the signature line to
 
 ```js
 export function buildModel(windows, tabs, groups, names = {}, orders = {}, cols = {}) {
@@ -244,9 +244,9 @@ In `src/data.js`, extend the per-window reads and pass `cols` through:
     return buildModel(windows, tabs, groups, names, orders, cols)
 ```
 
-- [ ] **Step 4: Run tests to verify they pass** — `npm test`; also `node --check src/data.js`.
+- [x] **Step 4: Run tests to verify they pass** — `npm test`; also `node --check src/data.js`.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add src/model.js src/data.js test/model.test.js
