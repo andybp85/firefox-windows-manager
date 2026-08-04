@@ -417,7 +417,7 @@ git commit -m "Window drops target real columns in dnd"
   full-layout snapshot re-sequences target AND source columns, and pins previously-unassigned windows so
   they stop reflowing — the spec's compaction requirement falls out of it).
 
-- [ ] **Step 1: Implement actions.** In `src/actions.js`, replace `reorderWindow` with:
+- [x] **Step 1: Implement actions.** In `src/actions.js`, replace `reorderWindow` with:
 
 ```js
 export async function persistWindowLayout(columnIds) {
@@ -432,7 +432,7 @@ export async function persistWindowLayout(columnIds) {
 
 and drop `reorderWindowSequence` from the model import (leaving `absoluteTabIndex, tabsToUnloadAllButActive`).
 
-- [ ] **Step 2: Wire main.** In `src/main.js`:
+- [x] **Step 2: Wire main.** In `src/main.js`:
 
 Import changes: replace `reorderWindow` with `persistWindowLayout` in the actions import (alphabetized), and
 add `moveWindowAmongColumns` to a model import:
@@ -479,14 +479,14 @@ Replace the `onReorderWindow` handler in `attachDnd` with:
     },
 ```
 
-- [ ] **Step 3: Delete the dead model code.** Remove `reorderWindowSequence` from `src/model.js` and its two
+- [x] **Step 3: Delete the dead model code.** Remove `reorderWindowSequence` from `src/model.js` and its two
   tests (`"reorderWindowSequence moves a window before another or to the end"`) from `test/model.test.js`;
   remove it from the test file's import list. `sortWindowsByOrder` stays (buildModel's base sequence).
 
-- [ ] **Step 4: Verify** — `npm test` all green; `node --check` on `src/actions.js src/main.js src/model.js`;
+- [x] **Step 4: Verify** — `npm test` all green; `node --check` on `src/actions.js src/main.js src/model.js`;
   `grep -rn reorderWindowSequence src test` returns nothing.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add src/actions.js src/main.js src/model.js test/model.test.js

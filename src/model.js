@@ -154,10 +154,3 @@ export function moveWindowAmongColumns(columnIds, movedId, targetIndex, beforeId
     target.splice(i === -1 ? target.length : i, 0, movedId)
     return next
 }
-
-export function reorderWindowSequence(orderedIds, movedId, beforeId) {
-    const rest = orderedIds.filter(id => id !== movedId)
-    if (beforeId == null || !rest.includes(beforeId)) return [...rest, movedId]
-    const i = rest.indexOf(beforeId)
-    return [...rest.slice(0, i), movedId, ...rest.slice(i)]
-}

@@ -1,19 +1,25 @@
 import {
     closeGroup, closeTab, closeWindow, focusTab, moveGroupToNewWindow, moveGroupToWindow,
-    moveTabToNewWindow, moveTabToWindow, renameWindow, reorderTab, reorderWindow, unloadAllButActive,
-    unloadTab,
+    moveTabToNewWindow, moveTabToWindow, persistWindowLayout, renameWindow, reorderTab,
+    unloadAllButActive, unloadTab,
 } from "./actions.js"
 import { fetchState, hasTabGroups, subscribe } from "./data.js"
 import { attachDnd } from "./dnd.js"
+import { moveWindowAmongColumns } from "./model.js"
 import { render } from "./view.js"
 
-export const state = { model: undefined }
+export const state = { model: undefined, renderedColumns: 1 }
 
 const app = document.getElementById("app")
 
+const COLUMN_WIDTH = 360 // px: ~340px panel plus grid gap
+
+const columnCount = () => Math.max(1, Math.floor(app.clientWidth / COLUMN_WIDTH))
+
 async function rerender() {
     state.model = await fetchState()
-    const tree = render(state.model, { tabGroupsSupported: hasTabGroups() })
+    state.renderedColumns = columnCount()
+    const tree = render(state.model, { columnCount: state.renderedColumns, tabGroupsSupported: hasTabGroups() })
     tree.classList.add("just-updated")
     app.replaceChildren(tree)
     requestAnimationFrame(() => tree.classList.remove("just-updated"))
@@ -31,6 +37,10 @@ async function main() {
     await rerender()
     subscribe(debounce(rerender, 150))
 }
+
+window.addEventListener("resize", debounce(() => {
+    if (columnCount() !== state.renderedColumns) rerender()
+}, 150))
 
 main().catch(err => {
     console.error(err)
@@ -144,8 +154,8 @@ attachDnd(app, {
         await run(reorderTab(args))
         rerender()
     },
-    onReorderWindow: async ({ beforeWindowId, orderedIds, windowId }) => {
-        await run(reorderWindow(orderedIds, windowId, beforeWindowId))
+    onReorderWindow: async ({ beforeWindowId, columnIds, columnIndex, windowId }) => {
+        await run(persistWindowLayout(moveWindowAmongColumns(columnIds, windowId, columnIndex, beforeWindowId)))
         rerender()
     },
 })

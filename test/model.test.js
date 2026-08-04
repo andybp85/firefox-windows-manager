@@ -2,7 +2,7 @@ import assert from "node:assert/strict"
 import { test } from "node:test"
 import {
     absoluteTabIndex, allTabsOf, assignColumns, buildModel, deriveCounts, hostOf, insertIndexAmong,
-    moveWindowAmongColumns, reorderWindowSequence, sortWindowsByOrder, tabsToUnloadAllButActive,
+    moveWindowAmongColumns, sortWindowsByOrder, tabsToUnloadAllButActive,
 } from "../src/model.js"
 
 const win = (id, extra = {}) => ({ focused: false, id, incognito: false, type: "normal", ...extra })
@@ -124,13 +124,6 @@ test("sortWindowsByOrder orders by stored order, unordered windows last by id", 
     assert.deepEqual(sortWindowsByOrder(ws, { 10: 2, 20: 0, 30: 1 }).map(w => w.id), [20, 30, 10])
     assert.deepEqual(sortWindowsByOrder(ws, {}).map(w => w.id), [10, 20, 30])
     assert.deepEqual(sortWindowsByOrder(ws, { 30: 0 }).map(w => w.id), [30, 10, 20])
-})
-
-test("reorderWindowSequence moves a window before another or to the end", () => {
-    assert.deepEqual(reorderWindowSequence([10, 20, 30], 10, 30), [20, 10, 30])
-    assert.deepEqual(reorderWindowSequence([10, 20, 30], 30, null), [10, 20, 30])
-    assert.deepEqual(reorderWindowSequence([10, 20, 30], 20, 10), [20, 10, 30])
-    assert.deepEqual(reorderWindowSequence([10, 20, 30], 30, 99), [10, 20, 30]) // unknown ref -> end
 })
 
 const colWin = (id, extra = {}) => ({ groups: [], id, tabCount: 0, ungrouped: [], ...extra })
