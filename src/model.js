@@ -124,6 +124,27 @@ export function sortWindowsByOrder(modelWindows, orders) {
         .map(keyed => keyed.w)
 }
 
+// Height estimate in tab-tile units: a panel costs its header (~3 tiles) plus
+// one unit per tab. Pure stand-in for DOM measurement, good enough to pick the
+// shortest column for windows the user has not placed yet.
+const WINDOW_HEIGHT_COST = 3
+
+export function assignColumns(modelWindows, visibleCount) {
+    const columns = Array.from({ length: visibleCount }, () => [])
+    const heightOf = column => column.reduce((h, w) => h + WINDOW_HEIGHT_COST + w.tabCount, 0)
+
+    const assigned = modelWindows
+        .filter(w => typeof w.col === "number")
+        .sort((a, b) => a.col - b.col || (a.order ?? 0) - (b.order ?? 0) || a.id - b.id)
+    for (const w of assigned) columns[Math.min(w.col, visibleCount - 1)].push(w)
+
+    for (const w of modelWindows.filter(w => typeof w.col !== "number")) {
+        const shortest = columns.reduce((best, c) => heightOf(c) < heightOf(best) ? c : best, columns[0])
+        shortest.push(w)
+    }
+    return columns
+}
+
 export function reorderWindowSequence(orderedIds, movedId, beforeId) {
     const rest = orderedIds.filter(id => id !== movedId)
     if (beforeId == null || !rest.includes(beforeId)) return [...rest, movedId]

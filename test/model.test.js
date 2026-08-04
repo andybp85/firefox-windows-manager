@@ -1,7 +1,7 @@
 import assert from "node:assert/strict"
 import { test } from "node:test"
 import {
-    absoluteTabIndex, allTabsOf, buildModel, deriveCounts, hostOf, insertIndexAmong,
+    absoluteTabIndex, allTabsOf, assignColumns, buildModel, deriveCounts, hostOf, insertIndexAmong,
     reorderWindowSequence, sortWindowsByOrder, tabsToUnloadAllButActive,
 } from "../src/model.js"
 
@@ -131,6 +131,39 @@ test("reorderWindowSequence moves a window before another or to the end", () => 
     assert.deepEqual(reorderWindowSequence([10, 20, 30], 30, null), [10, 20, 30])
     assert.deepEqual(reorderWindowSequence([10, 20, 30], 20, 10), [20, 10, 30])
     assert.deepEqual(reorderWindowSequence([10, 20, 30], 30, 99), [10, 20, 30]) // unknown ref -> end
+})
+
+const colWin = (id, extra = {}) => ({ groups: [], id, tabCount: 0, ungrouped: [], ...extra })
+
+test("assignColumns puts assigned windows in their column, ordered by (col, order, id)", () => {
+    const ws = [colWin(1, { col: 1, order: 0 }), colWin(2, { col: 0, order: 1 }), colWin(3, { col: 0, order: 0 })]
+    const cols = assignColumns(ws, 2)
+    assert.deepEqual(cols.map(c => c.map(w => w.id)), [[3, 2], [1]])
+})
+
+test("assignColumns folds out-of-range columns into the last visible one, after its own windows", () => {
+    const ws = [colWin(1, { col: 3, order: 0 }), colWin(2, { col: 1, order: 0 })]
+    const cols = assignColumns(ws, 2)
+    assert.deepEqual(cols.map(c => c.map(w => w.id)), [[], [2, 1]])
+})
+
+test("assignColumns fills unassigned windows into the shortest column by tab-count estimate", () => {
+    const ws = [colWin(1, { col: 0, order: 0, tabCount: 9 }), colWin(2, { tabCount: 1 }), colWin(3, { tabCount: 1 })]
+    const cols = assignColumns(ws, 2)
+    assert.deepEqual(cols.map(c => c.map(w => w.id)), [[1], [2, 3]])
+})
+
+test("assignColumns with one visible column stacks everything in sequence", () => {
+    const ws = [colWin(1, { col: 2, order: 0 }), colWin(2)]
+    const cols = assignColumns(ws, 1)
+    assert.deepEqual(cols.map(c => c.map(w => w.id)), [[1, 2]])
+})
+
+test("assignColumns is deterministic for mixed assigned and unassigned windows", () => {
+    const ws = [colWin(1, { col: 1, order: 0 }), colWin(2, { tabCount: 4 }), colWin(3, { tabCount: 2 })]
+    const a = assignColumns(ws, 2).map(c => c.map(w => w.id))
+    const b = assignColumns(ws, 2).map(c => c.map(w => w.id))
+    assert.deepEqual(a, b)
 })
 
 test("buildModel sorts windows by stored order", () => {

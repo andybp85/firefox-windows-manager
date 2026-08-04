@@ -36,7 +36,7 @@ Spec: `docs/superpowers/specs/2026-08-04-sticky-window-columns-design.md`. Bean:
   Assigned windows sort by `(col, order, id)` with `col` clamped to the last visible column; windows without a
   numeric `col` fill the shortest column (height estimate: `3 + tabCount` per window) in input sequence.
 
-- [ ] **Step 1: Write the failing tests** (append to `test/model.test.js`; add `assignColumns` to the import list, alphabetized)
+- [x] **Step 1: Write the failing tests** (append to `test/model.test.js`; add `assignColumns` to the import list, alphabetized)
 
 ```js
 const colWin = (id, extra = {}) => ({ groups: [], id, tabCount: 0, ungrouped: [], ...extra })
@@ -73,12 +73,12 @@ test("assignColumns is deterministic for mixed assigned and unassigned windows",
 })
 ```
 
-- [ ] **Step 2: Run tests to verify they fail**
+- [x] **Step 2: Run tests to verify they fail**
 
 Run: `npm test`
 Expected: FAIL — `assignColumns is not a function` (or not exported).
 
-- [ ] **Step 3: Implement** (append to `src/model.js`)
+- [x] **Step 3: Implement** (append to `src/model.js`)
 
 ```js
 // Height estimate in tab-tile units: a panel costs its header (~3 tiles) plus
@@ -103,11 +103,11 @@ export function assignColumns(modelWindows, visibleCount) {
 }
 ```
 
-- [ ] **Step 4: Run tests to verify they pass**
+- [x] **Step 4: Run tests to verify they pass**
 
 Run: `npm test` — all pass, including the 13 pre-existing tests.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add src/model.js test/model.test.js
