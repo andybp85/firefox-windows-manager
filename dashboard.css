@@ -189,11 +189,21 @@ button {
 
 /* --- Window panels: melting mesas --- */
 
-/* Multi-column gives masonry-style vertical packing natively — no JS lib, and
-   native CSS masonry is not yet unflagged. Panels flow into balanced columns. */
+/* Real flex columns — each is a drop bucket, so a dropped panel stays where it
+   was released instead of re-packing by height like CSS multi-column did. */
 .windows-grid {
-    column-gap: 1.25rem;
-    columns: 340px;
+    align-items: flex-start;
+    display: flex;
+    gap: 1.25rem;
+}
+
+/* min-height keeps an emptied column droppable. */
+.window-column {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    min-height: 3rem;
+    min-width: 0;
 }
 
 /* Each panel is a flat mesa whose bottom edge drips off — the skirt is an
@@ -201,7 +211,6 @@ button {
 .window {
     background: var(--panel);
     border-radius: 14px 14px 0 0;
-    break-inside: avoid;
     /* margin (not grid gap) separates stacked panels; leaves room for the
        22px skirt hanging below the box */
     margin-bottom: calc(1.25rem + 20px);

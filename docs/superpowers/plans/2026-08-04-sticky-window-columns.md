@@ -264,7 +264,7 @@ git commit -m "Carry col/order session values through the model"
   contains exactly `columnCount` `div.window-column` children, each with `dataset.colIndex` set, window
   panels as direct children. Task 5's dnd relies on `.window-column` and `data-col-index`.
 
-- [ ] **Step 1: Implement view.** In `src/view.js` add the import at the top:
+- [x] **Step 1: Implement view.** In `src/view.js` add the import at the top:
 
 ```js
 import { assignColumns } from "./model.js"
@@ -284,7 +284,7 @@ and replace the grid loop in `render` with:
     root.append(grid)
 ```
 
-- [ ] **Step 2: Replace the `.windows-grid` CSS.** In `dashboard.css`, replace the `.windows-grid` block and
+- [x] **Step 2: Replace the `.windows-grid` CSS.** In `dashboard.css`, replace the `.windows-grid` block and
   its masonry comment with:
 
 ```css
@@ -308,14 +308,14 @@ and replace the grid loop in `render` with:
 
 and delete `break-inside: avoid;` from the `.window` block (columns no longer split panels).
 
-- [ ] **Step 3: Update the preview fixture.** In `test/preview.html`, change the render call to
+- [x] **Step 3: Update the preview fixture.** In `test/preview.html`, change the render call to
   `document.getElementById("app").append(render(model, { columnCount: 2 }))`.
 
-- [ ] **Step 4: Verify** — `npm test` (still green), `node --check src/view.js`, and
+- [x] **Step 4: Verify** — `npm test` (still green), `node --check src/view.js`, and
   `npx --yes lightningcss-cli --targets 'firefox >= 139' dashboard.css -o /dev/null` parses clean.
   If a browser is available, open `test/preview.html` over a local HTTP server and confirm two columns.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add src/view.js dashboard.css test/preview.html
