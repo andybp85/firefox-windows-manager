@@ -233,11 +233,12 @@ button {
         box-shadow: inset 0 0 0 2.5px var(--accent);
     }
 
-    /* Insertion target while dragging a window panel to reorder it. */
-    &.window-drop-target {
-        outline: 2px dashed var(--accent);
-        outline-offset: 3px;
-    }
+}
+
+/* Insertion target while dragging a window panel to reorder it. */
+.window-column.window-drop-target {
+    outline: 2px dashed var(--accent);
+    outline-offset: 3px;
 }
 
 .window-header {

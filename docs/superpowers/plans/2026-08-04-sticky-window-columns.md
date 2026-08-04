@@ -333,7 +333,7 @@ git commit -m "Render window panels into real flex columns"
   `columnIds: number[][]` is the full current layout read from the DOM; `beforeWindowId` is `null` for
   column end. Task 6's main wiring consumes exactly this shape. `resolveWindowDrop` is deleted.
 
-- [ ] **Step 1: Implement.** In `src/dnd.js`:
+- [x] **Step 1: Implement.** In `src/dnd.js`:
 
 Add next to `tilesOf`:
 
@@ -396,9 +396,9 @@ move the rule out of the `.window` nesting into a top-level block:
 
 (delete the `&.window-drop-target` block inside `.window`).
 
-- [ ] **Step 2: Verify** — `node --check src/dnd.js`; `npm test`; lightningcss parse of `dashboard.css`.
+- [x] **Step 2: Verify** — `node --check src/dnd.js`; `npm test`; lightningcss parse of `dashboard.css`.
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
 
 ```bash
 git add src/dnd.js dashboard.css
