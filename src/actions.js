@@ -1,4 +1,4 @@
-import { absoluteTabIndex, reorderWindowSequence, tabsToUnloadAllButActive } from "./model.js"
+import { absoluteTabIndex, tabsToUnloadAllButActive } from "./model.js"
 
 export async function focusTab(tabId, windowId) {
     await browser.tabs.update(tabId, { active: true })
@@ -37,11 +37,13 @@ export async function reorderTab({ beforeId, fromGroupId, orderedIds, tabId, toG
     await browser.tabs.move(tabId, { index })
 }
 
-export async function reorderWindow(orderedIds, windowId, beforeWindowId) {
-    const sequence = reorderWindowSequence(orderedIds, windowId, beforeWindowId)
-    await Promise.all(
-        sequence.map((id, i) => browser.sessions.setWindowValue(id, "order", i)),
-    )
+export async function persistWindowLayout(columnIds) {
+    await Promise.all(columnIds.flatMap((ids, col) =>
+        ids.flatMap((id, order) => [
+            browser.sessions.setWindowValue(id, "col", col),
+            browser.sessions.setWindowValue(id, "order", order),
+        ]),
+    ))
 }
 
 export async function closeWindow(windowId) {

@@ -1,8 +1,8 @@
 import assert from "node:assert/strict"
 import { test } from "node:test"
 import {
-    absoluteTabIndex, allTabsOf, buildModel, deriveCounts, hostOf, insertIndexAmong,
-    reorderWindowSequence, sortWindowsByOrder, tabsToUnloadAllButActive,
+    absoluteTabIndex, allTabsOf, assignColumns, buildModel, deriveCounts, hostOf, insertIndexAmong,
+    moveWindowAmongColumns, sortWindowsByOrder, tabsToUnloadAllButActive,
 } from "../src/model.js"
 
 const win = (id, extra = {}) => ({ focused: false, id, incognito: false, type: "normal", ...extra })
@@ -126,11 +126,62 @@ test("sortWindowsByOrder orders by stored order, unordered windows last by id", 
     assert.deepEqual(sortWindowsByOrder(ws, { 30: 0 }).map(w => w.id), [30, 10, 20])
 })
 
-test("reorderWindowSequence moves a window before another or to the end", () => {
-    assert.deepEqual(reorderWindowSequence([10, 20, 30], 10, 30), [20, 10, 30])
-    assert.deepEqual(reorderWindowSequence([10, 20, 30], 30, null), [10, 20, 30])
-    assert.deepEqual(reorderWindowSequence([10, 20, 30], 20, 10), [20, 10, 30])
-    assert.deepEqual(reorderWindowSequence([10, 20, 30], 30, 99), [10, 20, 30]) // unknown ref -> end
+const colWin = (id, extra = {}) => ({ groups: [], id, tabCount: 0, ungrouped: [], ...extra })
+
+test("moveWindowAmongColumns moves a window between columns before a reference", () => {
+    const next = moveWindowAmongColumns([[1, 2], [3]], 1, 1, 3)
+    assert.deepEqual(next, [[2], [1, 3]])
+})
+
+test("moveWindowAmongColumns appends when beforeId is null or unknown", () => {
+    assert.deepEqual(moveWindowAmongColumns([[1, 2], [3]], 1, 1, null), [[2], [3, 1]])
+    assert.deepEqual(moveWindowAmongColumns([[1, 2], [3]], 1, 1, 99), [[2], [3, 1]])
+})
+
+test("moveWindowAmongColumns reorders within a column and does not mutate its input", () => {
+    const input = [[1, 2, 3]]
+    const next = moveWindowAmongColumns(input, 3, 0, 1)
+    assert.deepEqual(next, [[3, 1, 2]])
+    assert.deepEqual(input, [[1, 2, 3]])
+})
+
+test("assignColumns puts assigned windows in their column, ordered by (col, order, id)", () => {
+    const ws = [colWin(1, { col: 1, order: 0 }), colWin(2, { col: 0, order: 1 }), colWin(3, { col: 0, order: 0 })]
+    const cols = assignColumns(ws, 2)
+    assert.deepEqual(cols.map(c => c.map(w => w.id)), [[3, 2], [1]])
+})
+
+test("assignColumns folds out-of-range columns into the last visible one, after its own windows", () => {
+    const ws = [colWin(1, { col: 3, order: 0 }), colWin(2, { col: 1, order: 0 })]
+    const cols = assignColumns(ws, 2)
+    assert.deepEqual(cols.map(c => c.map(w => w.id)), [[], [2, 1]])
+})
+
+test("assignColumns fills unassigned windows into the shortest column by tab-count estimate", () => {
+    const ws = [colWin(1, { col: 0, order: 0, tabCount: 9 }), colWin(2, { tabCount: 1 }), colWin(3, { tabCount: 1 })]
+    const cols = assignColumns(ws, 2)
+    assert.deepEqual(cols.map(c => c.map(w => w.id)), [[1], [2, 3]])
+})
+
+test("assignColumns with one visible column stacks everything in sequence", () => {
+    const ws = [colWin(1, { col: 2, order: 0 }), colWin(2)]
+    const cols = assignColumns(ws, 1)
+    assert.deepEqual(cols.map(c => c.map(w => w.id)), [[1, 2]])
+})
+
+test("assignColumns is deterministic for mixed assigned and unassigned windows", () => {
+    const ws = [colWin(1, { col: 1, order: 0 }), colWin(2, { tabCount: 4 }), colWin(3, { tabCount: 2 })]
+    const a = assignColumns(ws, 2).map(c => c.map(w => w.id))
+    const b = assignColumns(ws, 2).map(c => c.map(w => w.id))
+    assert.deepEqual(a, b)
+})
+
+test("buildModel passes through col and order session values, undefined when absent", () => {
+    const model = buildModel([win(1), win(2)], [tab(10, 1), tab(20, 2)], [], {}, { 1: 0 }, { 1: 2 })
+    assert.equal(model.windows[0].col, 2)
+    assert.equal(model.windows[0].order, 0)
+    assert.equal(model.windows[1].col, undefined)
+    assert.equal(model.windows[1].order, undefined)
 })
 
 test("buildModel sorts windows by stored order", () => {

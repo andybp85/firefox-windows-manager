@@ -1,3 +1,5 @@
+import { assignColumns } from "./model.js"
+
 function el(tag, className, text) {
     const node = document.createElement(tag)
     if (className) node.className = className
@@ -129,8 +131,14 @@ export function render(model, options = {}) {
         root.append(el("p", "notice", "Tab groups need Firefox 139+ — showing windows and tabs only."))
     }
 
+    const columnCount = options.columnCount ?? 1
     const grid = el("div", "windows-grid")
-    for (const windowVM of model.windows) grid.append(renderWindow(windowVM))
+    assignColumns(model.windows, columnCount).forEach((column, i) => {
+        const columnEl = el("div", "window-column")
+        columnEl.dataset.colIndex = String(i)
+        for (const windowVM of column) columnEl.append(renderWindow(windowVM))
+        grid.append(columnEl)
+    })
     root.append(grid)
 
     root.append(el("div", "new-window-dropzone", "Drop here to open in a new window"))

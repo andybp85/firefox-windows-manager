@@ -12,20 +12,23 @@ export async function fetchState() {
 
     const groups = hasTabGroups() ? await browser.tabGroups.query({}) : []
 
+    const cols = {}
     const names = {}
     const orders = {}
     await Promise.all(
         windows.map(async w => {
-            const [name, order] = await Promise.all([
+            const [col, name, order] = await Promise.all([
+                browser.sessions.getWindowValue(w.id, "col"),
                 browser.sessions.getWindowValue(w.id, "name"),
                 browser.sessions.getWindowValue(w.id, "order"),
             ])
+            cols[w.id] = typeof col === "number" ? col : undefined
             names[w.id] = name || undefined
             orders[w.id] = typeof order === "number" ? order : undefined
         }),
     )
 
-    return buildModel(windows, tabs, groups, names, orders)
+    return buildModel(windows, tabs, groups, names, orders, cols)
 }
 
 export function subscribe(onChange) {

@@ -31,6 +31,10 @@ function tilesOf(el) {
     return [...el.querySelectorAll(":scope > .tab")]
 }
 
+function panelsOf(columnEl) {
+    return [...columnEl.querySelectorAll(":scope > .window")]
+}
+
 // Resolve a tab drop to { windowId, groupId, beforeId, orderedIds }. beforeId
 // is the window-wide tab id to insert before, or null for the window's end.
 function resolveTabDrop(container, clientY) {
@@ -50,21 +54,6 @@ function resolveTabDrop(container, clientY) {
     }
 
     return { beforeId, groupId: container.groupId, orderedIds, windowId: Number(win.dataset.windowId) }
-}
-
-// Resolve a window drop to { orderedIds, beforeWindowId }. Drop before the
-// target window, or after it (beforeWindowId = the next window, or null) when
-// the pointer is past the target's vertical midpoint.
-function resolveWindowDrop(grid, targetWindow, clientY) {
-    const ids = [...grid.querySelectorAll(".window")].map(w => Number(w.dataset.windowId))
-    const targetId = Number(targetWindow.dataset.windowId)
-    const rect = targetWindow.getBoundingClientRect()
-    let beforeWindowId = targetId
-    if (clientY > rect.top + rect.height / 2) {
-        const i = ids.indexOf(targetId)
-        beforeWindowId = i + 1 < ids.length ? ids[i + 1] : null
-    }
-    return { beforeWindowId, orderedIds: ids }
 }
 
 export function attachDnd(container, handlers) {
@@ -118,12 +107,12 @@ export function attachDnd(container, handlers) {
         if (!kind) return
 
         if (kind === "window") {
-            const target = event.target.closest(".window")
-            if (!target) return
+            const column = event.target.closest(".window-column")
+            if (!column) return
             event.preventDefault()
             event.dataTransfer.dropEffect = "move"
             clearHighlights()
-            target.classList.add("window-drop-target")
+            column.classList.add("window-drop-target")
             return
         }
 
@@ -153,16 +142,23 @@ export function attachDnd(container, handlers) {
         clearIndicator()
 
         if (kind === "window") {
-            const target = event.target.closest(".window")
+            const column = event.target.closest(".window-column")
             clearHighlights()
-            if (!target) return
+            if (!column) return
             event.preventDefault()
             const id = Number(event.dataTransfer.getData(MIME.window))
-            const targetId = Number(target.dataset.windowId)
-            if (Number.isNaN(id) || id === targetId) return
-            const { beforeWindowId, orderedIds } =
-                resolveWindowDrop(target.closest(".windows-grid"), target, event.clientY)
-            handlers.onReorderWindow({ beforeWindowId, orderedIds, windowId: id })
+            if (Number.isNaN(id)) return
+            const grid = column.closest(".windows-grid")
+            const columnIds = [...grid.querySelectorAll(".window-column")]
+                .map(c => panelsOf(c).map(w => Number(w.dataset.windowId)))
+            const others = panelsOf(column).filter(p => Number(p.dataset.windowId) !== id)
+            const k = insertIndexAmong(event.clientY, others.map(p => p.getBoundingClientRect()))
+            handlers.onReorderWindow({
+                beforeWindowId: k < others.length ? Number(others[k].dataset.windowId) : null,
+                columnIds,
+                columnIndex: Number(column.dataset.colIndex),
+                windowId: id,
+            })
             return
         }
 

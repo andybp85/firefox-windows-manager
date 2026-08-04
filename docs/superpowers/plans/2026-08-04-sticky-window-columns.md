@@ -36,7 +36,7 @@ Spec: `docs/superpowers/specs/2026-08-04-sticky-window-columns-design.md`. Bean:
   Assigned windows sort by `(col, order, id)` with `col` clamped to the last visible column; windows without a
   numeric `col` fill the shortest column (height estimate: `3 + tabCount` per window) in input sequence.
 
-- [ ] **Step 1: Write the failing tests** (append to `test/model.test.js`; add `assignColumns` to the import list, alphabetized)
+- [x] **Step 1: Write the failing tests** (append to `test/model.test.js`; add `assignColumns` to the import list, alphabetized)
 
 ```js
 const colWin = (id, extra = {}) => ({ groups: [], id, tabCount: 0, ungrouped: [], ...extra })
@@ -73,12 +73,12 @@ test("assignColumns is deterministic for mixed assigned and unassigned windows",
 })
 ```
 
-- [ ] **Step 2: Run tests to verify they fail**
+- [x] **Step 2: Run tests to verify they fail**
 
 Run: `npm test`
 Expected: FAIL — `assignColumns is not a function` (or not exported).
 
-- [ ] **Step 3: Implement** (append to `src/model.js`)
+- [x] **Step 3: Implement** (append to `src/model.js`)
 
 ```js
 // Height estimate in tab-tile units: a panel costs its header (~3 tiles) plus
@@ -103,11 +103,11 @@ export function assignColumns(modelWindows, visibleCount) {
 }
 ```
 
-- [ ] **Step 4: Run tests to verify they pass**
+- [x] **Step 4: Run tests to verify they pass**
 
 Run: `npm test` — all pass, including the 13 pre-existing tests.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add src/model.js test/model.test.js
@@ -127,7 +127,7 @@ git commit -m "Add assignColumns: pure sticky-column layout"
   Input arrays are not mutated. `reorderWindowSequence` is NOT removed yet — `actions.js` still imports it
   until Task 6.
 
-- [ ] **Step 1: Write the failing tests** (append; import `moveWindowAmongColumns`, alphabetized)
+- [x] **Step 1: Write the failing tests** (append; import `moveWindowAmongColumns`, alphabetized)
 
 ```js
 test("moveWindowAmongColumns moves a window between columns before a reference", () => {
@@ -148,11 +148,11 @@ test("moveWindowAmongColumns reorders within a column and does not mutate its in
 })
 ```
 
-- [ ] **Step 2: Run tests to verify they fail**
+- [x] **Step 2: Run tests to verify they fail**
 
 Run: `npm test` — FAIL on the three new tests.
 
-- [ ] **Step 3: Implement** (append to `src/model.js`)
+- [x] **Step 3: Implement** (append to `src/model.js`)
 
 ```js
 export function moveWindowAmongColumns(columnIds, movedId, targetIndex, beforeId) {
@@ -164,9 +164,9 @@ export function moveWindowAmongColumns(columnIds, movedId, targetIndex, beforeId
 }
 ```
 
-- [ ] **Step 4: Run tests to verify they pass** — `npm test`, all green.
+- [x] **Step 4: Run tests to verify they pass** — `npm test`, all green.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add src/model.js test/model.test.js
@@ -185,7 +185,7 @@ git commit -m "Add moveWindowAmongColumns: pure column-drop math"
   `col: cols[w.id]` and `order: orders[w.id]` (both `number | undefined`), keys alphabetized in the literal.
 - Consumes (data.js): `browser.sessions.getWindowValue(w.id, "col")`.
 
-- [ ] **Step 1: Write the failing test** (append)
+- [x] **Step 1: Write the failing test** (append)
 
 ```js
 test("buildModel passes through col and order session values, undefined when absent", () => {
@@ -197,10 +197,10 @@ test("buildModel passes through col and order session values, undefined when abs
 })
 ```
 
-- [ ] **Step 2: Run tests to verify it fails** — `npm test`, FAIL: `col` is `undefined`… actually FAIL on
+- [x] **Step 2: Run tests to verify it fails** — `npm test`, FAIL: `col` is `undefined`… actually FAIL on
   `model.windows[0].col` being `undefined` instead of `2`.
 
-- [ ] **Step 3: Implement.** In `src/model.js`, change the signature line to
+- [x] **Step 3: Implement.** In `src/model.js`, change the signature line to
 
 ```js
 export function buildModel(windows, tabs, groups, names = {}, orders = {}, cols = {}) {
@@ -244,9 +244,9 @@ In `src/data.js`, extend the per-window reads and pass `cols` through:
     return buildModel(windows, tabs, groups, names, orders, cols)
 ```
 
-- [ ] **Step 4: Run tests to verify they pass** — `npm test`; also `node --check src/data.js`.
+- [x] **Step 4: Run tests to verify they pass** — `npm test`; also `node --check src/data.js`.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add src/model.js src/data.js test/model.test.js
@@ -264,7 +264,7 @@ git commit -m "Carry col/order session values through the model"
   contains exactly `columnCount` `div.window-column` children, each with `dataset.colIndex` set, window
   panels as direct children. Task 5's dnd relies on `.window-column` and `data-col-index`.
 
-- [ ] **Step 1: Implement view.** In `src/view.js` add the import at the top:
+- [x] **Step 1: Implement view.** In `src/view.js` add the import at the top:
 
 ```js
 import { assignColumns } from "./model.js"
@@ -284,7 +284,7 @@ and replace the grid loop in `render` with:
     root.append(grid)
 ```
 
-- [ ] **Step 2: Replace the `.windows-grid` CSS.** In `dashboard.css`, replace the `.windows-grid` block and
+- [x] **Step 2: Replace the `.windows-grid` CSS.** In `dashboard.css`, replace the `.windows-grid` block and
   its masonry comment with:
 
 ```css
@@ -308,14 +308,14 @@ and replace the grid loop in `render` with:
 
 and delete `break-inside: avoid;` from the `.window` block (columns no longer split panels).
 
-- [ ] **Step 3: Update the preview fixture.** In `test/preview.html`, change the render call to
+- [x] **Step 3: Update the preview fixture.** In `test/preview.html`, change the render call to
   `document.getElementById("app").append(render(model, { columnCount: 2 }))`.
 
-- [ ] **Step 4: Verify** — `npm test` (still green), `node --check src/view.js`, and
+- [x] **Step 4: Verify** — `npm test` (still green), `node --check src/view.js`, and
   `npx --yes lightningcss-cli --targets 'firefox >= 139' dashboard.css -o /dev/null` parses clean.
   If a browser is available, open `test/preview.html` over a local HTTP server and confirm two columns.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add src/view.js dashboard.css test/preview.html
@@ -333,7 +333,7 @@ git commit -m "Render window panels into real flex columns"
   `columnIds: number[][]` is the full current layout read from the DOM; `beforeWindowId` is `null` for
   column end. Task 6's main wiring consumes exactly this shape. `resolveWindowDrop` is deleted.
 
-- [ ] **Step 1: Implement.** In `src/dnd.js`:
+- [x] **Step 1: Implement.** In `src/dnd.js`:
 
 Add next to `tilesOf`:
 
@@ -396,9 +396,9 @@ move the rule out of the `.window` nesting into a top-level block:
 
 (delete the `&.window-drop-target` block inside `.window`).
 
-- [ ] **Step 2: Verify** — `node --check src/dnd.js`; `npm test`; lightningcss parse of `dashboard.css`.
+- [x] **Step 2: Verify** — `node --check src/dnd.js`; `npm test`; lightningcss parse of `dashboard.css`.
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
 
 ```bash
 git add src/dnd.js dashboard.css
@@ -417,7 +417,7 @@ git commit -m "Window drops target real columns in dnd"
   full-layout snapshot re-sequences target AND source columns, and pins previously-unassigned windows so
   they stop reflowing — the spec's compaction requirement falls out of it).
 
-- [ ] **Step 1: Implement actions.** In `src/actions.js`, replace `reorderWindow` with:
+- [x] **Step 1: Implement actions.** In `src/actions.js`, replace `reorderWindow` with:
 
 ```js
 export async function persistWindowLayout(columnIds) {
@@ -432,7 +432,7 @@ export async function persistWindowLayout(columnIds) {
 
 and drop `reorderWindowSequence` from the model import (leaving `absoluteTabIndex, tabsToUnloadAllButActive`).
 
-- [ ] **Step 2: Wire main.** In `src/main.js`:
+- [x] **Step 2: Wire main.** In `src/main.js`:
 
 Import changes: replace `reorderWindow` with `persistWindowLayout` in the actions import (alphabetized), and
 add `moveWindowAmongColumns` to a model import:
@@ -479,14 +479,14 @@ Replace the `onReorderWindow` handler in `attachDnd` with:
     },
 ```
 
-- [ ] **Step 3: Delete the dead model code.** Remove `reorderWindowSequence` from `src/model.js` and its two
+- [x] **Step 3: Delete the dead model code.** Remove `reorderWindowSequence` from `src/model.js` and its two
   tests (`"reorderWindowSequence moves a window before another or to the end"`) from `test/model.test.js`;
   remove it from the test file's import list. `sortWindowsByOrder` stays (buildModel's base sequence).
 
-- [ ] **Step 4: Verify** — `npm test` all green; `node --check` on `src/actions.js src/main.js src/model.js`;
+- [x] **Step 4: Verify** — `npm test` all green; `node --check` on `src/actions.js src/main.js src/model.js`;
   `grep -rn reorderWindowSequence src test` returns nothing.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add src/actions.js src/main.js src/model.js test/model.test.js
@@ -499,7 +499,7 @@ git commit -m "Persist full column layout on window drop"
 - Modify: `README.md`, `CHANGELOG.md`
 - Bean: `firefox-windows-manager-0kn2`
 
-- [ ] **Step 1: README.** Replace the reorder bullet and the re-pack caveat paragraph (README lines 26–29)
+- [x] **Step 1: README.** Replace the reorder bullet and the re-pack caveat paragraph (README lines 26–29)
   with:
 
 ```markdown
@@ -512,7 +512,7 @@ assigned column, that column folds into the last visible one; widen the window a
 browser windows appear in whichever column is currently shortest until you place them.
 ```
 
-- [ ] **Step 2: CHANGELOG.** Under `## [Unreleased]`, add (create the `### Changed` heading if the style-pass
+- [x] **Step 2: CHANGELOG.** Under `## [Unreleased]`, add (create the `### Changed` heading if the style-pass
   entry's section is still there, append to it):
 
 ```markdown
@@ -526,7 +526,7 @@ browser windows appear in whichever column is currently shortest until you place
   window to another column, reload the overview tab, confirm it stayed; narrow the overview window below two
   columns' width, confirm folding; restore width, confirm the assignment returns.
 
-- [ ] **Step 4: Update the bean and commit.** Check off the plan/implementation items in bean
+- [x] **Step 4: Update the bean and commit.** Check off the plan/implementation items in bean
   `firefox-windows-manager-0kn2`, append a `## Summary of Changes` section, set `-s completed`.
 
 ```bash

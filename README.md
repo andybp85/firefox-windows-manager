@@ -22,11 +22,13 @@ dusk desert in Firefox Developer Edition indigo, keyed to the "Kit" browser them
   group to join that group, or in loose space to leave it. Changes the real tab order.
 - **Move a tab or group between windows** — drag it onto another window's panel, or onto the
   bottom zone to open it in a new window.
-- **Reorder window panels** — drag the `⠿` grip in a window header. The order is saved per window
-  (via session values) and survives restarts.
+- **Reorder window panels** — drag the `⠿` grip in a window header onto any column, at any height.
+  Panels are sticky: each window remembers its column and position (via session values) and stays
+  put across re-renders and restarts.
 
-Windows have a single order; the panels flow into as many columns as fit, so a reordered window
-lands at its order position — which may re-pack into a different column than where it was dropped.
+Column count still follows the viewport width. When the window is too narrow to show a panel's
+assigned column, that column folds into the last visible one; widen the window and it unfolds. New
+browser windows appear in whichever column is currently shortest until you place them.
 
 ## Requirements
 
