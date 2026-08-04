@@ -1,86 +1,74 @@
-import { absoluteTabIndex, reorderWindowSequence, tabsToUnloadAllButActive } from "./model.js";
+import { absoluteTabIndex, reorderWindowSequence, tabsToUnloadAllButActive } from "./model.js"
 
 export async function focusTab(tabId, windowId) {
-    await browser.tabs.update(tabId, { active: true });
-    await browser.windows.update(windowId, { focused: true });
+    await browser.tabs.update(tabId, { active: true })
+    await browser.windows.update(windowId, { focused: true })
 }
 
 export async function closeTab(tabId) {
-    await browser.tabs.remove(tabId);
+    await browser.tabs.remove(tabId)
 }
 
 export async function unloadTab(tabId) {
-    await browser.tabs.discard(tabId);
+    await browser.tabs.discard(tabId)
 }
 
 export async function unloadAllButActive(model, scope) {
-    const ids = tabsToUnloadAllButActive(model, scope);
-    if (ids.length > 0) {
-        await browser.tabs.discard(ids);
-    }
+    const ids = tabsToUnloadAllButActive(model, scope)
+    if (ids.length > 0) await browser.tabs.discard(ids)
 }
 
 export async function closeGroup(model, groupId) {
-    const ids = [];
+    const ids = []
     for (const w of model.windows) {
         for (const g of w.groups) {
-            if (g.id === groupId) {
-                ids.push(...g.tabs.map((t) => t.id));
-            }
+            if (g.id === groupId) ids.push(...g.tabs.map(t => t.id))
         }
     }
-    if (ids.length > 0) {
-        await browser.tabs.remove(ids);
-    }
+    if (ids.length > 0) await browser.tabs.remove(ids)
 }
 
-export async function reorderTab({ orderedIds, tabId, fromGroupId, toGroupId, beforeId }) {
+export async function reorderTab({ beforeId, fromGroupId, orderedIds, tabId, toGroupId }) {
     if (toGroupId !== fromGroupId) {
-        if (toGroupId == null) {
-            await browser.tabs.ungroup([tabId]);
-        } else {
-            await browser.tabs.group({ groupId: toGroupId, tabIds: [tabId] });
-        }
+        if (toGroupId == null) await browser.tabs.ungroup([tabId])
+        else await browser.tabs.group({ groupId: toGroupId, tabIds: [tabId] })
     }
-    const index = absoluteTabIndex(orderedIds, tabId, beforeId);
-    await browser.tabs.move(tabId, { index });
+    const index = absoluteTabIndex(orderedIds, tabId, beforeId)
+    await browser.tabs.move(tabId, { index })
 }
 
 export async function reorderWindow(orderedIds, windowId, beforeWindowId) {
-    const sequence = reorderWindowSequence(orderedIds, windowId, beforeWindowId);
+    const sequence = reorderWindowSequence(orderedIds, windowId, beforeWindowId)
     await Promise.all(
         sequence.map((id, i) => browser.sessions.setWindowValue(id, "order", i)),
-    );
+    )
 }
 
 export async function closeWindow(windowId) {
-    await browser.windows.remove(windowId);
+    await browser.windows.remove(windowId)
 }
 
 export async function renameWindow(windowId, name) {
-    const trimmed = name.trim();
-    if (trimmed) {
-        await browser.sessions.setWindowValue(windowId, "name", trimmed);
-    } else {
-        await browser.sessions.removeWindowValue(windowId, "name");
-    }
+    const trimmed = name.trim()
+    if (trimmed) await browser.sessions.setWindowValue(windowId, "name", trimmed)
+    else await browser.sessions.removeWindowValue(windowId, "name")
 }
 
 export async function moveTabToWindow(tabId, windowId) {
-    await browser.tabs.move(tabId, { windowId, index: -1 });
+    await browser.tabs.move(tabId, { index: -1, windowId })
 }
 
 export async function moveTabToNewWindow(tabId) {
-    await browser.windows.create({ tabId });
+    await browser.windows.create({ tabId })
 }
 
 export async function moveGroupToWindow(groupId, windowId) {
-    await browser.tabGroups.move(groupId, { windowId, index: -1 });
+    await browser.tabGroups.move(groupId, { index: -1, windowId })
 }
 
 export async function moveGroupToNewWindow(groupId) {
-    const win = await browser.windows.create();
-    const blankTabId = win.tabs[0].id;
-    await browser.tabGroups.move(groupId, { windowId: win.id, index: -1 });
-    await browser.tabs.remove(blankTabId);
+    const win = await browser.windows.create()
+    const blankTabId = win.tabs[0].id
+    await browser.tabGroups.move(groupId, { index: -1, windowId: win.id })
+    await browser.tabs.remove(blankTabId)
 }

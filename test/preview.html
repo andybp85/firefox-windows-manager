@@ -9,8 +9,9 @@
 <body>
     <main id="app"></main>
     <script type="module">
-        import { render } from "../src/view.js";
-        const tab = (id, title, host, extra = {}) => ({ id, windowId: 1, title, host, active: false, discarded: false, favIconUrl: "../icons/icon.svg", ...extra });
+        import { render } from "../src/view.js"
+        const tab = (id, title, host, extra = {}) =>
+            ({ active: false, discarded: false, favIconUrl: "../icons/icon.svg", host, id, title, windowId: 1, ...extra })
         const model = {
             counts: { windows: 4, tabs: 57, groups: 6 },
             windows: [
@@ -30,8 +31,8 @@
                         tab(6, "Prepare your tastebuds — Guatemalan insanity peppers", "epicurious.com") ] } ],
                   ungrouped: [ tab(7, "YouTube — space coyote scene", "youtube.com") ] },
             ],
-        };
-        document.getElementById("app").append(render(model));
+        }
+        document.getElementById("app").append(render(model))
     </script>
 </body>
 </html>

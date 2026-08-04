@@ -1,11 +1,11 @@
 {
-    "name": "firefox-windows-manager",
-    "version": "1.1.0",
     "description": "Toggleable full-page overview to manage Firefox windows, tab groups, and tabs.",
-    "type": "module",
+    "name": "firefox-windows-manager",
     "private": true,
     "scripts": {
-        "test": "node --test",
-        "package": "rm -f tab-window-manager.xpi && zip -r -X tab-window-manager.xpi manifest.json background.js dashboard.html dashboard.css dashboard-bg.svg icons src -x '.*' '*/.*'"
-    }
+        "package": "rm -f tab-window-manager.xpi && zip -r -X tab-window-manager.xpi manifest.json background.js dashboard.html dashboard.css dashboard-bg.svg icons src -x '.*' '*/.*'",
+        "test": "node --test"
+    },
+    "type": "module",
+    "version": "1.1.0"
 }

@@ -4,7 +4,8 @@
    hot accent. Dark is the canonical world (a night desert); light is a
    daybreak complement, not an inversion. Rounded display type carries the
    cartoon voice. Ornament comes from silhouette — drip edges, a wobble-ring
-   sun — never from added colors. Tokens are grouped by role. */
+   sun — never from added colors. Tokens are grouped by role (not
+   alphabetized): the surface ladder's order is documentation. */
 
 :root {
     color-scheme: light dark;
@@ -38,9 +39,6 @@
 }
 
 body {
-    margin: 0;
-    min-height: 100vh;
-    padding: 1.25rem 1.5rem 2rem;
     /* Dusk sky: sparkle stars along the top edge (dark scheme only — daybreak
        has no stars), over a deepening vertical band gradient. */
     background:
@@ -53,14 +51,16 @@ body {
     background-attachment: fixed;
     color: var(--ink);
     font-family: var(--font-body);
-}
+    margin: 0;
+    min-height: 100vh;
+    padding: 1.25rem 1.5rem 2rem;
 
-/* Dark ground is the actual trip scene (kit-theme's wallpaper, mirrored, sun
-   and pyramid dropped so it stays quiet under the panels; Kit bottom-left,
-   facing right). A url() can't react to light-dark(), hence the media query;
-   daybreak keeps the plain gradient — the scene is a night piece. */
-@media (prefers-color-scheme: dark) {
-    body {
+    /* Dark ground is the actual trip scene (kit-theme's wallpaper, mirrored,
+       sun and pyramid dropped so it stays quiet under the panels; Kit
+       bottom-left, facing right). A url() can't react to light-dark(), hence
+       the media query; daybreak keeps the plain gradient — the scene is a
+       night piece. */
+    @media (prefers-color-scheme: dark) {
         background: var(--bg) url("dashboard-bg.svg") no-repeat left bottom / cover;
         background-attachment: fixed;
     }
@@ -69,28 +69,28 @@ body {
 /* --- Shared controls: flat cel pills; hot only under the pointer --- */
 
 button {
-    font-family: var(--font-display);
-    font-size: 0.68rem;
-    letter-spacing: 0.05em;
-    color: var(--ink);
     background: var(--raised);
     border: none;
     border-radius: 999px;
-    padding: 0.34rem 0.8rem;
+    color: var(--ink);
     cursor: pointer;
+    font-family: var(--font-display);
+    font-size: 0.68rem;
+    letter-spacing: 0.05em;
+    padding: 0.34rem 0.8rem;
     transition: background 0.15s, color 0.15s;
-}
 
-button:hover {
-    background: var(--accent);
-    color: var(--on-hot);
+    &:hover {
+        background: var(--accent);
+        color: var(--on-hot);
+    }
 }
 
 /* Icon-only buttons (eject = unload): glyph a touch larger, square-ish padding. */
 .icon-btn {
-    padding: 0.22rem 0.55rem;
     font-size: 0.9rem;
     line-height: 1;
+    padding: 0.22rem 0.55rem;
 }
 
 :focus-visible {
@@ -105,67 +105,67 @@ button:hover {
 }
 
 .masthead-bar {
-    display: flex;
     align-items: center;
-    justify-content: space-between;
-    gap: 1rem 1.5rem;
+    display: flex;
     flex-wrap: wrap;
+    gap: 1rem 1.5rem;
+    justify-content: space-between;
 }
 
 /* Wordmark: chunky rounded display, led by the trip sun — wobbled concentric
    rings around the one always-hot core. Fixed colors read on both grounds. */
 .wordmark {
-    display: flex;
     align-items: center;
-    gap: 0.7rem;
-    margin: 0;
-    font-family: var(--font-display);
-    font-weight: 700;
-    letter-spacing: 0.015em;
-    font-size: clamp(1.15rem, 2.6vw, 1.7rem);
     color: var(--ink);
+    display: flex;
+    font-family: var(--font-display);
+    font-size: clamp(1.15rem, 2.6vw, 1.7rem);
+    font-weight: 700;
+    gap: 0.7rem;
+    letter-spacing: 0.015em;
+    margin: 0;
     text-wrap: balance;
-}
 
-.wordmark::before {
-    content: "";
-    flex: none;
-    width: 2.4em;
-    height: 2.4em;
-    background: url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20120%20120'%3E%3Cg%20fill='%234A55A8'%3E%3Cpath%20d='M60%202%20L68%2038%20L52%2038%20Z'/%3E%3Cpath%20d='M118%2060%20L82%2068%20L82%2052%20Z'/%3E%3Cpath%20d='M60%20118%20L52%2082%20L68%2082%20Z'/%3E%3Cpath%20d='M2%2060%20L38%2052%20L38%2068%20Z'/%3E%3Cpath%20d='M101%2019%20L79%2049%20L68%2038%20Z'/%3E%3Cpath%20d='M101%20101%20L71%2079%20L82%2068%20Z'/%3E%3Cpath%20d='M19%20101%20L41%2071%20L52%2082%20Z'/%3E%3Cpath%20d='M19%2019%20L49%2041%20L38%2052%20Z'/%3E%3C/g%3E%3Ccircle%20cx='60'%20cy='60'%20r='42'%20fill='%232E3A8C'/%3E%3Ccircle%20cx='60'%20cy='60'%20r='33'%20fill='%234A55A8'/%3E%3Ccircle%20cx='60'%20cy='60'%20r='25'%20fill='%236D77C4'/%3E%3Ccircle%20cx='60'%20cy='60'%20r='18'%20fill='%239AA2DF'/%3E%3Ccircle%20cx='60'%20cy='60'%20r='12'%20fill='%23FFC300'/%3E%3Ccircle%20cx='60'%20cy='60'%20r='7'%20fill='%23FF8A1E'/%3E%3C/svg%3E") center / contain no-repeat;
+    &::before {
+        background: url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20120%20120'%3E%3Cg%20fill='%234A55A8'%3E%3Cpath%20d='M60%202%20L68%2038%20L52%2038%20Z'/%3E%3Cpath%20d='M118%2060%20L82%2068%20L82%2052%20Z'/%3E%3Cpath%20d='M60%20118%20L52%2082%20L68%2082%20Z'/%3E%3Cpath%20d='M2%2060%20L38%2052%20L38%2068%20Z'/%3E%3Cpath%20d='M101%2019%20L79%2049%20L68%2038%20Z'/%3E%3Cpath%20d='M101%20101%20L71%2079%20L82%2068%20Z'/%3E%3Cpath%20d='M19%20101%20L41%2071%20L52%2082%20Z'/%3E%3Cpath%20d='M19%2019%20L49%2041%20L38%2052%20Z'/%3E%3C/g%3E%3Ccircle%20cx='60'%20cy='60'%20r='42'%20fill='%232E3A8C'/%3E%3Ccircle%20cx='60'%20cy='60'%20r='33'%20fill='%234A55A8'/%3E%3Ccircle%20cx='60'%20cy='60'%20r='25'%20fill='%236D77C4'/%3E%3Ccircle%20cx='60'%20cy='60'%20r='18'%20fill='%239AA2DF'/%3E%3Ccircle%20cx='60'%20cy='60'%20r='12'%20fill='%23FFC300'/%3E%3Ccircle%20cx='60'%20cy='60'%20r='7'%20fill='%23FF8A1E'/%3E%3C/svg%3E") center / contain no-repeat;
+        content: "";
+        flex: none;
+        height: 2.4em;
+        width: 2.4em;
+    }
 }
 
 /* Counts: a stat plaque — big rounded numerals over small caps labels. */
 .counts {
-    display: flex;
     align-items: baseline;
-    gap: 0.35rem 0.55rem;
-    flex-wrap: wrap;
-    padding: 0.5rem 1.1rem;
-    border-radius: 14px;
     background: var(--tile);
+    border-radius: 14px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem 0.55rem;
+    padding: 0.5rem 1.1rem;
+
+    button {
+        align-self: center;
+        margin-left: 0.5rem;
+    }
 }
 
 .count {
+    color: var(--ink);
     font-family: var(--font-display);
-    font-weight: 700;
     font-size: 1.5rem;
     font-variant-numeric: tabular-nums;
-    color: var(--ink);
+    font-weight: 700;
 }
 
 .count-label {
-    margin-right: 0.75rem;
-    font-family: var(--font-display);
-    text-transform: uppercase;
-    letter-spacing: 0.14em;
-    font-size: 0.6rem;
     color: var(--muted);
-}
-
-.counts button {
-    margin-left: 0.5rem;
-    align-self: center;
+    font-family: var(--font-display);
+    font-size: 0.6rem;
+    letter-spacing: 0.14em;
+    margin-right: 0.75rem;
+    text-transform: uppercase;
 }
 
 .overview.just-updated .count {
@@ -179,12 +179,12 @@ button:hover {
 }
 
 .notice {
-    margin: 0 0 1rem;
-    padding: 0.55rem 0.9rem;
-    border-radius: 10px;
     background: var(--tile);
     border-left: 4px solid var(--sun);
+    border-radius: 10px;
     font-size: 0.85rem;
+    margin: 0 0 1rem;
+    padding: 0.55rem 0.9rem;
 }
 
 /* --- Window panels: melting mesas --- */
@@ -192,72 +192,72 @@ button:hover {
 /* Multi-column gives masonry-style vertical packing natively — no JS lib, and
    native CSS masonry is not yet unflagged. Panels flow into balanced columns. */
 .windows-grid {
-    columns: 340px;
     column-gap: 1.25rem;
+    columns: 340px;
 }
 
 /* Each panel is a flat mesa whose bottom edge drips off — the skirt is an
    ::after strip masked by the drip tile, filled with the panel color. */
 .window {
-    position: relative;
+    background: var(--panel);
+    border-radius: 14px 14px 0 0;
+    break-inside: avoid;
     /* margin (not grid gap) separates stacked panels; leaves room for the
        22px skirt hanging below the box */
     margin-bottom: calc(1.25rem + 20px);
     padding: 1rem 1.05rem 0.75rem;
-    border-radius: 14px 14px 0 0;
-    background: var(--panel);
-    break-inside: avoid;
-}
+    position: relative;
 
-.window::after {
-    content: "";
-    position: absolute;
-    top: 100%;
-    left: 0;
-    right: 0;
-    height: 22px;
-    background: var(--panel);
-    mask: var(--drip-mask) top left / 180px 22px repeat-x;
-}
+    &::after {
+        background: var(--panel);
+        content: "";
+        height: 22px;
+        left: 0;
+        mask: var(--drip-mask) top left / 180px 22px repeat-x;
+        position: absolute;
+        right: 0;
+        top: 100%;
+    }
 
-/* Focused window: the hot keyline — part of the orange ration. */
-.window.focused {
-    box-shadow: inset 0 0 0 2.5px var(--accent);
-}
+    /* Focused window: the hot keyline — part of the orange ration. */
+    &.focused {
+        box-shadow: inset 0 0 0 2.5px var(--accent);
+    }
 
-/* Insertion target while dragging a window panel to reorder it. */
-.window.window-drop-target {
-    outline: 2px dashed var(--accent);
-    outline-offset: 3px;
+    /* Insertion target while dragging a window panel to reorder it. */
+    &.window-drop-target {
+        outline: 2px dashed var(--accent);
+        outline-offset: 3px;
+    }
 }
 
 .window-header {
-    display: flex;
     align-items: baseline;
-    gap: 0.5rem;
-    padding-bottom: 0.55rem;
-    margin-bottom: 0.7rem;
     border-bottom: 1.5px solid color-mix(in srgb, var(--cloud) 45%, transparent);
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 0.7rem;
+    padding-bottom: 0.55rem;
 }
 
 .window-name {
-    padding: 0.1rem 0.25rem;
+    border-radius: 6px;
+    color: var(--ink);
+    cursor: text;
     font-family: var(--font-display);
+    font-size: 0.95rem;
     font-weight: 700;
     letter-spacing: 0.02em;
-    font-size: 0.95rem;
-    color: var(--ink);
-    border-radius: 6px;
-    cursor: text;
-}
+    padding: 0.1rem 0.25rem;
 
-.window-name:hover {
-    color: var(--accent);
-}
+    &:hover {
+        color: var(--accent);
+    }
 
-.window-name[contenteditable="true"] {
-    outline: 2px solid var(--accent);
-    outline-offset: 1px;
+    &[contenteditable="true"] {
+        outline: 2px solid var(--accent);
+        outline-offset: 1px;
+    }
 }
 
 /* Drag handle for reordering window panels. */
@@ -267,20 +267,20 @@ button:hover {
     font-size: 0.95rem;
     line-height: 1;
     user-select: none;
-}
 
-.window-drag-handle:hover {
-    color: var(--accent);
-}
+    &:hover {
+        color: var(--accent);
+    }
 
-.window-drag-handle:active {
-    cursor: grabbing;
+    &:active {
+        cursor: grabbing;
+    }
 }
 
 .window-tabcount {
+    color: var(--muted);
     font-size: 0.72rem;
     font-variant-numeric: tabular-nums;
-    color: var(--muted);
 }
 
 /* The action cluster is pushed to the right edge; its own gap (not the
@@ -300,47 +300,47 @@ button:hover {
 
 .window-body.drop-target,
 .new-window-dropzone.drop-target {
+    background: color-mix(in srgb, var(--accent) 12%, transparent);
     outline: 2px solid var(--accent);
     outline-offset: 2px;
-    background: color-mix(in srgb, var(--accent) 12%, transparent);
 }
 
 /* --- Tab groups: the user's color stays data — chip dot + left keyline --- */
 
 .group {
-    padding: 0.45rem 0.55rem;
+    background: color-mix(in srgb, var(--group, var(--muted)) 9%, var(--tile));
     border-left: 3px solid var(--group, var(--muted));
     border-radius: 8px;
-    background: color-mix(in srgb, var(--group, var(--muted)) 9%, var(--tile));
+    padding: 0.45rem 0.55rem;
 }
 
 .group-header {
-    display: flex;
     align-items: center;
-    gap: 0.4rem;
-    padding-bottom: 0.3rem;
-    margin-bottom: 0.35rem;
     border-bottom: 1.5px solid color-mix(in srgb, var(--group, var(--cloud)) 35%, transparent);
+    display: flex;
+    gap: 0.4rem;
+    margin-bottom: 0.35rem;
+    padding-bottom: 0.3rem;
 }
 
 .group-title {
+    color: var(--ink);
     flex: 1;
     font-family: var(--font-display);
-    letter-spacing: 0.04em;
     font-size: 0.72rem;
-    color: var(--ink);
-}
+    letter-spacing: 0.04em;
 
-/* Round cel dot in the group's own color. */
-.group-title::before {
-    content: "";
-    display: inline-block;
-    width: 0.5rem;
-    height: 0.5rem;
-    margin-right: 0.45rem;
-    border-radius: 50%;
-    background: var(--group, var(--muted));
-    vertical-align: middle;
+    /* Round cel dot in the group's own color. */
+    &::before {
+        background: var(--group, var(--muted));
+        border-radius: 50%;
+        content: "";
+        display: inline-block;
+        height: 0.5rem;
+        margin-right: 0.45rem;
+        vertical-align: middle;
+        width: 0.5rem;
+    }
 }
 
 .group-blue { --group: #6f8fe0; }
@@ -362,128 +362,128 @@ button:hover {
 /* --- Tab tiles --- */
 
 .tab {
-    display: flex;
     align-items: center;
+    background: var(--tile);
+    border-radius: 8px;
+    cursor: grab;
+    display: flex;
     gap: 0.55rem;
     padding: 0.4rem 0.55rem;
-    border-radius: 8px;
-    background: var(--tile);
-    cursor: grab;
     transition: background 0.12s, box-shadow 0.12s;
-}
 
-.tab:hover {
-    box-shadow: inset 0 0 0 1.5px color-mix(in srgb, var(--accent) 55%, transparent);
-}
+    &:hover {
+        box-shadow: inset 0 0 0 1.5px color-mix(in srgb, var(--accent) 55%, transparent);
+    }
 
-/* Active tab: the sun core itself — solid hot fill, night-dark text. The
-   biggest piece of the orange ration, so it reads across the whole grid. */
-.tab.active {
-    background: var(--accent);
-    color: var(--on-hot);
-    font-weight: 600;
-}
+    /* Active tab: the sun core itself — solid hot fill, night-dark text. The
+       biggest piece of the orange ration, so it reads across the whole grid. */
+    &.active {
+        background: var(--accent);
+        color: var(--on-hot);
+        font-weight: 600;
 
-.tab.active .tab-host {
-    color: color-mix(in srgb, var(--on-hot) 70%, transparent);
-}
+        .tab-host {
+            color: color-mix(in srgb, var(--on-hot) 70%, transparent);
+        }
+    }
 
-.tab.discarded {
-    opacity: 0.55;
-}
+    &.discarded {
+        opacity: 0.55;
 
-.tab.discarded .tab-host {
-    font-style: italic;
+        .tab-host {
+            font-style: italic;
+        }
+    }
 }
 
 /* Insertion line shown between tiles while dragging a tab to reorder it. */
 .drop-indicator {
-    height: 2px;
-    margin: 1px 0;
     background: var(--accent);
     border-radius: 1px;
+    height: 2px;
+    margin: 1px 0;
     pointer-events: none; /* never intercept drag events targeting the tiles */
 }
 
 .tab-favicon {
-    width: 16px;
-    height: 16px;
     flex: none;
+    height: 16px;
+    width: 16px;
 }
 
 .tab-meta {
-    min-width: 0;
     flex: 1;
+    min-width: 0;
 }
 
 .tab-title {
+    font-size: 0.82rem;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-    font-size: 0.82rem;
 }
 
 .tab-host {
+    color: var(--muted);
+    font-size: 0.72rem;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-    font-size: 0.72rem;
-    color: var(--muted);
 }
 
 .tab-controls {
     display: flex;
-    gap: 0.2rem;
     flex: none;
-}
+    gap: 0.2rem;
 
-.tab-controls button {
-    padding: 0.12rem 0.4rem;
-    font-size: 0.58rem;
-}
+    button {
+        font-size: 0.58rem;
+        padding: 0.12rem 0.4rem;
+    }
 
-.tab-controls .icon-btn {
-    padding: 0.1rem 0.4rem;
-    font-size: 0.78rem;
+    .icon-btn {
+        font-size: 0.78rem;
+        padding: 0.1rem 0.4rem;
+    }
 }
 
 /* --- New-window drop zone: a mirage on the sand --- */
 
 .new-window-dropzone {
-    margin-top: 1.25rem;
-    padding: 1.2rem 1rem;
+    background: color-mix(in srgb, var(--tile) 45%, transparent);
     border: 2px dashed var(--cloud);
     border-radius: 16px;
-    font-family: var(--font-display);
-    text-align: center;
-    letter-spacing: 0.04em;
-    font-size: 0.85rem;
     color: var(--cloud);
-    background: color-mix(in srgb, var(--tile) 45%, transparent);
+    font-family: var(--font-display);
+    font-size: 0.85rem;
+    letter-spacing: 0.04em;
+    margin-top: 1.25rem;
+    padding: 1.2rem 1rem;
+    text-align: center;
     transition: border-color 0.15s, color 0.15s;
-}
 
-.new-window-dropzone:hover {
-    border-color: var(--accent);
-    color: var(--accent);
+    &:hover {
+        border-color: var(--accent);
+        color: var(--accent);
+    }
 }
 
 /* --- Toast --- */
 
 .toast {
-    position: fixed;
-    left: 50%;
-    bottom: 1.25rem;
-    z-index: 10;
-    transform: translateX(-50%);
-    padding: 0.55rem 1.2rem;
-    border-radius: 999px;
     background: var(--danger);
+    border-radius: 999px;
+    bottom: 1.25rem;
+    box-shadow: 0 3px 12px rgba(4, 6, 32, 0.5);
     color: #fff4f0;
     font-family: var(--font-display);
-    letter-spacing: 0.04em;
     font-size: 0.78rem;
-    box-shadow: 0 3px 12px rgba(4, 6, 32, 0.5);
+    left: 50%;
+    letter-spacing: 0.04em;
+    padding: 0.55rem 1.2rem;
+    position: fixed;
+    transform: translateX(-50%);
+    z-index: 10;
 }
 
 @media (prefers-reduced-motion: reduce) {

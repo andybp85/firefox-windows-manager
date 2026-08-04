@@ -1,31 +1,31 @@
-import { buildModel } from "./model.js";
+import { buildModel } from "./model.js"
 
 export function hasTabGroups() {
-    return typeof browser.tabGroups !== "undefined";
+    return typeof browser.tabGroups !== "undefined"
 }
 
 export async function fetchState() {
     const [windows, tabs] = await Promise.all([
         browser.windows.getAll({ windowTypes: ["normal"] }),
         browser.tabs.query({}),
-    ]);
+    ])
 
-    const groups = hasTabGroups() ? await browser.tabGroups.query({}) : [];
+    const groups = hasTabGroups() ? await browser.tabGroups.query({}) : []
 
-    const names = {};
-    const orders = {};
+    const names = {}
+    const orders = {}
     await Promise.all(
-        windows.map(async (w) => {
+        windows.map(async w => {
             const [name, order] = await Promise.all([
                 browser.sessions.getWindowValue(w.id, "name"),
                 browser.sessions.getWindowValue(w.id, "order"),
-            ]);
-            names[w.id] = name || null;
-            orders[w.id] = typeof order === "number" ? order : undefined;
+            ])
+            names[w.id] = name || undefined
+            orders[w.id] = typeof order === "number" ? order : undefined
         }),
-    );
+    )
 
-    return buildModel(windows, tabs, groups, names, orders);
+    return buildModel(windows, tabs, groups, names, orders)
 }
 
 export function subscribe(onChange) {
@@ -40,23 +40,19 @@ export function subscribe(onChange) {
         browser.windows.onCreated,
         browser.windows.onRemoved,
         browser.windows.onFocusChanged,
-    ];
+    ]
     if (hasTabGroups()) {
         events.push(
             browser.tabGroups.onCreated,
             browser.tabGroups.onMoved,
             browser.tabGroups.onRemoved,
             browser.tabGroups.onUpdated,
-        );
+        )
     }
 
-    const handler = () => onChange();
-    for (const event of events) {
-        event.addListener(handler);
-    }
+    const handler = () => onChange()
+    for (const event of events) event.addListener(handler)
     return () => {
-        for (const event of events) {
-            event.removeListener(handler);
-        }
-    };
+        for (const event of events) event.removeListener(handler)
+    }
 }

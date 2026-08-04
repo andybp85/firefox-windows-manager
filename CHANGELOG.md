@@ -12,6 +12,15 @@ interface changes are minor, corrections are patch.
 
 ## [Unreleased]
 
+### Changed
+
+- Conformed the codebase to current house style, with no behavior change: JS drops optional syntax
+  (semicolons, single-param arrow parens, single-statement braces), object keys and import lists are
+  alphabetized, and `dashboard.css` uses native nesting with properties alphabetized per block
+  (flattened output verified rule-for-rule identical to the previous stylesheet). One internal
+  contract moved: a window with no stored name is now `undefined` rather than `null` in the model.
+- Installed the shared pre-commit guards (secrets scan, docs-freshness check) into `.git/hooks`.
+
 ## [1.1.0] - 2026-07-27
 
 ### Removed
