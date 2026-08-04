@@ -499,7 +499,7 @@ git commit -m "Persist full column layout on window drop"
 - Modify: `README.md`, `CHANGELOG.md`
 - Bean: `firefox-windows-manager-0kn2`
 
-- [ ] **Step 1: README.** Replace the reorder bullet and the re-pack caveat paragraph (README lines 26–29)
+- [x] **Step 1: README.** Replace the reorder bullet and the re-pack caveat paragraph (README lines 26–29)
   with:
 
 ```markdown
@@ -512,7 +512,7 @@ assigned column, that column folds into the last visible one; widen the window a
 browser windows appear in whichever column is currently shortest until you place them.
 ```
 
-- [ ] **Step 2: CHANGELOG.** Under `## [Unreleased]`, add (create the `### Changed` heading if the style-pass
+- [x] **Step 2: CHANGELOG.** Under `## [Unreleased]`, add (create the `### Changed` heading if the style-pass
   entry's section is still there, append to it):
 
 ```markdown
@@ -526,7 +526,7 @@ browser windows appear in whichever column is currently shortest until you place
   window to another column, reload the overview tab, confirm it stayed; narrow the overview window below two
   columns' width, confirm folding; restore width, confirm the assignment returns.
 
-- [ ] **Step 4: Update the bean and commit.** Check off the plan/implementation items in bean
+- [x] **Step 4: Update the bean and commit.** Check off the plan/implementation items in bean
   `firefox-windows-manager-0kn2`, append a `## Summary of Changes` section, set `-s completed`.
 
 ```bash

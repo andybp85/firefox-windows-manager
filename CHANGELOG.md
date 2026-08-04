@@ -20,6 +20,10 @@ interface changes are minor, corrections are patch.
   (flattened output verified rule-for-rule identical to the previous stylesheet). One internal
   contract moved: a window with no stored name is now `undefined` rather than `null` in the model.
 - Installed the shared pre-commit guards (secrets scan, docs-freshness check) into `.git/hooks`.
+- Window panels now live in real columns and stay where you drop them. Each window stores a column
+  and a position (`sessions` values `col` and `order`); dropping any window pins the whole visible
+  layout. Narrow viewports fold higher columns into the last visible one. Previously the CSS
+  multi-column layout could re-pack a dropped panel into a different column.
 
 ## [1.1.0] - 2026-07-27
 
