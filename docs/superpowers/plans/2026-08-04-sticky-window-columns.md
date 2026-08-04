@@ -127,7 +127,7 @@ git commit -m "Add assignColumns: pure sticky-column layout"
   Input arrays are not mutated. `reorderWindowSequence` is NOT removed yet — `actions.js` still imports it
   until Task 6.
 
-- [ ] **Step 1: Write the failing tests** (append; import `moveWindowAmongColumns`, alphabetized)
+- [x] **Step 1: Write the failing tests** (append; import `moveWindowAmongColumns`, alphabetized)
 
 ```js
 test("moveWindowAmongColumns moves a window between columns before a reference", () => {
@@ -148,11 +148,11 @@ test("moveWindowAmongColumns reorders within a column and does not mutate its in
 })
 ```
 
-- [ ] **Step 2: Run tests to verify they fail**
+- [x] **Step 2: Run tests to verify they fail**
 
 Run: `npm test` — FAIL on the three new tests.
 
-- [ ] **Step 3: Implement** (append to `src/model.js`)
+- [x] **Step 3: Implement** (append to `src/model.js`)
 
 ```js
 export function moveWindowAmongColumns(columnIds, movedId, targetIndex, beforeId) {
@@ -164,9 +164,9 @@ export function moveWindowAmongColumns(columnIds, movedId, targetIndex, beforeId
 }
 ```
 
-- [ ] **Step 4: Run tests to verify they pass** — `npm test`, all green.
+- [x] **Step 4: Run tests to verify they pass** — `npm test`, all green.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add src/model.js test/model.test.js

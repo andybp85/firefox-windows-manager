@@ -145,6 +145,14 @@ export function assignColumns(modelWindows, visibleCount) {
     return columns
 }
 
+export function moveWindowAmongColumns(columnIds, movedId, targetIndex, beforeId) {
+    const next = columnIds.map(ids => ids.filter(id => id !== movedId))
+    const target = next[targetIndex]
+    const i = beforeId == null ? -1 : target.indexOf(beforeId)
+    target.splice(i === -1 ? target.length : i, 0, movedId)
+    return next
+}
+
 export function reorderWindowSequence(orderedIds, movedId, beforeId) {
     const rest = orderedIds.filter(id => id !== movedId)
     if (beforeId == null || !rest.includes(beforeId)) return [...rest, movedId]
