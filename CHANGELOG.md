@@ -12,6 +12,8 @@ interface changes are minor, corrections are patch.
 
 ## [Unreleased]
 
+## [1.2.0] - 2026-08-05
+
 ### Changed
 
 - Conformed the codebase to current house style, with no behavior change: JS drops optional syntax
@@ -55,6 +57,7 @@ interface changes are minor, corrections are patch.
 Initial release: toggleable full-page overview of Firefox windows, tab groups, and tabs, with
 drag-and-drop reordering across windows.
 
-[Unreleased]: https://github.com/andybp85/firefox-windows-manager/compare/v1.1.0...HEAD
+[Unreleased]: https://github.com/andybp85/firefox-windows-manager/compare/v1.2.0...HEAD
+[1.2.0]: https://github.com/andybp85/firefox-windows-manager/compare/v1.1.0...v1.2.0
 [1.1.0]: https://github.com/andybp85/firefox-windows-manager/compare/v1.0.0...v1.1.0
 [1.0.0]: https://github.com/andybp85/firefox-windows-manager/releases/tag/v1.0.0
