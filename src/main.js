@@ -1,16 +1,26 @@
 import {
-    closeGroup, closeTab, closeWindow, focusTab, moveGroupToNewWindow, moveGroupToWindow,
-    moveTabToNewWindow, moveTabToWindow, persistWindowLayout, renameWindow, reorderTab,
-    unloadAllButActive, unloadTab,
-} from "./actions.js"
-import { fetchState, hasTabGroups, subscribe } from "./data.js"
-import { attachDnd } from "./dnd.js"
-import { moveWindowAmongColumns } from "./model.js"
-import { render } from "./view.js"
+    closeGroup,
+    closeTab,
+    closeWindow,
+    focusTab,
+    moveGroupToNewWindow,
+    moveGroupToWindow,
+    moveTabToNewWindow,
+    moveTabToWindow,
+    persistWindowLayout,
+    renameWindow,
+    reorderTab,
+    unloadAllButActive,
+    unloadTab,
+} from './actions.js'
+import { fetchState, hasTabGroups, subscribe } from './data.js'
+import { attachDnd } from './dnd.js'
+import { moveWindowAmongColumns } from './model.js'
+import { render } from './view.js'
 
 export const state = { model: undefined, renderedColumns: 1 }
 
-const app = document.getElementById("app")
+const app = document.getElementById('app')
 
 const COLUMN_WIDTH = 360 // px: ~340px panel plus grid gap
 
@@ -20,9 +30,9 @@ async function rerender() {
     state.model = await fetchState()
     state.renderedColumns = columnCount()
     const tree = render(state.model, { columnCount: state.renderedColumns, tabGroupsSupported: hasTabGroups() })
-    tree.classList.add("just-updated")
+    tree.classList.add('just-updated')
     app.replaceChildren(tree)
-    requestAnimationFrame(() => tree.classList.remove("just-updated"))
+    requestAnimationFrame(() => tree.classList.remove('just-updated'))
 }
 
 function debounce(fn, ms) {
@@ -38,9 +48,12 @@ async function main() {
     subscribe(debounce(rerender, 150))
 }
 
-window.addEventListener("resize", debounce(() => {
-    if (columnCount() !== state.renderedColumns) rerender()
-}, 150))
+window.addEventListener(
+    'resize',
+    debounce(() => {
+        if (columnCount() !== state.renderedColumns) rerender()
+    }, 150),
+)
 
 main().catch(err => {
     console.error(err)
@@ -48,10 +61,10 @@ main().catch(err => {
 })
 
 function showToast(message) {
-    const existing = document.querySelector(".toast")
+    const existing = document.querySelector('.toast')
     if (existing) existing.remove()
-    const toast = document.createElement("div")
-    toast.className = "toast"
+    const toast = document.createElement('div')
+    toast.className = 'toast'
     toast.textContent = message
     document.body.append(toast)
     setTimeout(() => toast.remove(), 4000)
@@ -66,51 +79,49 @@ async function run(promise) {
     }
 }
 
-app.addEventListener("click", event => {
-    const trigger = event.target.closest("[data-action]")
+app.addEventListener('click', event => {
+    const trigger = event.target.closest('[data-action]')
     if (!trigger || !state.model) return
     const { action, groupId, tabId, windowId } = trigger.dataset
     const num = v => Number(v)
     switch (action) {
-        case "close-tab":
+        case 'close-tab':
             run(closeTab(num(tabId)))
             break
-        case "unload-tab":
+        case 'unload-tab':
             run(unloadTab(num(tabId)))
             break
-        case "close-group":
+        case 'close-group':
             run(closeGroup(state.model, num(groupId)))
             break
-        case "unload-all-window":
+        case 'unload-all-window':
             run(unloadAllButActive(state.model, { windowId: num(windowId) }))
             break
-        case "close-window":
+        case 'close-window':
             run(closeWindow(num(windowId)))
             break
-        case "unload-all-global":
-            run(unloadAllButActive(state.model, "all"))
+        case 'unload-all-global':
+            run(unloadAllButActive(state.model, 'all'))
             break
         default:
             break
     }
 })
 
-app.addEventListener("dblclick", event => {
-    const name = event.target.closest(".window-name")
+app.addEventListener('dblclick', event => {
+    const name = event.target.closest('.window-name')
     if (name) {
         startRename(name)
         return
     }
     // Double-click the tile to focus the tab; ignore dblclicks on its buttons.
-    const tile = event.target.closest(".tab")
-    if (tile && !event.target.closest("button")) {
-        run(focusTab(Number(tile.dataset.tabId), Number(tile.dataset.windowId)))
-    }
+    const tile = event.target.closest('.tab')
+    if (tile && !event.target.closest('button')) run(focusTab(Number(tile.dataset.tabId), Number(tile.dataset.windowId)))
 })
 
 function startRename(nameEl) {
     const windowId = Number(nameEl.dataset.windowId)
-    nameEl.contentEditable = "true"
+    nameEl.contentEditable = 'true'
     nameEl.focus()
     const range = document.createRange()
     range.selectNodeContents(nameEl)
@@ -119,26 +130,26 @@ function startRename(nameEl) {
     sel.addRange(range)
 
     const commit = async () => {
-        nameEl.contentEditable = "false"
-        nameEl.removeEventListener("blur", commit)
-        nameEl.removeEventListener("keydown", onKey)
+        nameEl.contentEditable = 'false'
+        nameEl.removeEventListener('blur', commit)
+        nameEl.removeEventListener('keydown', onKey)
         await run(renameWindow(windowId, nameEl.textContent))
         rerender()
     }
     const onKey = e => {
-        if (e.key === "Enter") {
+        if (e.key === 'Enter') {
             e.preventDefault()
             nameEl.blur()
-        } else if (e.key === "Escape") {
+        } else if (e.key === 'Escape') {
             e.preventDefault()
-            nameEl.removeEventListener("blur", commit)
-            nameEl.removeEventListener("keydown", onKey)
-            nameEl.contentEditable = "false"
+            nameEl.removeEventListener('blur', commit)
+            nameEl.removeEventListener('keydown', onKey)
+            nameEl.contentEditable = 'false'
             rerender()
         }
     }
-    nameEl.addEventListener("blur", commit)
-    nameEl.addEventListener("keydown", onKey)
+    nameEl.addEventListener('blur', commit)
+    nameEl.addEventListener('keydown', onKey)
 }
 
 attachDnd(app, {

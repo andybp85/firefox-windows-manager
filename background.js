@@ -1,4 +1,4 @@
-const DASHBOARD_URL = browser.runtime.getURL("dashboard.html")
+const DASHBOARD_URL = browser.runtime.getURL('dashboard.html')
 
 // Toggle: create the overview if it's absent, bring it forward if it's open in
 // the background, and close it if it's already the frontmost tab.

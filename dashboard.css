@@ -10,22 +10,22 @@
 :root {
     color-scheme: light dark;
 
-    --font-display: "Arial Rounded MT Bold", "Avenir Next", "Trebuchet MS", sans-serif;
-    --font-body: "Avenir Next", "Avenir", system-ui, -apple-system, sans-serif;
+    --font-display: 'Arial Rounded MT Bold', 'Avenir Next', 'Trebuchet MS', sans-serif;
+    --font-body: 'Avenir Next', 'Avenir', system-ui, -apple-system, sans-serif;
 
-    --accent:  light-dark(#e8631c, #f47725);
-    --sun:     light-dark(#d99a00, #ffc300);
-    --on-hot:  #14071e; /* text on an accent-filled surface, both schemes */
+    --accent: light-dark(#e8631c, #f47725);
+    --sun: light-dark(#d99a00, #ffc300);
+    --on-hot: #14071e; /* text on an accent-filled surface, both schemes */
 
-    --bg:      light-dark(#dce2f9, #0a0e4a);
+    --bg: light-dark(#dce2f9, #0a0e4a);
     --bg-deep: light-dark(#cdd5f4, #1d2364); /* sky gradient floor */
-    --panel:   light-dark(#c9d0f0, #2a3390); /* window mesas */
-    --tile:    light-dark(#e6eafb, #1a2170); /* tab tiles, plaques */
-    --raised:  light-dark(#aab2e6, #3b4494); /* buttons, drag chrome */
-    --ink:     light-dark(#1a2170, #d9ddf6);
-    --muted:   light-dark(#5a63a8, #8a92cf);
-    --cloud:   light-dark(#8790cc, #6b74be); /* rules, dropzone dashes */
-    --danger:  light-dark(#b5342b, #e8574c);
+    --panel: light-dark(#c9d0f0, #2a3390); /* window mesas */
+    --tile: light-dark(#e6eafb, #1a2170); /* tab tiles, plaques */
+    --raised: light-dark(#aab2e6, #3b4494); /* buttons, drag chrome */
+    --ink: light-dark(#1a2170, #d9ddf6);
+    --muted: light-dark(#5a63a8, #8a92cf);
+    --cloud: light-dark(#8790cc, #6b74be); /* rules, dropzone dashes */
+    --danger: light-dark(#b5342b, #e8574c);
 
     scrollbar-color: var(--accent) transparent;
     scrollbar-width: thin;
@@ -61,7 +61,7 @@ body {
        the media query; daybreak keeps the plain gradient — the scene is a
        night piece. */
     @media (prefers-color-scheme: dark) {
-        background: var(--bg) url("dashboard-bg.svg") no-repeat left bottom / cover;
+        background: var(--bg) url('dashboard-bg.svg') no-repeat left bottom / cover;
         background-attachment: fixed;
     }
 }
@@ -78,7 +78,9 @@ button {
     font-size: 0.68rem;
     letter-spacing: 0.05em;
     padding: 0.34rem 0.8rem;
-    transition: background 0.15s, color 0.15s;
+    transition:
+        background 0.15s,
+        color 0.15s;
 
     &:hover {
         background: var(--accent);
@@ -127,8 +129,9 @@ button {
     text-wrap: balance;
 
     &::before {
-        background: url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20120%20120'%3E%3Cg%20fill='%234A55A8'%3E%3Cpath%20d='M60%202%20L68%2038%20L52%2038%20Z'/%3E%3Cpath%20d='M118%2060%20L82%2068%20L82%2052%20Z'/%3E%3Cpath%20d='M60%20118%20L52%2082%20L68%2082%20Z'/%3E%3Cpath%20d='M2%2060%20L38%2052%20L38%2068%20Z'/%3E%3Cpath%20d='M101%2019%20L79%2049%20L68%2038%20Z'/%3E%3Cpath%20d='M101%20101%20L71%2079%20L82%2068%20Z'/%3E%3Cpath%20d='M19%20101%20L41%2071%20L52%2082%20Z'/%3E%3Cpath%20d='M19%2019%20L49%2041%20L38%2052%20Z'/%3E%3C/g%3E%3Ccircle%20cx='60'%20cy='60'%20r='42'%20fill='%232E3A8C'/%3E%3Ccircle%20cx='60'%20cy='60'%20r='33'%20fill='%234A55A8'/%3E%3Ccircle%20cx='60'%20cy='60'%20r='25'%20fill='%236D77C4'/%3E%3Ccircle%20cx='60'%20cy='60'%20r='18'%20fill='%239AA2DF'/%3E%3Ccircle%20cx='60'%20cy='60'%20r='12'%20fill='%23FFC300'/%3E%3Ccircle%20cx='60'%20cy='60'%20r='7'%20fill='%23FF8A1E'/%3E%3C/svg%3E") center / contain no-repeat;
-        content: "";
+        background: url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20120%20120'%3E%3Cg%20fill='%234A55A8'%3E%3Cpath%20d='M60%202%20L68%2038%20L52%2038%20Z'/%3E%3Cpath%20d='M118%2060%20L82%2068%20L82%2052%20Z'/%3E%3Cpath%20d='M60%20118%20L52%2082%20L68%2082%20Z'/%3E%3Cpath%20d='M2%2060%20L38%2052%20L38%2068%20Z'/%3E%3Cpath%20d='M101%2019%20L79%2049%20L68%2038%20Z'/%3E%3Cpath%20d='M101%20101%20L71%2079%20L82%2068%20Z'/%3E%3Cpath%20d='M19%20101%20L41%2071%20L52%2082%20Z'/%3E%3Cpath%20d='M19%2019%20L49%2041%20L38%2052%20Z'/%3E%3C/g%3E%3Ccircle%20cx='60'%20cy='60'%20r='42'%20fill='%232E3A8C'/%3E%3Ccircle%20cx='60'%20cy='60'%20r='33'%20fill='%234A55A8'/%3E%3Ccircle%20cx='60'%20cy='60'%20r='25'%20fill='%236D77C4'/%3E%3Ccircle%20cx='60'%20cy='60'%20r='18'%20fill='%239AA2DF'/%3E%3Ccircle%20cx='60'%20cy='60'%20r='12'%20fill='%23FFC300'/%3E%3Ccircle%20cx='60'%20cy='60'%20r='7'%20fill='%23FF8A1E'/%3E%3C/svg%3E")
+            center / contain no-repeat;
+        content: '';
         flex: none;
         height: 2.4em;
         width: 2.4em;
@@ -174,8 +177,12 @@ button {
 
 /* Counts rest at ink; the pulse flares to the hot core and settles back. */
 @keyframes pulse {
-    from { color: var(--accent); }
-    to { color: var(--ink); }
+    from {
+        color: var(--accent);
+    }
+    to {
+        color: var(--ink);
+    }
 }
 
 .notice {
@@ -219,7 +226,7 @@ button {
 
     &::after {
         background: var(--panel);
-        content: "";
+        content: '';
         height: 22px;
         left: 0;
         mask: var(--drip-mask) top left / 180px 22px repeat-x;
@@ -232,7 +239,6 @@ button {
     &.focused {
         box-shadow: inset 0 0 0 2.5px var(--accent);
     }
-
 }
 
 /* Insertion target while dragging a window panel to reorder it. */
@@ -264,7 +270,7 @@ button {
         color: var(--accent);
     }
 
-    &[contenteditable="true"] {
+    &[contenteditable='true'] {
         outline: 2px solid var(--accent);
         outline-offset: 1px;
     }
@@ -344,7 +350,7 @@ button {
     &::before {
         background: var(--group, var(--muted));
         border-radius: 50%;
-        content: "";
+        content: '';
         display: inline-block;
         height: 0.5rem;
         margin-right: 0.45rem;
@@ -353,15 +359,33 @@ button {
     }
 }
 
-.group-blue { --group: #6f8fe0; }
-.group-cyan { --group: #4fb3c4; }
-.group-red { --group: #e0655e; }
-.group-yellow { --group: #e0b44a; }
-.group-green { --group: #63bd6f; }
-.group-pink { --group: #e07bab; }
-.group-purple { --group: #a882e6; }
-.group-orange { --group: #f0954f; }
-.group-grey { --group: #9a94ad; }
+.group-blue {
+    --group: #6f8fe0;
+}
+.group-cyan {
+    --group: #4fb3c4;
+}
+.group-red {
+    --group: #e0655e;
+}
+.group-yellow {
+    --group: #e0b44a;
+}
+.group-green {
+    --group: #63bd6f;
+}
+.group-pink {
+    --group: #e07bab;
+}
+.group-purple {
+    --group: #a882e6;
+}
+.group-orange {
+    --group: #f0954f;
+}
+.group-grey {
+    --group: #9a94ad;
+}
 
 .group-tabs {
     display: flex;
@@ -379,7 +403,9 @@ button {
     display: flex;
     gap: 0.55rem;
     padding: 0.4rem 0.55rem;
-    transition: background 0.12s, box-shadow 0.12s;
+    transition:
+        background 0.12s,
+        box-shadow 0.12s;
 
     &:hover {
         box-shadow: inset 0 0 0 1.5px color-mix(in srgb, var(--accent) 55%, transparent);
@@ -470,7 +496,9 @@ button {
     margin-top: 1.25rem;
     padding: 1.2rem 1rem;
     text-align: center;
-    transition: border-color 0.15s, color 0.15s;
+    transition:
+        border-color 0.15s,
+        color 0.15s;
 
     &:hover {
         border-color: var(--accent);

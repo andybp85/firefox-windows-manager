@@ -20,12 +20,12 @@ function toTile(t) {
     return {
         active: !!t.active,
         discarded: !!t.discarded,
-        favIconUrl: t.favIconUrl || "",
+        favIconUrl: t.favIconUrl || '',
         groupId: t.groupId ?? -1,
-        host: hostOf(t.url || ""),
+        host: hostOf(t.url || ''),
         id: t.id,
-        title: t.title || t.url || "Untitled",
-        url: t.url || "",
+        title: t.title || t.url || 'Untitled',
+        url: t.url || '',
         windowId: t.windowId,
     }
 }
@@ -54,9 +54,7 @@ export function buildModel(windows, tabs, groups, names = {}, orders = {}, cols 
             if (tile.groupId !== -1 && groupById.has(tile.groupId)) {
                 if (!grouped.has(tile.groupId)) grouped.set(tile.groupId, [])
                 grouped.get(tile.groupId).push(tile)
-            } else {
-                ungrouped.push(tile)
-            }
+            } else ungrouped.push(tile)
         }
 
         const orderOf = tabId => wTabs.findIndex(t => t.id === tabId)
@@ -65,10 +63,10 @@ export function buildModel(windows, tabs, groups, names = {}, orders = {}, cols 
                 const g = groupById.get(gid)
                 return {
                     collapsed: !!g.collapsed,
-                    color: g.color || "grey",
+                    color: g.color || 'grey',
                     id: gid,
                     tabs: tiles,
-                    title: g.title || "",
+                    title: g.title || '',
                     windowId: w.id,
                 }
             })
@@ -96,15 +94,10 @@ export function allTabsOf(windowVM) {
 }
 
 export function tabsToUnloadAllButActive(model, scope) {
-    const windows = scope === "all"
-        ? model.windows
-        : model.windows.filter(w => w.id === scope.windowId)
+    const windows = scope === 'all' ? model.windows : model.windows.filter(w => w.id === scope.windowId)
     const ids = []
-    for (const w of windows) {
-        for (const t of allTabsOf(w)) {
-            if (!t.active && !t.discarded) ids.push(t.id)
-        }
-    }
+    for (const w of windows) for (const t of allTabsOf(w)) if (!t.active && !t.discarded) ids.push(t.id)
+
     return ids
 }
 
@@ -121,7 +114,7 @@ export function absoluteTabIndex(orderedIds, movedId, beforeId) {
 
 export function sortWindowsByOrder(modelWindows, orders) {
     return modelWindows
-        .map(w => ({ order: typeof orders[w.id] === "number" ? orders[w.id] : Infinity, w }))
+        .map(w => ({ order: typeof orders[w.id] === 'number' ? orders[w.id] : Infinity, w }))
         .sort((a, b) => a.order - b.order || a.w.id - b.w.id)
         .map(keyed => keyed.w)
 }
@@ -136,12 +129,12 @@ export function assignColumns(modelWindows, visibleCount) {
     const heightOf = column => column.reduce((h, w) => h + WINDOW_HEIGHT_COST + w.tabCount, 0)
 
     const assigned = modelWindows
-        .filter(w => typeof w.col === "number")
+        .filter(w => typeof w.col === 'number')
         .sort((a, b) => a.col - b.col || (a.order ?? 0) - (b.order ?? 0) || a.id - b.id)
     for (const w of assigned) columns[Math.min(w.col, visibleCount - 1)].push(w)
 
-    for (const w of modelWindows.filter(w => typeof w.col !== "number")) {
-        const shortest = columns.reduce((best, c) => heightOf(c) < heightOf(best) ? c : best, columns[0])
+    for (const w of modelWindows.filter(w => typeof w.col !== 'number')) {
+        const shortest = columns.reduce((best, c) => (heightOf(c) < heightOf(best) ? c : best), columns[0])
         shortest.push(w)
     }
     return columns

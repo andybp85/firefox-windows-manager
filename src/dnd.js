@@ -1,54 +1,55 @@
-import { insertIndexAmong } from "./model.js"
+import { insertIndexAmong } from './model.js'
 
 // Drag "kind" is carried in the MIME type: during dragover only the set of
 // types is readable, not their values, so the kind must live in the type.
 const MIME = {
-    group: "application/x-fwm-group",
-    tab: "application/x-fwm-tab",
-    window: "application/x-fwm-window",
+    group: 'application/x-fwm-group',
+    tab: 'application/x-fwm-tab',
+    window: 'application/x-fwm-window',
 }
 
 function kindOf(dataTransfer) {
-    if (dataTransfer.types.includes(MIME.tab)) return "tab"
-    if (dataTransfer.types.includes(MIME.group)) return "group"
-    if (dataTransfer.types.includes(MIME.window)) return "window"
+    if (dataTransfer.types.includes(MIME.tab)) return 'tab'
+    if (dataTransfer.types.includes(MIME.group)) return 'group'
+    if (dataTransfer.types.includes(MIME.window)) return 'window'
     return null
 }
 
 // The group-tabs box (drop = join that group) or the loose window-body area
 // (drop = ungroup). Null when the pointer is over neither.
 function dropContainer(target) {
-    const groupTabs = target.closest(".group-tabs")
-    if (groupTabs) {
-        return { el: groupTabs, groupId: Number(groupTabs.closest(".group").dataset.groupId) }
-    }
-    const body = target.closest(".window-body")
+    const groupTabs = target.closest('.group-tabs')
+    if (groupTabs) return { el: groupTabs, groupId: Number(groupTabs.closest('.group').dataset.groupId) }
+
+    const body = target.closest('.window-body')
     if (body) return { el: body, groupId: null }
     return null
 }
 
 function tilesOf(el) {
-    return [...el.querySelectorAll(":scope > .tab")]
+    return [...el.querySelectorAll(':scope > .tab')]
 }
 
 function panelsOf(columnEl) {
-    return [...columnEl.querySelectorAll(":scope > .window")]
+    return [...columnEl.querySelectorAll(':scope > .window')]
 }
 
 // Resolve a tab drop to { windowId, groupId, beforeId, orderedIds }. beforeId
 // is the window-wide tab id to insert before, or null for the window's end.
 function resolveTabDrop(container, clientY) {
-    const win = container.el.closest(".window")
-    const allTiles = [...win.querySelectorAll(".tab")]
+    const win = container.el.closest('.window')
+    const allTiles = [...win.querySelectorAll('.tab')]
     const orderedIds = allTiles.map(t => Number(t.dataset.tabId))
 
     const tiles = tilesOf(container.el)
-    const k = insertIndexAmong(clientY, tiles.map(t => t.getBoundingClientRect()))
+    const k = insertIndexAmong(
+        clientY,
+        tiles.map(t => t.getBoundingClientRect()),
+    )
 
     let beforeId = null
-    if (k < tiles.length) {
-        beforeId = Number(tiles[k].dataset.tabId)
-    } else if (tiles.length > 0) {
+    if (k < tiles.length) beforeId = Number(tiles[k].dataset.tabId)
+    else if (tiles.length > 0) {
         const next = allTiles[allTiles.indexOf(tiles[tiles.length - 1]) + 1]
         beforeId = next ? Number(next.dataset.tabId) : null
     }
@@ -64,95 +65,98 @@ export function attachDnd(container, handlers) {
         indicator = null
     }
     const clearHighlights = () => {
-        for (const el of container.querySelectorAll(".drop-target, .window-drop-target")) {
-            el.classList.remove("drop-target", "window-drop-target")
-        }
+        for (const el of container.querySelectorAll('.drop-target, .window-drop-target'))
+            el.classList.remove('drop-target', 'window-drop-target')
     }
     const placeIndicator = (el, clientY) => {
         if (!indicator) {
-            indicator = document.createElement("div")
-            indicator.className = "drop-indicator"
+            indicator = document.createElement('div')
+            indicator.className = 'drop-indicator'
         }
         const tiles = tilesOf(el)
-        const k = insertIndexAmong(clientY, tiles.map(t => t.getBoundingClientRect()))
+        const k = insertIndexAmong(
+            clientY,
+            tiles.map(t => t.getBoundingClientRect()),
+        )
         if (k < tiles.length) el.insertBefore(indicator, tiles[k])
         else el.appendChild(indicator)
     }
 
-    const dropZone = target =>
-        target.closest(".window-body") || target.closest(".new-window-dropzone")
+    const dropZone = target => target.closest('.window-body') || target.closest('.new-window-dropzone')
 
-    container.addEventListener("dragstart", event => {
-        const handle = event.target.closest(".window-drag-handle")
+    container.addEventListener('dragstart', event => {
+        const handle = event.target.closest('.window-drag-handle')
         if (handle) {
-            event.dataTransfer.setData(MIME.window, handle.closest(".window").dataset.windowId)
-            event.dataTransfer.effectAllowed = "move"
+            event.dataTransfer.setData(MIME.window, handle.closest('.window').dataset.windowId)
+            event.dataTransfer.effectAllowed = 'move'
             return
         }
-        const tab = event.target.closest(".tab")
+        const tab = event.target.closest('.tab')
         if (tab) {
             event.dataTransfer.setData(MIME.tab, tab.dataset.tabId)
-            event.dataTransfer.effectAllowed = "move"
+            event.dataTransfer.effectAllowed = 'move'
             return
         }
-        const group = event.target.closest(".group")
+        const group = event.target.closest('.group')
         if (group) {
             event.dataTransfer.setData(MIME.group, group.dataset.groupId)
-            event.dataTransfer.effectAllowed = "move"
+            event.dataTransfer.effectAllowed = 'move'
         }
     })
 
-    container.addEventListener("dragover", event => {
+    container.addEventListener('dragover', event => {
         const kind = kindOf(event.dataTransfer)
         if (!kind) return
 
-        if (kind === "window") {
-            const column = event.target.closest(".window-column")
+        if (kind === 'window') {
+            const column = event.target.closest('.window-column')
             if (!column) return
             event.preventDefault()
-            event.dataTransfer.dropEffect = "move"
+            event.dataTransfer.dropEffect = 'move'
             clearHighlights()
-            column.classList.add("window-drop-target")
+            column.classList.add('window-drop-target')
             return
         }
 
         const zone = dropZone(event.target)
         if (!zone) return
         event.preventDefault()
-        event.dataTransfer.dropEffect = "move"
-        zone.classList.add("drop-target")
-        if (kind === "tab") {
+        event.dataTransfer.dropEffect = 'move'
+        zone.classList.add('drop-target')
+        if (kind === 'tab') {
             const c = dropContainer(event.target)
             if (c) placeIndicator(c.el, event.clientY)
         }
     })
 
-    container.addEventListener("dragleave", event => {
+    container.addEventListener('dragleave', event => {
         const zone = dropZone(event.target)
-        if (zone) zone.classList.remove("drop-target")
+        if (zone) zone.classList.remove('drop-target')
     })
 
-    container.addEventListener("dragend", () => {
+    container.addEventListener('dragend', () => {
         clearIndicator()
         clearHighlights()
     })
 
-    container.addEventListener("drop", event => {
+    container.addEventListener('drop', event => {
         const kind = kindOf(event.dataTransfer)
         clearIndicator()
 
-        if (kind === "window") {
-            const column = event.target.closest(".window-column")
+        if (kind === 'window') {
+            const column = event.target.closest('.window-column')
             clearHighlights()
             if (!column) return
             event.preventDefault()
             const id = Number(event.dataTransfer.getData(MIME.window))
             if (Number.isNaN(id)) return
-            const grid = column.closest(".windows-grid")
-            const columnIds = [...grid.querySelectorAll(".window-column")]
-                .map(c => panelsOf(c).map(w => Number(w.dataset.windowId)))
+            const grid = column.closest('.windows-grid')
+            const columnIds = [...grid.querySelectorAll('.window-column')].map(c => panelsOf(c).map(w => Number(w.dataset.windowId)))
             const others = panelsOf(column).filter(p => Number(p.dataset.windowId) !== id)
-            const k = insertIndexAmong(event.clientY, others.map(p => p.getBoundingClientRect()))
+            const k = insertIndexAmong(
+                event.clientY,
+                others.map(p => p.getBoundingClientRect()),
+            )
             handlers.onReorderWindow({
                 beforeWindowId: k < others.length ? Number(others[k].dataset.windowId) : null,
                 columnIds,
@@ -167,18 +171,18 @@ export function attachDnd(container, handlers) {
         if (!kind || !zone) return
         event.preventDefault()
 
-        const rawId = event.dataTransfer.getData(kind === "tab" ? MIME.tab : MIME.group)
+        const rawId = event.dataTransfer.getData(kind === 'tab' ? MIME.tab : MIME.group)
         const id = Number(rawId)
-        if (rawId === "" || Number.isNaN(id)) return
+        if (rawId === '' || Number.isNaN(id)) return
 
-        if (zone.classList.contains("new-window-dropzone")) {
-            if (kind === "tab") handlers.onDropTabNewWindow(id)
+        if (zone.classList.contains('new-window-dropzone')) {
+            if (kind === 'tab') handlers.onDropTabNewWindow(id)
             else handlers.onDropGroupNewWindow(id)
             return
         }
 
-        const windowId = Number(zone.closest(".window").dataset.windowId)
-        if (kind === "group") {
+        const windowId = Number(zone.closest('.window').dataset.windowId)
+        if (kind === 'group') {
             handlers.onDropGroup(id, windowId)
             return
         }
@@ -189,7 +193,7 @@ export function attachDnd(container, handlers) {
         const c = dropContainer(event.target)
         if (c && fromWindowId === windowId) {
             const drop = resolveTabDrop(c, event.clientY)
-            const fromGroup = draggedTile.closest(".group")
+            const fromGroup = draggedTile.closest('.group')
             handlers.onReorderTab({
                 beforeId: drop.beforeId,
                 fromGroupId: fromGroup ? Number(fromGroup.dataset.groupId) : null,
@@ -197,8 +201,6 @@ export function attachDnd(container, handlers) {
                 tabId: id,
                 toGroupId: drop.groupId,
             })
-        } else {
-            handlers.onDropTab(id, windowId)
-        }
+        } else handlers.onDropTab(id, windowId)
     })
 }

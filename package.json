@@ -4,8 +4,15 @@
     "private": true,
     "scripts": {
         "package": "rm -f tab-window-manager.xpi && zip -r -X tab-window-manager.xpi manifest.json background.js dashboard.html dashboard.css dashboard-bg.svg icons src -x '.*' '*/.*'",
-        "test": "node --test"
+        "test": "node --test",
+        "lint": "oxlint",
+        "format": "oxfmt",
+        "format:check": "oxfmt --check"
     },
     "type": "module",
-    "version": "1.2.0"
+    "version": "1.2.0",
+    "devDependencies": {
+        "oxfmt": "0.63.0",
+        "oxlint": "1.78.0"
+    }
 }

@@ -1,4 +1,4 @@
-import { absoluteTabIndex, tabsToUnloadAllButActive } from "./model.js"
+import { absoluteTabIndex, tabsToUnloadAllButActive } from './model.js'
 
 export async function focusTab(tabId, windowId) {
     await browser.tabs.update(tabId, { active: true })
@@ -20,30 +20,29 @@ export async function unloadAllButActive(model, scope) {
 
 export async function closeGroup(model, groupId) {
     const ids = []
-    for (const w of model.windows) {
-        for (const g of w.groups) {
-            if (g.id === groupId) ids.push(...g.tabs.map(t => t.id))
-        }
-    }
+    for (const w of model.windows) for (const g of w.groups) if (g.id === groupId) ids.push(...g.tabs.map(t => t.id))
+
     if (ids.length > 0) await browser.tabs.remove(ids)
 }
 
 export async function reorderTab({ beforeId, fromGroupId, orderedIds, tabId, toGroupId }) {
-    if (toGroupId !== fromGroupId) {
+    if (toGroupId !== fromGroupId)
         if (toGroupId == null) await browser.tabs.ungroup([tabId])
         else await browser.tabs.group({ groupId: toGroupId, tabIds: [tabId] })
-    }
+
     const index = absoluteTabIndex(orderedIds, tabId, beforeId)
     await browser.tabs.move(tabId, { index })
 }
 
 export async function persistWindowLayout(columnIds) {
-    await Promise.all(columnIds.flatMap((ids, col) =>
-        ids.flatMap((id, order) => [
-            browser.sessions.setWindowValue(id, "col", col),
-            browser.sessions.setWindowValue(id, "order", order),
-        ]),
-    ))
+    await Promise.all(
+        columnIds.flatMap((ids, col) =>
+            ids.flatMap((id, order) => [
+                browser.sessions.setWindowValue(id, 'col', col),
+                browser.sessions.setWindowValue(id, 'order', order),
+            ]),
+        ),
+    )
 }
 
 export async function closeWindow(windowId) {
@@ -52,8 +51,8 @@ export async function closeWindow(windowId) {
 
 export async function renameWindow(windowId, name) {
     const trimmed = name.trim()
-    if (trimmed) await browser.sessions.setWindowValue(windowId, "name", trimmed)
-    else await browser.sessions.removeWindowValue(windowId, "name")
+    if (trimmed) await browser.sessions.setWindowValue(windowId, 'name', trimmed)
+    else await browser.sessions.removeWindowValue(windowId, 'name')
 }
 
 export async function moveTabToWindow(tabId, windowId) {

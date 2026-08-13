@@ -161,9 +161,16 @@ to drop that accent; nothing else depends on it.
 
 ## Development
 
-- No build step; edit the files and reload the temporary add-on from `about:debugging`.
-- `npm test` — unit tests for the pure model (`src/model.js`) via Node's built-in test runner. No
-  dependencies.
+- No build step; edit the files and reload the temporary add-on from `about:debugging`. The shipped
+  extension has no runtime dependencies — the `devDependencies` are the linter and formatter only,
+  and nothing from `node_modules/` enters the `.xpi`.
+- `npm install` — needed once before linting or formatting. Tests and packaging run without it.
+- `npm test` — unit tests for the pure model (`src/model.js`) via Node's built-in test runner.
+- `npm run lint` — [oxlint](https://oxc.rs/docs/guide/usage/linter.html) over the extension sources,
+  configured in `.oxlintrc.json`.
+- `npm run format` — rewrite the sources with [oxfmt](https://oxc.rs/docs/guide/usage/formatter.html);
+  `npm run format:check` verifies without writing, for CI. Style lives in `.oxfmtrc.json`: no
+  semicolons, single quotes, 4-space indent, 140-column lines, trailing commas.
 - `npm run package` — build the installable `.xpi`.
 - Architecture is a one-way flow: `data.js` (reads the browser) → `model.js` (pure) → `view.js`
   (renders) → `dnd.js` / `actions.js` (mutate the browser) → browser events trigger a re-render.

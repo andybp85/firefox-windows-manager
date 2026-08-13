@@ -1,14 +1,11 @@
-import { buildModel } from "./model.js"
+import { buildModel } from './model.js'
 
 export function hasTabGroups() {
-    return typeof browser.tabGroups !== "undefined"
+    return typeof browser.tabGroups !== 'undefined'
 }
 
 export async function fetchState() {
-    const [windows, tabs] = await Promise.all([
-        browser.windows.getAll({ windowTypes: ["normal"] }),
-        browser.tabs.query({}),
-    ])
+    const [windows, tabs] = await Promise.all([browser.windows.getAll({ windowTypes: ['normal'] }), browser.tabs.query({})])
 
     const groups = hasTabGroups() ? await browser.tabGroups.query({}) : []
 
@@ -18,13 +15,13 @@ export async function fetchState() {
     await Promise.all(
         windows.map(async w => {
             const [col, name, order] = await Promise.all([
-                browser.sessions.getWindowValue(w.id, "col"),
-                browser.sessions.getWindowValue(w.id, "name"),
-                browser.sessions.getWindowValue(w.id, "order"),
+                browser.sessions.getWindowValue(w.id, 'col'),
+                browser.sessions.getWindowValue(w.id, 'name'),
+                browser.sessions.getWindowValue(w.id, 'order'),
             ])
-            cols[w.id] = typeof col === "number" ? col : undefined
+            cols[w.id] = typeof col === 'number' ? col : undefined
             names[w.id] = name || undefined
-            orders[w.id] = typeof order === "number" ? order : undefined
+            orders[w.id] = typeof order === 'number' ? order : undefined
         }),
     )
 
@@ -44,14 +41,8 @@ export function subscribe(onChange) {
         browser.windows.onRemoved,
         browser.windows.onFocusChanged,
     ]
-    if (hasTabGroups()) {
-        events.push(
-            browser.tabGroups.onCreated,
-            browser.tabGroups.onMoved,
-            browser.tabGroups.onRemoved,
-            browser.tabGroups.onUpdated,
-        )
-    }
+    if (hasTabGroups())
+        events.push(browser.tabGroups.onCreated, browser.tabGroups.onMoved, browser.tabGroups.onRemoved, browser.tabGroups.onUpdated)
 
     const handler = () => onChange()
     for (const event of events) event.addListener(handler)
