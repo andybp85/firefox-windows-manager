@@ -12,6 +12,30 @@ interface changes are minor, corrections are patch.
 
 ## [Unreleased]
 
+## [1.2.1] - 2026-08-13
+
+Tooling and formatting only — no change to the dashboard, the toolbar button, permissions, or the
+stored session values. Installing this over 1.2.0 changes nothing a user can see.
+
+### Added
+
+- `oxlint` and `oxfmt` as dev dependencies, with the `lint`, `format`, and `format:check` npm
+  scripts. House style is now enforced by a tool rather than by hand: `.oxlintrc.json` sets the
+  rules (`curly: multi`, `no-var`, `prefer-const`, `no-unused-vars`, console limited to `warn` and
+  `error`) and `.oxfmtrc.json` sets the layout (no semicolons, single quotes, 4-space indent,
+  140-column lines, trailing commas). `package-lock.json` is now committed, so the two tool
+  versions are pinned for everyone.
+
+### Changed
+
+- Reformatted every source file to the formatter's output. This is mechanical: double quotes became
+  single, single-statement blocks lost their braces, and long argument lists and short blocks were
+  rewrapped to the 140-column limit. `dashboard.css` and `test/preview.html` were reflowed the same
+  way. The full unit suite passes unchanged, and the non-whitespace diff contains no altered
+  expression, condition, or call.
+- The 1.2.0 notes described this same style by hand; the rules that were prose then are
+  configuration now, so a future drift is a lint failure instead of a review comment.
+
 ## [1.2.0] - 2026-08-05
 
 ### Changed
@@ -57,7 +81,8 @@ interface changes are minor, corrections are patch.
 Initial release: toggleable full-page overview of Firefox windows, tab groups, and tabs, with
 drag-and-drop reordering across windows.
 
-[Unreleased]: https://github.com/andybp85/firefox-windows-manager/compare/v1.2.0...HEAD
+[Unreleased]: https://github.com/andybp85/firefox-windows-manager/compare/v1.2.1...HEAD
+[1.2.1]: https://github.com/andybp85/firefox-windows-manager/compare/v1.2.0...v1.2.1
 [1.2.0]: https://github.com/andybp85/firefox-windows-manager/compare/v1.1.0...v1.2.0
 [1.1.0]: https://github.com/andybp85/firefox-windows-manager/compare/v1.0.0...v1.1.0
 [1.0.0]: https://github.com/andybp85/firefox-windows-manager/releases/tag/v1.0.0
