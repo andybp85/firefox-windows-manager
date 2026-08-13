@@ -1,0 +1,19 @@
+One regex per line; vnu drops any message it matches. Lines that are not regexes
+match nothing, so this prose is inert and lives here rather than in a README
+nobody opens next to a failing commit.
+
+Two suppressions, each earning its place:
+
+1. Trailing slash on void elements. Valid HTML5 — the spec allows it and it is a
+   no-op — so vnu reports it as info, not an error. oxfmt writes it and has no
+   option to omit it (26 options in its configuration_schema.json, none touching
+   void elements), matching prettier. One file, one formatter: oxfmt owns this,
+   so the checker stays quiet about it.
+.*Trailing slash on void elements.*
+
+2. Content-Security-Policy resource warnings. An artifact of checking a file
+   instead of a URL: with no origin to resolve against, 'self' in a meta CSP can
+   never match /styles.css, so vnu reports every same-origin asset as blocked.
+   Verified against a live URL through the same engine — zero CSP messages there.
+   Drop this line and the gate fails on every page it ships.
+.*Resource violates Content Security Policy.*

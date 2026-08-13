@@ -12,6 +12,12 @@ interface changes are minor, corrections are patch.
 
 ## [Unreleased]
 
+### Added
+
+- HTML validity is checked at commit time against the W3C's own checker (vnu), configured by
+  `.vnu-filter`. Contributors who commit markup need `brew install vnu`. No change to the shipped
+  extension.
+
 ## [1.2.1] - 2026-08-13
 
 Tooling and formatting only — no change to the dashboard, the toolbar button, permissions, or the

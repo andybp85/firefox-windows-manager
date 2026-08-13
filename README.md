@@ -172,6 +172,11 @@ to drop that accent; nothing else depends on it.
   `npm run format:check` verifies without writing, for CI. Style lives in `.oxfmtrc.json`: no
   semicolons, single quotes, 4-space indent, 140-column lines, trailing commas.
 - `npm run package` — build the installable `.xpi`.
+- HTML validity is checked at commit time by [vnu](https://github.com/validator/validator), the engine
+  behind the [W3C validator](https://validator.w3.org/nu/) — `brew install vnu` if you intend to commit
+  markup. It reads only files that open with a doctype, so partials are left alone, and `.vnu-filter`
+  holds the suppressions with the reason each is earned. oxfmt makes the markup consistent; this is what
+  makes it legal.
 - Architecture is a one-way flow: `data.js` (reads the browser) → `model.js` (pure) → `view.js`
   (renders) → `dnd.js` / `actions.js` (mutate the browser) → browser events trigger a re-render.
 - Design and plan notes live under `docs/superpowers/specs/` and `docs/superpowers/plans/`.
