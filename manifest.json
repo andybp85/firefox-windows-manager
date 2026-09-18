@@ -2,7 +2,7 @@
     "manifest_version": 3,
     "name": "Tab & Window Manager",
     "version": "1.2.1",
-    "description": "A toggleable full-page overview to manage Firefox windows, tab groups, and tabs.",
+    "description": "A full-page overview, in its own window, to manage Firefox windows, tab groups, and tabs.",
     "browser_specific_settings": {
         "gecko": {
             "id": "tab-window-manager@firefox-windows-manager",
@@ -16,6 +16,11 @@
     "action": {
         "default_title": "Open Tab & Window Overview",
         "default_icon": "icons/icon.svg"
+    },
+    "commands": {
+        "_execute_action": {
+            "description": "Toggle the Tab & Window Overview"
+        }
     },
     "icons": {
         "48": "icons/icon.svg",

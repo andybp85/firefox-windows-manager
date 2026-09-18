@@ -1,5 +1,5 @@
 {
-    "description": "Toggleable full-page overview to manage Firefox windows, tab groups, and tabs.",
+    "description": "Full-page overview, in its own window, to manage Firefox windows, tab groups, and tabs.",
     "name": "firefox-windows-manager",
     "private": true,
     "scripts": {

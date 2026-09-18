@@ -1,20 +1,19 @@
 const DASHBOARD_URL = browser.runtime.getURL('dashboard.html')
 
-// Toggle: create the overview if it's absent, bring it forward if it's open in
-// the background, and close it if it's already the frontmost tab.
+// Toggle: open the overview in its own popup window if it's absent, bring that
+// window forward if it's open behind others, and close it if it's frontmost.
+// A popup window is not a `normal` window, so the overview never lists itself.
 async function toggleOverview() {
     const [existing] = await browser.tabs.query({ url: DASHBOARD_URL })
     if (!existing) {
-        await browser.tabs.create({ url: DASHBOARD_URL })
+        await browser.windows.create({ type: 'popup', url: DASHBOARD_URL })
         return
     }
     const focused = await browser.windows.getLastFocused()
-    const isFrontmost = existing.active && existing.windowId === focused.id
-    if (isFrontmost) {
-        await browser.tabs.remove(existing.id)
+    if (existing.windowId === focused.id) {
+        await browser.windows.remove(existing.windowId)
         return
     }
-    await browser.tabs.update(existing.id, { active: true })
     await browser.windows.update(existing.windowId, { focused: true })
 }
 

@@ -6,8 +6,11 @@ dusk desert in Firefox Developer Edition indigo, keyed to the "Kit" browser them
 
 ## Features
 
-- The toolbar button toggles a single overview tab: click to open, click again to close it (or to
-  bring it forward if it's open in the background).
+- The toolbar button opens a single overview in its own window (a popup window: no tab strip, no
+  address bar), or brings that window forward if it's already open. Close it like any window. With
+  a keyboard shortcut assigned (see below) the same command also closes the overview when it is
+  the frontmost window, so one key toggles it. The overview window never appears in its own panel
+  list.
 - Header counts: windows · groups · tabs.
 - One panel per window; tab groups shown as colored sub-sections; tabs as favicon + title + host
   tiles.
@@ -72,9 +75,11 @@ already set in `manifest.json`, which signing requires.
 
 ## Keyboard shortcut
 
-None by default — the earlier combos collided with browser and OS shortcuts, so the command was
-dropped for now. Toggle the overview with the toolbar button. (A shortcut can be reintroduced later
-by adding a `commands` entry to `manifest.json`.)
+None by default — the earlier combos collided with browser and OS shortcuts. The manifest declares
+the `_execute_action` command with no key, so you can bind your own: `about:addons` → gear icon →
+**Manage Extension Shortcuts** → **Toggle the Tab & Window Overview**. The shortcut does exactly what
+the toolbar button does, and because it also works while the overview window is frontmost, it can
+close the overview as well as open it.
 
 ## Permissions
 

@@ -12,7 +12,21 @@ interface changes are minor, corrections are patch.
 
 ## [Unreleased]
 
+### Changed
+
+- The toolbar button now opens the overview in its own popup window instead of a tab in the
+  current window. A popup window has no tab strip or address bar, and it is not a `normal` window,
+  so the overview no longer lists itself as a panel. Clicking the button while the overview is open
+  brings its window forward; close it like any window. Because a popup has no toolbar, the button
+  can no longer be clicked while the overview is frontmost, so the "click again to close" half of
+  the toggle now needs the keyboard command below.
+- The manifest description drops "toggleable" in favor of "in its own window".
+
 ### Added
+
+- An `_execute_action` command with no default key. Assign one under **Manage Extension
+  Shortcuts** in `about:addons` and it toggles the overview: open, bring forward, or close when the
+  overview window is frontmost.
 
 - HTML validity is checked at commit time against the W3C's own checker (vnu), configured by
   `.vnu-filter`. Contributors who commit markup need `brew install vnu`. No change to the shipped
