@@ -1,7 +1,7 @@
 {
     "manifest_version": 3,
     "name": "Tab & Window Manager",
-    "version": "1.2.1",
+    "version": "1.3.0",
     "description": "A full-page overview, in its own window, to manage Firefox windows, tab groups, and tabs.",
     "browser_specific_settings": {
         "gecko": {

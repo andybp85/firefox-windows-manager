@@ -12,6 +12,8 @@ interface changes are minor, corrections are patch.
 
 ## [Unreleased]
 
+## [1.3.0] - 2026-09-18
+
 ### Changed
 
 - The toolbar button now opens the overview in its own popup window instead of a tab in the
@@ -101,7 +103,8 @@ stored session values. Installing this over 1.2.0 changes nothing a user can see
 Initial release: toggleable full-page overview of Firefox windows, tab groups, and tabs, with
 drag-and-drop reordering across windows.
 
-[Unreleased]: https://github.com/andybp85/firefox-windows-manager/compare/v1.2.1...HEAD
+[Unreleased]: https://github.com/andybp85/firefox-windows-manager/compare/v1.3.0...HEAD
+[1.3.0]: https://github.com/andybp85/firefox-windows-manager/compare/v1.2.1...v1.3.0
 [1.2.1]: https://github.com/andybp85/firefox-windows-manager/compare/v1.2.0...v1.2.1
 [1.2.0]: https://github.com/andybp85/firefox-windows-manager/compare/v1.1.0...v1.2.0
 [1.1.0]: https://github.com/andybp85/firefox-windows-manager/compare/v1.0.0...v1.1.0
